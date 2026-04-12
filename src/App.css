@@ -14,7 +14,7 @@ body {
 }
 
 /* ===== ENCABEZADO ===== */
-#encabezado {
+.encabezado {
     background-color: #0f3d6e;
     color: #ffffff;
     padding: 20px 24px;
@@ -67,7 +67,7 @@ body {
 }
 
 /* ===== BANNER DE ESTADO ===== */
-#bannerEstado {
+.banner-estado {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -145,7 +145,7 @@ body {
 }
 
 /* ===== CONTENIDO PRINCIPAL ===== */
-#principal {
+.principal {
     max-width: 640px;
     margin: 0 auto;
     padding: 20px;

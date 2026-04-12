@@ -1,160 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Farmacia Inclusiva</title>
+    <title>proyecto-programacion-web</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/src/style.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
-
-   <header class="encabezado">
-      <div class="encabezado__marca">
-        <div class="encabezado__logo">
-          <span class="logo-cruz">✚</span>
-        </div>
-        <div class="encabezado__texto">
-          <span class="encabezado__nombre">Farmacias Gi</span>
-          <span class="encabezado__subtitulo">Farmacia Inclusiva</span>
-        </div>
-      </div>
-      <div class="encabezado__direccion">
-        Tekuan 184, Villa Izcalli Caxitlan<br />Villa de Álvarez, Col.
-      </div>
-    </header>
-
-    <section class="banner-estado banner-estado--vigente" id="bannerEstado" aria-label="Estado de vigencia del medicamento">
-      <div class="banner-estado__indicador"></div>
-      <div class="banner-estado__contenido">
-        <span class="banner-estado__etiqueta">Estado</span>
-        <strong class="banner-estado__valor" id="textoEstado">VIGENTE</strong>
-      </div>
-      <div class="banner-estado__icono">✔</div>
-    </section>
-
-    <main class="principal">
-
-      <article class="tarjeta tarjeta--medicamento">
-        <div class="tarjeta__encabezado">
-          <span class="tarjeta__etiqueta">Medicamento</span>
-          <span class="tarjeta__id">ID Lote: <span class="mono">#L-2024-0892</span></span>
-        </div>
-
-        <h1 class="medicamento__nombre">Paracetamol</h1>
-        <p class="medicamento__subtitulo">Tabletas · 500 mg · 20 tabletas</p>
-
-        <div class="medicamento__grid">
-          <div class="medicamento__campo">
-            <span class="medicamento__campo-etiqueta">Presentación</span>
-            <span class="medicamento__campo-valor">Tableta</span>
-          </div>
-          <div class="medicamento__campo">
-            <span class="medicamento__campo-etiqueta">Concentración</span>
-            <span class="medicamento__campo-valor">500 mg</span>
-          </div>
-          <div class="medicamento__campo">
-            <span class="medicamento__campo-etiqueta">Requiere receta</span>
-            <span class="medicamento__campo-valor">No</span>
-          </div>
-          <div class="medicamento__campo">
-            <span class="medicamento__campo-etiqueta">Contenido</span>
-            <span class="medicamento__campo-valor">20 tabletas</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="tarjeta tarjeta--fechas">
-        <h2 class="tarjeta__titulo">Fechas de control</h2>
-
-        <div class="fechas__lista">
-          <div class="fecha__elemento">
-            <div class="fecha__icono">🏭</div>
-            <div class="fecha__info">
-              <span class="fecha__etiqueta">Fecha de fabricación</span>
-              <span class="fecha__valor mono">Marzo 2024</span>
-            </div>
-          </div>
-
-          <div class="fecha__elemento fecha__elemento--destacado">
-            <div class="fecha__icono">📅</div>
-            <div class="fecha__info">
-              <span class="fecha__etiqueta">Fecha de caducidad</span>
-              <span class="fecha__valor fecha__valor--caducidad mono">Marzo 2027</span>
-            </div>
-          </div>
-
-          <div class="fecha__elemento">
-            <div class="fecha__icono">🛍️</div>
-            <div class="fecha__info">
-              <span class="fecha__etiqueta">Fecha de compra</span>
-              <span class="fecha__valor mono">10 Abril 2026</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="vida-util">
-          <div class="vida-util__encabezado">
-            <span>Tiempo de vida restante</span>
-            <span class="mono vida-util__porcentaje">~94%</span>
-          </div>
-          <div class="vida-util__barra">
-            <div class="vida-util__relleno" style="width: 94%"></div>
-          </div>
-          <p class="vida-util__nota">Aproximadamente 35 meses restantes</p>
-        </div>
-      </article>
-
-      <article class="tarjeta tarjeta--venta">
-        <h2 class="tarjeta__titulo">Datos de la venta</h2>
-
-        <div class="venta__grid">
-          <div class="venta__campo">
-            <span class="venta__etiqueta">Número de venta</span>
-            <span class="venta__valor mono">#V-00341</span>
-          </div>
-          <div class="venta__campo">
-            <span class="venta__etiqueta">Fecha de venta</span>
-            <span class="venta__valor mono">10 Abril 2026</span>
-          </div>
-          <div class="venta__campo">
-            <span class="venta__etiqueta">Atendido por</span>
-            <span class="venta__valor">Cajero</span>
-          </div>
-          <div class="venta__campo">
-            <span class="venta__etiqueta">Sucursal</span>
-            <span class="venta__valor">Villa de Álvarez</span>
-          </div>
-        </div>
-      </article>
-
-      <section class="seccion-audio">
-        <div class="audio__tarjeta">
-          <div class="audio__icono">🔊</div>
-          <div class="audio__texto">
-            <h2 class="audio__titulo">Reproducir información</h2>
-            <p class="audio__descripcion">Escucha los datos del medicamento</p>
-          </div>
-          <button
-            class="boton-audio"
-            id="botonAudio"
-            aria-label="Reproducir información del medicamento en voz alta"
-            type="button"
-          >
-            <span class="boton-audio__play">▶</span>
-            <span class="boton-audio__etiqueta">Escuchar</span>
-          </button>
-        </div>
-      </section>
-
-    </main>
-
-    <footer class="pie-pagina">
-      <p>Esta información fue generada por <strong>Farmacia Inclusiva</strong></p>
-      <p class="pie-pagina__nota">Tekuan 184, Villa Izcalli Caxitlan, Villa de Álvarez, Col.</p>
-    </footer>
-
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
