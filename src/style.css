@@ -1,0 +1,197 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===== BASE ===== */
+body {
+    font-family: 'Sora', sans-serif;
+    background-color: #f4f6f9;
+    color: #1e2a3a;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ===== ENCABEZADO ===== */
+#encabezado {
+    background-color: #0f3d6e;
+    color: #ffffff;
+    padding: 20px 24px;
+}
+
+.encabezado__marca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.encabezado__logo {
+    width: 44px;
+    height: 44px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-cruz {
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+.encabezado__texto {
+    display: flex;
+    flex-direction: column;
+}
+
+.encabezado__nombre {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.encabezado__subtitulo {
+    font-size: 0.72rem;
+    opacity: 0.75;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.encabezado__direccion {
+    font-size: 0.72rem;
+    opacity: 0.65;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+/* ===== BANNER DE ESTADO ===== */
+#bannerEstado {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 3px solid transparent;
+}
+
+.banner-estado--vigente {
+    background-color: #dcfce7;
+    border-color: #16a34a;
+}
+
+.banner-estado--proximo {
+    background-color: #fef9c3;
+    border-color: #ca8a04;
+}
+
+.banner-estado--caducado {
+    background-color: #fee2e2;
+    border-color: #dc2626;
+}
+
+.banner-estado__indicador {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+.banner-estado--vigente .banner-estado__indicador {
+    background-color: #16a34a;
+}
+
+.banner-estado--proximo .banner-estado__indicador {
+    background-color: #ca8a04;
+}
+
+.banner-estado--caducado .banner-estado__indicador {
+    background-color: #dc2626;
+}
+
+.banner-estado__contenido {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.banner-estado__etiqueta {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+.banner-estado--vigente .banner-estado__valor {
+    color: #16a34a;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.banner-estado--proximo .banner-estado__valor {
+    color: #ca8a04;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.banner-estado--caducado .banner-estado__valor {
+    color: #dc2626;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.banner-estado__icono {
+    font-size: 1.6rem;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+#principal {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ===== TARJETAS ===== */
+.tarjeta {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.tarjeta__titulo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.tarjeta__encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.tarjeta__etiqueta {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1a5c96;
+    background-color: #dbeafe;
+    padding: 2px 10px;
+    border-radius: 99px;
+}
+
+.tarjeta__id {
+    font-size: 0.72rem;
+    color: #94a3b8;
+}
