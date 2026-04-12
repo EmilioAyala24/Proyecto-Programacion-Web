@@ -195,3 +195,135 @@ body {
     font-size: 0.72rem;
     color: #94a3b8;
 }
+
+/* ===== MEDICAMENTO ===== */
+.medicamento__nombre {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e2a3a;
+    margin-bottom: 4px;
+}
+
+.medicamento__subtitulo {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+.medicamento__grid{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.medicamento__campo {
+  background-color: #f4f6f9;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.medicamento__campo-etiqueta {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.medicamento__campo-valor {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e2a3a;
+}
+
+/* ===== FECHAS ===== */
+.fechas__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; 
+}
+
+.fecha__elemento {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding : 8px 12px;
+  border-radius: 8px 12px;
+  background-color: #f4f6f9;
+  border: 1px solid #e2e8f0;
+}
+
+.fecha__elemento--destacado{
+  background-color: #1a5c96;
+  border-color: #dbeafe;
+}
+
+.fecha__icono{
+  font-size: 1.3rem;
+  width: 36px;
+  text-align: center;
+}
+
+.fecha__etiqueta{
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.fecha__valor{
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e2a3a;
+}
+
+.fecha__valor-caducidad{
+  color: #1a5c96;
+  font-size: 1.1rem;
+}
+
+/* ===== BARRA DE VIDA ÚTIL ===== */
+.vida-util {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.vida-util__encabezado {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #94748b;
+  margin-bottom: 6px;
+}
+
+.vida-util__porcentaje {
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.vida-util__barra {
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.vida-util__relleno {
+  height: 100%;
+  background-color: #16a34a;
+  border-radius: 99px;
+}
+
+.vida-util__nota {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-top: 4px;
+  text-align: right;
+}
