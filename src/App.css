@@ -327,3 +327,128 @@ body {
   margin-top: 4px;
   text-align: right;
 }
+
+/* ===== VENTA ===== */
+.venta__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.venta__campo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px;
+    background-color: #f4f6f9;
+    border-radius: 6px;
+    flex: 1;
+    min-width: 120px;
+}
+
+.venta__etiqueta {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.venta__valor {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1e2a3a;
+}
+
+/* ===== SECCIÓN DE AUDIO ===== */
+.audio__tarjeta {
+    background-color: #0f3d6e;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #ffffff;
+}
+
+.audio__icono {
+    font-size: 2rem;
+    width: 52px;
+    height: 52px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.audio__texto {
+    flex: 1;
+}
+
+.audio__titulo {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.audio__descripcion {
+    font-size: 0.78rem;
+    opacity: 0.75;
+    margin-top: 2px;
+}
+
+.boton-audio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background-color: #ffffff;
+    color: #1a5c96;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+}
+
+.boton-audio:hover {
+    opacity: 0.9;
+}
+
+.boton-audio__play {
+    font-size: 1.2rem;
+}
+
+.boton-audio__etiqueta {
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+}
+
+/* ===== PIE DE PÁGINA ===== */
+#pie-pagina {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    line-height: 1.8;
+    border-top: 1px solid #e2e8f0;
+    background-color: #ffffff;
+}
+
+.pie-pagina__nota {
+    font-size: 0.68rem;
+    opacity: 0.7;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 440px) {
+    .medicamento__nombre {
+        font-size: 1.6rem;
+    }
+
+    .audio__tarjeta {
+        flex-wrap: wrap;
+    }
+}
