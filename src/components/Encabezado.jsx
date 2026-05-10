@@ -3,7 +3,7 @@ function Encabezado() {
     <header className="encabezado">
       <div className="encabezado__marca">
         <div className="encabezado__logo">
-          <span className="logo-cruz">✚</span>
+          <span className="logo-cruz" aria-hidden="true">✚</span>
         </div>
         <div className="encabezado__texto">
           <span className="encabezado__nombre">Farmacias Gi</span>

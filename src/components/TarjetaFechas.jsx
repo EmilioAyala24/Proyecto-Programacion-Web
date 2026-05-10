@@ -4,21 +4,21 @@ function TarjetaFechas() {
       <h2 className="tarjeta__titulo">Fechas de control</h2>
       <div className="fechas__lista">
         <div className="fecha__elemento">
-          <div className="fecha__icono">🏭</div>
+          <div className="fecha__icono" aria-hidden="true">🏭</div>
           <div className="fecha__info">
             <span className="fecha__etiqueta">Fecha de fabricación: </span>
             <span className="fecha__valor mono">Marzo 2024</span>
           </div>
         </div>
         <div className="fecha__elemento fecha__elemento--destacado">
-          <div className="fecha__icono">📅</div>
+          <div className="fecha__icono" aria-hidden="true">📅</div>
           <div className="fecha__info">
             <span className="fecha__etiqueta">Fecha de caducidad: </span>
             <span className="fecha__valor fecha__valor--caducidad mono">Marzo 2027</span>
           </div>
         </div>
         <div className="fecha__elemento">
-          <div className="fecha__icono">🛍️</div>
+          <div className="fecha__icono" aria-hidden="true">🛍️</div>
           <div className="fecha__info">
             <span className="fecha__etiqueta">Fecha de compra: </span>
             <span className="fecha__valor mono">10 Abril 2026</span>

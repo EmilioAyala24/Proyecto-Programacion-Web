@@ -5,7 +5,7 @@ function TarjetaVenta() {
       <div className="venta__grid">
         <div className="venta__campo">
           <span className="venta__etiqueta">Número de venta</span>
-          <span className="venta__valor mono"> #V-00341</span>
+          <span className="venta__valor mono">#V-00341</span>
         </div>
         <div className="venta__campo">
           <span className="venta__etiqueta">Fecha de venta: </span>

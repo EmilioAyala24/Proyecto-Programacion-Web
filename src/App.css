@@ -210,7 +210,7 @@ body {
     margin-bottom: 16px;
 }
 
-.medicamento__grid{
+.medicamento__grid {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -258,18 +258,18 @@ body {
   border: 1px solid #e2e8f0;
 }
 
-.fecha__elemento--destacado{
+.fecha__elemento--destacado {
   background-color: #16a34a67;
   border-color: #dbeafe;
 }
 
-.fecha__icono{
+.fecha__icono {
   font-size: 1.3rem;
   width: 36px;
   text-align: center;
 }
 
-.fecha__etiqueta{
+.fecha__etiqueta {
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -277,13 +277,13 @@ body {
   color: #64748b;
 }
 
-.fecha__valor{
+.fecha__valor {
   font-size: 1rem;
   font-weight: 600;
   color: #1e2a3a;
 }
 
-.fecha__valor-caducidad{
+.fecha__valor--caducidad {
   color: #1a5c96;
   font-size: 1.1rem;
 }
@@ -427,7 +427,7 @@ body {
 }
 
 /* ===== PIE DE PÁGINA ===== */
-#pie-pagina {
+.pie-pagina {
     text-align: center;
     padding: 20px;
     font-size: 0.75rem;
