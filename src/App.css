@@ -1,454 +1,446 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* ===== BASE ===== */
+:root {
+  color: #1e2a3a;
+  background: #f4f6f9;
+  font-family: Sora, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 body {
-    font-family: 'Sora', sans-serif;
-    background-color: #f4f6f9;
-    color: #1e2a3a;
-    min-height: 100vh;
-    line-height: 1.6;
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, rgba(15, 61, 110, 0.08), transparent 34%),
+    #f4f6f9;
 }
 
-/* ===== ENCABEZADO ===== */
-.encabezado {
-    background-color: #0f3d6e;
-    color: #ffffff;
-    padding: 20px 24px;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.encabezado__marca {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+button,
+input {
+  font: inherit;
 }
 
-.encabezado__logo {
-    width: 44px;
-    height: 44px;
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.35);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.boton {
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  min-height: 42px;
+  padding: 10px 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
-.logo-cruz {
-    font-size: 1.5rem;
-    color: #ffffff;
+.boton:hover {
+  transform: translateY(-1px);
 }
 
-.encabezado__texto {
-    display: flex;
-    flex-direction: column;
+.boton--primario {
+  background: #0f3d6e;
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 61, 110, 0.18);
 }
 
-.encabezado__nombre {
-    font-size: 1.1rem;
-    font-weight: 700;
+.boton--secundario {
+  background: #e8eef5;
+  color: #0f3d6e;
 }
 
-.encabezado__subtitulo {
-    font-size: 0.72rem;
-    opacity: 0.75;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-.encabezado__direccion {
-    font-size: 0.72rem;
-    opacity: 0.65;
-    line-height: 1.5;
-    margin-top: 8px;
-}
-
-/* ===== BANNER DE ESTADO ===== */
-.banner-estado {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 24px;
-    border-bottom: 3px solid transparent;
-}
-
-.banner-estado--vigente {
-    background-color: #dcfce7;
-    border-color: #16a34a;
-}
-
-.banner-estado--proximo {
-    background-color: #fef9c3;
-    border-color: #ca8a04;
-}
-
-.banner-estado--caducado {
-    background-color: #fee2e2;
-    border-color: #dc2626;
-}
-
-.banner-estado__indicador {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-}
-
-.banner-estado--vigente .banner-estado__indicador {
-    background-color: #16a34a;
-}
-
-.banner-estado--proximo .banner-estado__indicador {
-    background-color: #ca8a04;
-}
-
-.banner-estado--caducado .banner-estado__indicador {
-    background-color: #dc2626;
-}
-
-.banner-estado__contenido {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.banner-estado__etiqueta {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #64748b;
-}
-
-.banner-estado--vigente .banner-estado__valor {
-    color: #16a34a;
-    font-size: 1.05rem;
-    font-weight: 700;
-}
-
-.banner-estado--proximo .banner-estado__valor {
-    color: #ca8a04;
-    font-size: 1.05rem;
-    font-weight: 700;
-}
-
-.banner-estado--caducado .banner-estado__valor {
-    color: #dc2626;
-    font-size: 1.05rem;
-    font-weight: 700;
-}
-
-.banner-estado__icono {
-    font-size: 1.6rem;
-}
-
-/* ===== CONTENIDO PRINCIPAL ===== */
-.principal {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-/* ===== TARJETAS ===== */
-.tarjeta {
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 20px;
-}
-
-.tarjeta__titulo {
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #64748b;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.tarjeta__encabezado {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-
-.tarjeta__etiqueta {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #1a5c96;
-    background-color: #dbeafe;
-    padding: 2px 10px;
-    border-radius: 99px;
-}
-
-.tarjeta__id {
-    font-size: 0.72rem;
-    color: #94a3b8;
-}
-
-/* ===== MEDICAMENTO ===== */
-.medicamento__nombre {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1e2a3a;
-    margin-bottom: 4px;
-}
-
-.medicamento__subtitulo {
-    font-size: 0.9rem;
-    color: #64748b;
-    margin-bottom: 16px;
-}
-
-.medicamento__grid {
+.login-pagina {
+  align-items: center;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.login-panel {
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  box-shadow: 0 18px 50px rgba(30, 42, 58, 0.12);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  max-width: 960px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.login-panel__presentacion {
+  background: #0f3d6e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 42px;
+}
+
+.login-panel__marca {
+  color: #a7f3d0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+
+.login-panel h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  margin-bottom: 16px;
+}
+
+.login-panel p {
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.7;
+}
+
+.login-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 42px;
+}
+
+.campo-formulario {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.medicamento__campo {
-  background-color: #f4f6f9;
-  border-radius: 6px;
-  padding: 8px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 120px;
-}
-
-.medicamento__campo-etiqueta {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #94a3b8;
-}
-
-.medicamento__campo-valor {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #1e2a3a;
-}
-
-/* ===== FECHAS ===== */
-.fechas__lista {
-  display: flex;
-  flex-direction: column;
-  gap: 8px; 
-}
-
-.fecha__elemento {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding : 8px 12px;
-  border-radius: 8px 12px;
-  background-color: #f4f6f9;
-  border: 1px solid #e2e8f0;
-}
-
-.fecha__elemento--destacado {
-  background-color: #16a34a67;
-  border-color: #dbeafe;
-}
-
-.fecha__icono {
-  font-size: 1.3rem;
-  width: 36px;
-  text-align: center;
-}
-
-.fecha__etiqueta {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #64748b;
-}
-
-.fecha__valor {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1e2a3a;
-}
-
-.fecha__valor--caducidad {
-  color: #1a5c96;
-  font-size: 1.1rem;
-}
-
-/* ===== BARRA DE VIDA ÚTIL ===== */
-.vida-util {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
-}
-
-.vida-util__encabezado {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.78rem;
-  color: #94748b;
-  margin-bottom: 6px;
-}
-
-.vida-util__porcentaje {
+.campo-formulario label {
+  color: #334155;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #16a34a;
 }
 
-.vida-util__barra {
-  height: 8px;
-  background-color: #e2e8f0;
+.campo-formulario input {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #1e2a3a;
+  min-height: 46px;
+  outline: none;
+  padding: 12px 14px;
+}
+
+.campo-formulario input:focus {
+  border-color: #0f3d6e;
+  box-shadow: 0 0 0 3px rgba(15, 61, 110, 0.12);
+}
+
+.mensaje-error {
+  color: #b91c1c;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.alerta-error {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 12px 14px;
+}
+
+.seguridad-password {
+  background: #f8fafc;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.seguridad-password__encabezado {
+  color: #475569;
+  display: flex;
+  font-size: 0.82rem;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.seguridad-password__barra {
+  background: #e2e8f0;
   border-radius: 99px;
+  height: 8px;
   overflow: hidden;
 }
 
-.vida-util__relleno {
+.seguridad-password__barra span {
+  background: #94a3b8;
+  display: block;
   height: 100%;
-  background-color: #16a34a;
-  border-radius: 99px;
+  transition: width 0.2s ease, background-color 0.2s ease;
 }
 
-.vida-util__nota {
+.seguridad-password--debil .seguridad-password__barra span {
+  background: #dc2626;
+}
+
+.seguridad-password--media .seguridad-password__barra span {
+  background: #ca8a04;
+}
+
+.seguridad-password--segura .seguridad-password__barra span {
+  background: #16a34a;
+}
+
+.seguridad-password__reglas {
+  color: #64748b;
+  display: grid;
+  font-size: 0.78rem;
+  gap: 5px;
+  list-style: none;
+  margin-top: 12px;
+}
+
+.seguridad-password__reglas li::before {
+  content: "• ";
+}
+
+.seguridad-password__reglas .cumple {
+  color: #15803d;
+  font-weight: 700;
+}
+
+.login-formulario__ayuda {
+  color: #64748b;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.barra-lateral {
+  background: #0f3d6e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 24px;
+}
+
+.barra-lateral__marca {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.barra-lateral__marca div {
+  display: flex;
+  flex-direction: column;
+}
+
+.barra-lateral__marca span:last-child {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.75rem;
+}
+
+.barra-lateral__logo {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  display: flex;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.navegacion-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.navegacion-principal a {
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 700;
+  padding: 12px 14px;
+}
+
+.navegacion-principal a:hover,
+.navegacion-principal a.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.contenido-app {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.barra-superior {
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid #dbe3ee;
+  display: flex;
+  justify-content: space-between;
+  min-height: 74px;
+  padding: 16px 28px;
+}
+
+.barra-superior div {
+  display: flex;
+  flex-direction: column;
+}
+
+.barra-superior__etiqueta,
+.encabezado-pagina__etiqueta {
+  color: #64748b;
   font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.contenido-principal {
+  padding: 28px;
+}
+
+.dashboard,
+.modulo-pendiente {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.encabezado-pagina h1,
+.modulo-pendiente h1 {
+  color: #10243a;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.1;
+  margin: 8px 0;
+}
+
+.encabezado-pagina p,
+.modulo-pendiente p {
+  color: #64748b;
+  max-width: 760px;
+}
+
+.indicadores-grid,
+.modulos-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.indicadores-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.modulos-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.indicador,
+.modulo-card {
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.indicador span,
+.modulo-card p {
+  color: #64748b;
+}
+
+.indicador strong {
+  color: #0f3d6e;
+  font-size: 2rem;
+}
+
+.indicador small {
   color: #94a3b8;
-  margin-top: 4px;
-  text-align: right;
 }
 
-/* ===== VENTA ===== */
-.venta__grid {
-    display: flex;
+.modulo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: space-between;
+  min-height: 190px;
+}
+
+.modulo-card h2 {
+  color: #10243a;
+  font-size: 1.15rem;
+  margin-bottom: 8px;
+}
+
+.modulo-card a {
+  color: #0f3d6e;
+  font-weight: 800;
+}
+
+.modulo-pendiente {
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  max-width: 760px;
+  padding: 28px;
+}
+
+.modulo-pendiente .boton {
+  max-width: 220px;
+}
+
+@media (max-width: 900px) {
+  .login-panel,
+  .app-shell,
+  .indicadores-grid,
+  .modulos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .barra-lateral {
+    gap: 18px;
+  }
+
+  .navegacion-principal {
+    flex-direction: row;
     flex-wrap: wrap;
-    gap: 8px;
+  }
 }
 
-.venta__campo {
-    display: flex;
+@media (max-width: 560px) {
+  .login-pagina,
+  .contenido-principal {
+    padding: 16px;
+  }
+
+  .login-panel__presentacion,
+  .login-formulario {
+    padding: 24px;
+  }
+
+  .barra-superior {
+    align-items: flex-start;
     flex-direction: column;
-    gap: 2px;
-    padding: 8px 12px;
-    background-color: #f4f6f9;
-    border-radius: 6px;
-    flex: 1;
-    min-width: 120px;
-}
-
-.venta__etiqueta {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #94a3b8;
-}
-
-.venta__valor {
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: #1e2a3a;
-}
-
-/* ===== SECCIÓN DE AUDIO ===== */
-.audio__tarjeta {
-    background-color: #0f3d6e;
-    border-radius: 14px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    color: #ffffff;
-}
-
-.audio__icono {
-    font-size: 2rem;
-    width: 52px;
-    height: 52px;
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.audio__texto {
-    flex: 1;
-}
-
-.audio__titulo {
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-.audio__descripcion {
-    font-size: 0.78rem;
-    opacity: 0.75;
-    margin-top: 2px;
-}
-
-.boton-audio {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background-color: #ffffff;
-    color: #1a5c96;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 16px;
-    cursor: pointer;
-    font-family: 'Sora', sans-serif;
-    font-weight: 700;
-}
-
-.boton-audio:hover {
-    opacity: 0.9;
-}
-
-.boton-audio__play {
-    font-size: 1.2rem;
-}
-
-.boton-audio__etiqueta {
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-size: 0.65rem;
-}
-
-/* ===== PIE DE PÁGINA ===== */
-.pie-pagina {
-    text-align: center;
-    padding: 20px;
-    font-size: 0.75rem;
-    color: #94a3b8;
-    line-height: 1.8;
-    border-top: 1px solid #e2e8f0;
-    background-color: #ffffff;
-}
-
-.pie-pagina__nota {
-    font-size: 0.68rem;
-    opacity: 0.7;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 440px) {
-    .medicamento__nombre {
-        font-size: 1.6rem;
-    }
-
-    .audio__tarjeta {
-        flex-wrap: wrap;
-    }
+    gap: 12px;
+    padding: 16px;
+  }
 }
