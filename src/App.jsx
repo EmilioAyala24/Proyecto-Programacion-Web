@@ -4,6 +4,7 @@ import ProtectedRoute from './components/common/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import AppLayout from './layouts/AppLayout'
 import Dashboard from './pages/Dashboard'
+import LlamaGabriel from './pages/LlamaGabriel'
 import Login from './pages/Login'
 import ModuloPendiente from './pages/ModuloPendiente'
 
@@ -18,6 +19,7 @@ function App() {
             <Route path="/medicamentos" element={<ModuloPendiente titulo="Medicamentos" />} />
             <Route path="/lotes" element={<ModuloPendiente titulo="Lotes" />} />
             <Route path="/proveedores" element={<ModuloPendiente titulo="Proveedores" />} />
+            <Route path="/gabriel" element={<LlamaGabriel />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
