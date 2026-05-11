@@ -1,4 +1,8 @@
 const patronUsuario = /^[a-zA-Z0-9._-]+$/
+const patronNombreProveedor = /^[a-zA-Z0-9 .,&-]+$/
+const patronTextoFarmacia = /^[a-zA-Z0-9 .,+/%-]+$/
+const patronTelefono = /^[0-9+\-\s()]+$/
+const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function validarUsuario(usuario) {
   const valor = usuario.trim()
@@ -96,6 +100,84 @@ export function validarPassword(password) {
 
   if (seguridad.puntaje < 3) {
     return 'La contraseña es demasiado débil.'
+  }
+
+  return ''
+}
+
+export function validarProveedor(nombre) {
+  const valor = nombre.trim()
+
+  if (!valor) {
+    return 'El nombre del proveedor es obligatorio.'
+  }
+
+  if (valor.length < 3) {
+    return 'El nombre debe tener al menos 3 caracteres.'
+  }
+
+  if (!patronNombreProveedor.test(valor)) {
+    return 'Usa solo letras, numeros, espacios, punto, coma, & o guion.'
+  }
+
+  return ''
+}
+
+export function validarTelefono(telefono) {
+  const valor = telefono.trim()
+
+  if (!valor) {
+    return 'El telefono es obligatorio.'
+  }
+
+  if (!patronTelefono.test(valor) || valor.replace(/\D/g, '').length < 10) {
+    return 'Ingresa un telefono valido de al menos 10 digitos.'
+  }
+
+  return ''
+}
+
+export function validarCorreo(correo) {
+  const valor = correo.trim()
+
+  if (!valor) {
+    return 'El correo es obligatorio.'
+  }
+
+  if (!patronCorreo.test(valor)) {
+    return 'Ingresa un correo valido.'
+  }
+
+  return ''
+}
+
+export function validarTextoFarmacia(valor, campo) {
+  const texto = valor.trim()
+
+  if (!texto) {
+    return `${campo} es obligatorio.`
+  }
+
+  if (texto.length < 2) {
+    return `${campo} debe tener al menos 2 caracteres.`
+  }
+
+  if (!patronTextoFarmacia.test(texto)) {
+    return `Usa solo letras, numeros, espacios y signos basicos en ${campo.toLowerCase()}.`
+  }
+
+  return ''
+}
+
+export function validarStock(stock) {
+  const numero = Number(stock)
+
+  if (stock === '' || stock === null || Number.isNaN(numero)) {
+    return 'El stock es obligatorio.'
+  }
+
+  if (numero < 0) {
+    return 'El stock no puede ser negativo.'
   }
 
   return ''

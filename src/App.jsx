@@ -6,7 +6,9 @@ import AppLayout from './layouts/AppLayout'
 import Dashboard from './pages/Dashboard'
 import LlamaGabriel from './pages/LlamaGabriel'
 import Login from './pages/Login'
-import ModuloPendiente from './pages/ModuloPendiente'
+import Lotes from './pages/Lotes'
+import Medicamentos from './pages/Medicamentos'
+import Proveedores from './pages/Proveedores'
 
 function App() {
   return (
@@ -16,9 +18,9 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/medicamentos" element={<ModuloPendiente titulo="Medicamentos" />} />
-            <Route path="/lotes" element={<ModuloPendiente titulo="Lotes" />} />
-            <Route path="/proveedores" element={<ModuloPendiente titulo="Proveedores" />} />
+            <Route path="/medicamentos" element={<Medicamentos />} />
+            <Route path="/lotes" element={<Lotes />} />
+            <Route path="/proveedores" element={<Proveedores />} />
             <Route path="/gabriel" element={<LlamaGabriel />} />
           </Route>
         </Route>
