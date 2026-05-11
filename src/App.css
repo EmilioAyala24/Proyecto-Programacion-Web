@@ -315,7 +315,8 @@ input {
 }
 
 .dashboard,
-.modulo-pendiente {
+.modulo-pendiente,
+.proveedores-pagina {
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -408,11 +409,117 @@ input {
   max-width: 220px;
 }
 
+.proveedores-resumen {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.proveedores-panel {
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+}
+
+.proveedores-panel__encabezado {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.proveedores-panel__encabezado h2 {
+  color: #10243a;
+  font-size: 1.15rem;
+}
+
+.proveedores-panel__encabezado p,
+.texto-secundario {
+  color: #64748b;
+}
+
+.buscador {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  min-height: 42px;
+  min-width: 260px;
+  outline: none;
+  padding: 10px 12px;
+}
+
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+.tabla-datos {
+  border-collapse: collapse;
+  min-width: 840px;
+  width: 100%;
+}
+
+.tabla-datos th,
+.tabla-datos td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 14px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.tabla-datos th {
+  color: #475569;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tabla-datos td {
+  color: #334155;
+}
+
+.estado {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 6px 10px;
+}
+
+.estado--activo {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estado--revision {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.proveedor-formulario {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.proveedor-formulario__direccion {
+  grid-column: 1 / -1;
+}
+
+.proveedor-formulario .boton {
+  justify-self: start;
+}
+
 @media (max-width: 900px) {
   .login-panel,
   .app-shell,
   .indicadores-grid,
-  .modulos-grid {
+  .modulos-grid,
+  .proveedores-resumen,
+  .proveedor-formulario {
     grid-template-columns: 1fr;
   }
 
@@ -442,5 +549,15 @@ input {
     flex-direction: column;
     gap: 12px;
     padding: 16px;
+  }
+
+  .proveedores-panel__encabezado {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .buscador {
+    min-width: 0;
+    width: 100%;
   }
 }

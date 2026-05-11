@@ -1,4 +1,7 @@
 const patronUsuario = /^[a-zA-Z0-9._-]+$/
+const patronNombreProveedor = /^[a-zA-Z0-9 .,&-]+$/
+const patronTelefono = /^[0-9+\-\s()]+$/
+const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function validarUsuario(usuario) {
   const valor = usuario.trim()
@@ -96,6 +99,52 @@ export function validarPassword(password) {
 
   if (seguridad.puntaje < 3) {
     return 'La contraseña es demasiado débil.'
+  }
+
+  return ''
+}
+
+export function validarProveedor(nombre) {
+  const valor = nombre.trim()
+
+  if (!valor) {
+    return 'El nombre del proveedor es obligatorio.'
+  }
+
+  if (valor.length < 3) {
+    return 'El nombre debe tener al menos 3 caracteres.'
+  }
+
+  if (!patronNombreProveedor.test(valor)) {
+    return 'Usa solo letras, numeros, espacios, punto, coma, & o guion.'
+  }
+
+  return ''
+}
+
+export function validarTelefono(telefono) {
+  const valor = telefono.trim()
+
+  if (!valor) {
+    return 'El telefono es obligatorio.'
+  }
+
+  if (!patronTelefono.test(valor) || valor.replace(/\D/g, '').length < 10) {
+    return 'Ingresa un telefono valido de al menos 10 digitos.'
+  }
+
+  return ''
+}
+
+export function validarCorreo(correo) {
+  const valor = correo.trim()
+
+  if (!valor) {
+    return 'El correo es obligatorio.'
+  }
+
+  if (!patronCorreo.test(valor)) {
+    return 'Ingresa un correo valido.'
   }
 
   return ''
