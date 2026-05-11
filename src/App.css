@@ -23,7 +23,8 @@ a {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -316,7 +317,10 @@ input {
 
 .dashboard,
 .modulo-pendiente,
-.proveedores-pagina {
+.proveedores-pagina,
+.medicamentos-pagina,
+.lotes-pagina,
+.llama-gabriel {
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -409,13 +413,242 @@ input {
   max-width: 220px;
 }
 
-.proveedores-resumen {
+.llama-gabriel {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  overflow: hidden;
+  padding: 28px;
+}
+
+.llama-gabriel__contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.llama-gabriel h1 {
+  color: #10243a;
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  line-height: 1;
+}
+
+.llama-gabriel p {
+  color: #64748b;
+  line-height: 1.7;
+  max-width: 560px;
+}
+
+.llama-gabriel .boton {
+  max-width: 220px;
+}
+
+.llama-gabriel__escena {
+  align-items: center;
+  background: #f7fbfd;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 360px;
+  overflow: hidden;
+  padding: 26px;
+  position: relative;
+}
+
+.llama-gabriel__escena::before {
+  background: #d7f2e5;
+  border-radius: 50% 50% 0 0;
+  bottom: -90px;
+  content: "";
+  height: 160px;
+  left: -20%;
+  position: absolute;
+  width: 140%;
+}
+
+.llama-gabriel__escena strong {
+  color: #0f3d6e;
+  font-size: 1.2rem;
+  position: relative;
+}
+
+.llama {
+  height: 250px;
+  position: relative;
+  width: 210px;
+  z-index: 1;
+}
+
+.llama span {
+  display: block;
+  position: absolute;
+}
+
+.llama__oreja {
+  background: #f3e3d0;
+  border: 4px solid #7c5c45;
+  border-radius: 80% 80% 35% 35%;
+  height: 62px;
+  top: 6px;
+  width: 28px;
+}
+
+.llama__oreja--izquierda {
+  left: 58px;
+  transform: rotate(-22deg);
+}
+
+.llama__oreja--derecha {
+  right: 54px;
+  transform: rotate(22deg);
+}
+
+.llama__copete {
+  background:
+    radial-gradient(circle at 22px 22px, #fff9f0 0 18px, transparent 19px),
+    radial-gradient(circle at 48px 18px, #fff9f0 0 20px, transparent 21px),
+    radial-gradient(circle at 75px 25px, #fff9f0 0 17px, transparent 18px);
+  height: 54px;
+  left: 56px;
+  top: 28px;
+  width: 100px;
+  z-index: 4;
+}
+
+.llama__cabeza {
+  background: #fff9f0;
+  border: 4px solid #7c5c45;
+  border-radius: 48% 48% 42% 42%;
+  height: 110px;
+  left: 49px;
+  top: 48px;
+  width: 112px;
+  z-index: 3;
+}
+
+.llama__ojo {
+  background: #1e2a3a;
+  border-radius: 50%;
+  height: 10px;
+  top: 42px;
+  width: 10px;
+}
+
+.llama__ojo--izquierdo {
+  left: 30px;
+}
+
+.llama__ojo--derecho {
+  right: 30px;
+}
+
+.llama__hocico {
+  background: #f3e3d0;
+  border: 3px solid #7c5c45;
+  border-radius: 48%;
+  height: 34px;
+  left: 31px;
+  top: 58px;
+  width: 50px;
+}
+
+.llama__hocico span {
+  background: #7c5c45;
+  border-radius: 50%;
+  height: 7px;
+  left: 19px;
+  top: 8px;
+  width: 7px;
+}
+
+.llama__cuello {
+  background: #fff9f0;
+  border: 4px solid #7c5c45;
+  border-bottom: 0;
+  border-radius: 42px 42px 0 0;
+  height: 108px;
+  left: 76px;
+  top: 136px;
+  width: 58px;
+  z-index: 2;
+}
+
+.llama__bufanda {
+  background: #2fb7a4;
+  border: 3px solid #0f766e;
+  border-radius: 999px;
+  height: 20px;
+  left: 66px;
+  top: 155px;
+  width: 78px;
+  z-index: 5;
+}
+
+.llama__cuerpo {
+  background: #fff9f0;
+  border: 4px solid #7c5c45;
+  border-radius: 46% 48% 38% 38%;
+  height: 86px;
+  left: 30px;
+  top: 170px;
+  width: 148px;
+}
+
+.llama__pata {
+  background: #f3e3d0;
+  border: 4px solid #7c5c45;
+  border-radius: 0 0 14px 14px;
+  height: 54px;
+  top: 228px;
+  width: 24px;
+}
+
+.llama__pata--uno {
+  left: 48px;
+}
+
+.llama__pata--dos {
+  left: 82px;
+}
+
+.llama__pata--tres {
+  right: 70px;
+}
+
+.llama__pata--cuatro {
+  right: 36px;
+}
+
+.proveedores-resumen,
+.modulo-resumen {
   display: grid;
   gap: 16px;
+}
+
+.proveedores-resumen {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.proveedores-panel {
+.modulo-resumen {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.indicador--alerta strong {
+  color: #a16207;
+}
+
+.indicador--riesgo strong {
+  color: #b91c1c;
+}
+
+.proveedores-panel,
+.modulo-panel {
   background: #ffffff;
   border: 1px solid #dbe3ee;
   border-radius: 8px;
@@ -425,24 +658,34 @@ input {
   padding: 20px;
 }
 
-.proveedores-panel__encabezado {
+.proveedores-panel__encabezado,
+.modulo-panel__encabezado {
   align-items: center;
   display: flex;
   gap: 16px;
   justify-content: space-between;
 }
 
-.proveedores-panel__encabezado h2 {
+.proveedores-panel__encabezado h2,
+.modulo-panel__encabezado h2 {
   color: #10243a;
   font-size: 1.15rem;
 }
 
 .proveedores-panel__encabezado p,
+.modulo-panel__encabezado p,
 .texto-secundario {
   color: #64748b;
 }
 
-.buscador {
+.modulo-panel__filtros {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.buscador,
+.selector {
   background: #f8fafc;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
@@ -450,6 +693,10 @@ input {
   min-width: 260px;
   outline: none;
   padding: 10px 12px;
+}
+
+.selector {
+  min-width: 160px;
 }
 
 .tabla-contenedor {
@@ -499,7 +746,42 @@ input {
   color: #92400e;
 }
 
-.proveedor-formulario {
+.estado--vigente {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estado--proximo {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.estado--caducado {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.stock {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  min-width: 44px;
+  padding: 6px 10px;
+}
+
+.stock--ok {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.stock--agotado {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.proveedor-formulario,
+.medicamento-formulario {
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -509,7 +791,28 @@ input {
   grid-column: 1 / -1;
 }
 
-.proveedor-formulario .boton {
+.campo-check {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  color: #334155;
+  cursor: pointer;
+  display: flex;
+  font-weight: 700;
+  gap: 10px;
+  min-height: 46px;
+  padding: 12px 14px;
+}
+
+.campo-check input {
+  accent-color: #0f3d6e;
+  height: 16px;
+  width: 16px;
+}
+
+.proveedor-formulario .boton,
+.medicamento-formulario .boton {
   justify-self: start;
 }
 
@@ -519,7 +822,10 @@ input {
   .indicadores-grid,
   .modulos-grid,
   .proveedores-resumen,
-  .proveedor-formulario {
+  .modulo-resumen,
+  .proveedor-formulario,
+  .medicamento-formulario,
+  .llama-gabriel {
     grid-template-columns: 1fr;
   }
 
@@ -551,12 +857,23 @@ input {
     padding: 16px;
   }
 
-  .proveedores-panel__encabezado {
+  .llama-gabriel {
+    padding: 20px;
+  }
+
+  .llama-gabriel__escena {
+    min-height: 330px;
+  }
+
+  .proveedores-panel__encabezado,
+  .modulo-panel__encabezado,
+  .modulo-panel__filtros {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .buscador {
+  .buscador,
+  .selector {
     min-width: 0;
     width: 100%;
   }

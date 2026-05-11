@@ -1,0 +1,29 @@
+export const medicamentosIniciales = [
+  {
+    id: 1,
+    nombre: 'Paracetamol',
+    presentacion: 'Tabletas',
+    concentracion: '500 mg',
+    contenido: '20 tabletas',
+    requiereReceta: false,
+    stockDisponible: 126,
+  },
+  {
+    id: 2,
+    nombre: 'Amoxicilina',
+    presentacion: 'Capsulas',
+    concentracion: '500 mg',
+    contenido: '12 capsulas',
+    requiereReceta: true,
+    stockDisponible: 42,
+  },
+  {
+    id: 3,
+    nombre: 'Loratadina',
+    presentacion: 'Tabletas',
+    concentracion: '10 mg',
+    contenido: '10 tabletas',
+    requiereReceta: false,
+    stockDisponible: 78,
+  },
+]

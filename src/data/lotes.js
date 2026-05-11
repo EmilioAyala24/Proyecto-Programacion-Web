@@ -1,0 +1,32 @@
+export const lotesIniciales = [
+  {
+    id: 1,
+    codigo: 'L-2026-001',
+    medicamento: 'Paracetamol',
+    proveedor: 'Distribuidora Salud Total',
+    stockDisponible: 126,
+    fechaIngreso: '2026-04-18',
+    fechaCaducidad: '2027-01-15',
+    estado: 'Vigente',
+  },
+  {
+    id: 2,
+    codigo: 'L-2026-014',
+    medicamento: 'Amoxicilina',
+    proveedor: 'Farmaceutica del Pacifico',
+    stockDisponible: 42,
+    fechaIngreso: '2026-03-27',
+    fechaCaducidad: '2026-06-10',
+    estado: 'Proximo',
+  },
+  {
+    id: 3,
+    codigo: 'L-2025-089',
+    medicamento: 'Ibuprofeno',
+    proveedor: 'Insumos Medicos Colima',
+    stockDisponible: 0,
+    fechaIngreso: '2025-09-12',
+    fechaCaducidad: '2026-03-01',
+    estado: 'Caducado',
+  },
+]

@@ -1,5 +1,6 @@
 const patronUsuario = /^[a-zA-Z0-9._-]+$/
 const patronNombreProveedor = /^[a-zA-Z0-9 .,&-]+$/
+const patronTextoFarmacia = /^[a-zA-Z0-9 .,+/%-]+$/
 const patronTelefono = /^[0-9+\-\s()]+$/
 const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -145,6 +146,38 @@ export function validarCorreo(correo) {
 
   if (!patronCorreo.test(valor)) {
     return 'Ingresa un correo valido.'
+  }
+
+  return ''
+}
+
+export function validarTextoFarmacia(valor, campo) {
+  const texto = valor.trim()
+
+  if (!texto) {
+    return `${campo} es obligatorio.`
+  }
+
+  if (texto.length < 2) {
+    return `${campo} debe tener al menos 2 caracteres.`
+  }
+
+  if (!patronTextoFarmacia.test(texto)) {
+    return `Usa solo letras, numeros, espacios y signos basicos en ${campo.toLowerCase()}.`
+  }
+
+  return ''
+}
+
+export function validarStock(stock) {
+  const numero = Number(stock)
+
+  if (stock === '' || stock === null || Number.isNaN(numero)) {
+    return 'El stock es obligatorio.'
+  }
+
+  if (numero < 0) {
+    return 'El stock no puede ser negativo.'
   }
 
   return ''

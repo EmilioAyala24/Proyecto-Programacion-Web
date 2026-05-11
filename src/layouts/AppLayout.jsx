@@ -26,6 +26,7 @@ function AppLayout() {
           <NavLink to="/medicamentos">Medicamentos</NavLink>
           <NavLink to="/lotes">Lotes</NavLink>
           <NavLink to="/proveedores">Proveedores</NavLink>
+          <NavLink to="/gabriel">Gabriel</NavLink>
         </nav>
       </aside>
 
