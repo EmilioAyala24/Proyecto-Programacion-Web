@@ -4,7 +4,6 @@ import ProtectedRoute from './components/common/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import AppLayout from './layouts/AppLayout'
 import Dashboard from './pages/Dashboard'
-import LlamaGabriel from './pages/LlamaGabriel'
 import Login from './pages/Login'
 import Lotes from './pages/Lotes'
 import Medicamentos from './pages/Medicamentos'
@@ -21,7 +20,6 @@ function App() {
             <Route path="/medicamentos" element={<Medicamentos />} />
             <Route path="/lotes" element={<Lotes />} />
             <Route path="/proveedores" element={<Proveedores />} />
-            <Route path="/gabriel" element={<LlamaGabriel />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

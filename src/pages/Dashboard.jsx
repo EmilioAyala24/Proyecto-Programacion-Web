@@ -16,11 +16,6 @@ const modulos = [
     descripcion: 'Administración de contactos, correo, teléfono y dirección.',
     ruta: '/proveedores',
   },
-  {
-    titulo: 'Gabriel',
-    descripcion: 'Mascota visual del proyecto: una llama lista para acompanar el panel.',
-    ruta: '/gabriel',
-  },
 ]
 
 function Dashboard() {
