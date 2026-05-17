@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { verificarConexion } from '../config/database.js'
 import proveedoresRoutes from './proveedoresRoutes.js'
+import ventasRoutes from './ventasRoutes.js'
 
 const router = Router()
 
@@ -19,5 +20,6 @@ router.get('/salud', async (_req, res, next) => {
 })
 
 router.use('/proveedores', proveedoresRoutes)
+router.use('/ventas', ventasRoutes)
 
 export default router

@@ -656,3 +656,220 @@ select {
     width: 100%;
   }
 }
+
+/* ========================================
+   ESTILOS DEL MÓDULO DE VENTAS
+   ======================================== */
+
+.ventas-pagina,
+.ventas-pagina .contenedor-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.venta-formulario {
+  display: grid;
+  gap: 24px;
+}
+
+.venta-formulario__seccion {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #dbe3ee;
+  padding: 20px;
+}
+
+.venta-formulario__titulo {
+  color: #1e2a3a;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.venta-formulario__grupo {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.venta-formulario__resumen {
+  background: #f1f5f9;
+  border-left: 4px solid #0f3d6e;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.resumen-item {
+  align-items: center;
+  color: #475569;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.resumen-item__valor {
+  color: #0f3d6e;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.venta-formulario__acciones {
+  display: flex;
+  gap: 12px;
+}
+
+.venta-formulario__acciones .boton {
+  flex: 1;
+  justify-content: center;
+}
+
+/* Tabla compacta para medicamentos en venta */
+.tabla--compacta th,
+.tabla--compacta td {
+  padding: 10px 8px;
+  font-size: 0.9rem;
+}
+
+.medicamento-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.medicamento-info__nombre {
+  color: #1e2a3a;
+  font-weight: 600;
+}
+
+.medicamento-info__detalle {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+/* Notificaciones */
+.notificacion {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-left: 4px solid #16a34a;
+  border-radius: 8px;
+  color: #15803d;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.notificacion--exito {
+  background: #dcfce7;
+  border-color: #86efac;
+  border-left-color: #16a34a;
+  color: #15803d;
+}
+
+.notificacion--error {
+  background: #fee2e2;
+  border-color: #fecaca;
+  border-left-color: #dc2626;
+  color: #991b1b;
+}
+
+/* Indicador de items (badges) */
+.insignia {
+  background: #e0f2fe;
+  border-radius: 999px;
+  color: #0369a1;
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  min-width: 24px;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+/* Texto monoespacio */
+.mono {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* Botón pequeño */
+.boton--pequeno {
+  min-height: auto;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+/* Mensajes de estado */
+.estado-mensaje {
+  color: #64748b;
+  padding: 24px;
+  text-align: center;
+}
+
+.estado-error {
+  color: #991b1b;
+}
+
+/* Selector y entrada */
+.campo-formulario select,
+.buscador__entrada {
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  color: #1e2a3a;
+  padding: 10px 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.campo-formulario select:focus,
+.buscador__entrada:focus {
+  border-color: #0f3d6e;
+  box-shadow: 0 0 0 3px rgba(15, 61, 110, 0.1);
+  outline: none;
+}
+
+/* Buscador */
+.buscador {
+  margin-bottom: 16px;
+}
+
+.buscador__entrada {
+  width: 100%;
+}
+
+/* Media queries para responsive */
+@media (max-width: 900px) {
+  .venta-formulario__grupo {
+    grid-template-columns: 1fr;
+  }
+
+  .venta-formulario__seccion {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 560px) {
+  .venta-formulario {
+    gap: 16px;
+  }
+
+  .venta-formulario__seccion {
+    padding: 12px;
+  }
+
+  .venta-formulario__acciones {
+    flex-direction: column;
+  }
+
+  .venta-formulario__acciones .boton {
+    width: 100%;
+  }
+
+  .tabla--compacta th,
+  .tabla--compacta td {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+}

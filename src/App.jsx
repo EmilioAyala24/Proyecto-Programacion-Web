@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Lotes from './pages/Lotes'
 import Medicamentos from './pages/Medicamentos'
 import Proveedores from './pages/Proveedores'
+import Ventas from './pages/Ventas'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/medicamentos" element={<Medicamentos />} />
             <Route path="/lotes" element={<Lotes />} />
             <Route path="/proveedores" element={<Proveedores />} />
+            <Route path="/ventas" element={<Ventas />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
