@@ -22,10 +22,12 @@ function AppLayout() {
         </div>
 
         <nav className="navegacion-principal" aria-label="Navegación principal">
-          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/inicio">Inicio</NavLink>
           <NavLink to="/medicamentos">Medicamentos</NavLink>
           <NavLink to="/lotes">Lotes</NavLink>
           <NavLink to="/proveedores">Proveedores</NavLink>
+          <NavLink to="/clientes">Clientes</NavLink>
+          <NavLink to="/usuarios">Usuarios</NavLink>
           <NavLink to="/ventas">Ventas</NavLink>
         </nav>
       </aside>

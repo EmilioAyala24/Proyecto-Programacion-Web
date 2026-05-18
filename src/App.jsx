@@ -3,11 +3,13 @@ import './App.css'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import AppLayout from './layouts/AppLayout'
-import Dashboard from './pages/Dashboard'
+import Clientes from './pages/Clientes'
+import Inicio from './pages/Inicio'
 import Login from './pages/Login'
 import Lotes from './pages/Lotes'
 import Medicamentos from './pages/Medicamentos'
 import Proveedores from './pages/Proveedores'
+import Usuarios from './pages/Usuarios'
 import Ventas from './pages/Ventas'
 
 function App() {
@@ -17,14 +19,16 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/inicio" element={<Inicio />} />
             <Route path="/medicamentos" element={<Medicamentos />} />
             <Route path="/lotes" element={<Lotes />} />
             <Route path="/proveedores" element={<Proveedores />} />
             <Route path="/ventas" element={<Ventas />} />
+            <Route path="/clientes" element={<Clientes />} />
+            <Route path="/usuarios" element={<Usuarios />} />
           </Route>
         </Route>
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/inicio" replace />} />
       </Routes>
     </AuthProvider>
   )

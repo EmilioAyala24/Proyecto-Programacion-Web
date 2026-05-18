@@ -1,13 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
+import AddButton from '../components/common/AddButton'
+import Modal from '../components/common/Modal'
+import FiltrosMedicamentos from '../components/filtros/FiltrosMedicamentos'
 import MedicamentoForm from '../components/medicamentos/MedicamentoForm'
 import MedicamentosTable from '../components/medicamentos/MedicamentosTable'
 import { crearMedicamento, obtenerMedicamentos } from '../services/medicamentosService'
 
 function Medicamentos() {
   const [medicamentos, setMedicamentos] = useState([])
-  const [busqueda, setBusqueda] = useState('')
+  const [filtros, setFiltros] = useState({
+    nombre: '',
+    receta: '',
+  })
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
+  const [modalAbierto, setModalAbierto] = useState(false)
 
   useEffect(() => {
     obtenerMedicamentos()
@@ -17,30 +24,29 @@ function Medicamentos() {
   }, [])
 
   const medicamentosFiltrados = useMemo(() => {
-    const valor = busqueda.trim().toLowerCase()
+    return medicamentos.filter((medicamento) => {
+      const coincideNombre =
+        !filtros.nombre ||
+        [medicamento.nombre, medicamento.presentacion, medicamento.concentracion]
+          .join(' ')
+          .toLowerCase()
+          .includes(filtros.nombre.toLowerCase())
 
-    if (!valor) {
-      return medicamentos
-    }
+      const coincideReceta =
+        !filtros.receta ||
+        (filtros.receta === 'si' && medicamento.requiereReceta) ||
+        (filtros.receta === 'no' && !medicamento.requiereReceta)
 
-    return medicamentos.filter((medicamento) =>
-      [
-        medicamento.nombre,
-        medicamento.presentacion,
-        medicamento.concentracion,
-        medicamento.contenido,
-      ]
-        .join(' ')
-        .toLowerCase()
-        .includes(valor),
-    )
-  }, [busqueda, medicamentos])
+      return coincideNombre && coincideReceta
+    })
+  }, [filtros, medicamentos])
 
   const manejarCrearMedicamento = async (nuevoMedicamento) => {
     try {
       const medicamentoCreado = await crearMedicamento(nuevoMedicamento)
       setMedicamentos((actuales) => [medicamentoCreado, ...actuales])
       setError('')
+      setModalAbierto(false)
     } catch (err) {
       setError(err.message)
     }
@@ -80,16 +86,15 @@ function Medicamentos() {
         <div className="modulo-panel__encabezado">
           <div>
             <h2>Listado de medicamentos</h2>
-            <p>Busca por nombre, presentacion, concentracion o contenido.</p>
+            <p>Filtra por nombre, presentación, concentración y requisito de receta.</p>
           </div>
-          <input
-            aria-label="Buscar medicamento"
-            className="buscador"
-            placeholder="Buscar medicamento"
-            value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
+          <AddButton
+            onClick={() => setModalAbierto(true)}
+            title="Agregar nuevo medicamento"
           />
         </div>
+
+        <FiltrosMedicamentos filtros={filtros} onChange={setFiltros} />
 
         {error && <div className="alerta-error">{error}</div>}
         {cargando ? (
@@ -99,15 +104,13 @@ function Medicamentos() {
         )}
       </div>
 
-      <div className="modulo-panel">
-        <div className="modulo-panel__encabezado">
-          <div>
-            <h2>Registrar medicamento</h2>
-            <p>El registro se guarda en PostgreSQL mediante la API del backend.</p>
-          </div>
-        </div>
+      <Modal
+        isOpen={modalAbierto}
+        onClose={() => setModalAbierto(false)}
+        title="Agregar nuevo medicamento"
+      >
         <MedicamentoForm onCrearMedicamento={manejarCrearMedicamento} />
-      </div>
+      </Modal>
     </section>
   )
 }
