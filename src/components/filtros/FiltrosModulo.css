@@ -1,12 +1,11 @@
 .filtros-modulo {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-  background: white;
-  padding: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  background: #f8fafc;
+  padding: 14px;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e2e8f0;
 }
 
 .filtro-grupo {
@@ -25,11 +24,14 @@
 .filtro-grupo input,
 .filtro-grupo select {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
   font-size: 14px;
   font-family: inherit;
+  min-height: 42px;
+  min-width: 0;
   transition: border-color 0.2s;
+  width: 100%;
 }
 
 .filtro-grupo input:focus,

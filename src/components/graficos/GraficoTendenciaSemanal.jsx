@@ -9,6 +9,8 @@ import {
 } from 'recharts'
 
 function GraficoTendenciaSemanal({ datos }) {
+  const formatoPrecio = (value) => Number(value || 0).toFixed(2)
+
   return (
     <div className="grafico-contenedor">
       <h3>Tendencia de ingresos - Últimos 7 días</h3>
@@ -23,7 +25,7 @@ function GraficoTendenciaSemanal({ datos }) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="fecha" />
           <YAxis />
-          <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+          <Tooltip formatter={(value) => `$${formatoPrecio(value)}`} />
           <Area
             type="monotone"
             dataKey="ingresos"

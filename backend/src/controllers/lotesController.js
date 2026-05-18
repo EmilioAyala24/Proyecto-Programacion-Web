@@ -8,3 +8,99 @@ export async function listarLotes(_req, res, next) {
     next(error)
   }
 }
+
+function limpiarLote(datos) {
+  return {
+    idMedicamento: Number(datos.idMedicamento ?? datos.id_medicamento ?? 0),
+    idProv: Number(datos.idProv ?? datos.id_prov),
+    numeroLote: datos.numeroLote?.trim() ?? datos.numero_lote?.trim(),
+    fechaFabricacion: datos.fechaFabricacion ?? datos.fecha_fabricacion ?? null,
+    fechaCaducidad: datos.fechaCaducidad ?? datos.fecha_caducidad ?? null,
+    fechaIngreso: datos.fechaIngreso ?? datos.fecha_ingreso ?? null,
+    fechaCompra: datos.fechaCompra ?? datos.fecha_compra ?? null,
+    stockActual: Number(datos.stockActual ?? datos.stockDisponible ?? datos.stock_actual ?? 0),
+    precioCompra: Number(datos.precioCompra ?? datos.precio_compra ?? 0),
+    precioVenta: Number(datos.precioVenta ?? datos.precio_venta ?? 0),
+  }
+}
+
+function validarLote(datos) {
+  const errores = {}
+
+  if (!datos.idProv || Number.isNaN(datos.idProv)) {
+    errores.idProv = 'Selecciona un proveedor.'
+  }
+
+  if (!datos.idMedicamento || Number.isNaN(datos.idMedicamento)) {
+    errores.idMedicamento = 'Selecciona un medicamento.'
+  }
+
+  if (!datos.numeroLote || datos.numeroLote.length < 2) {
+    errores.numeroLote = 'El numero de lote es obligatorio.'
+  }
+
+  if (Number.isNaN(datos.stockActual) || datos.stockActual < 0) {
+    errores.stockActual = 'El stock debe ser mayor o igual a cero.'
+  }
+
+  if (Number.isNaN(datos.precioCompra) || datos.precioCompra < 0) {
+    errores.precioCompra = 'El precio de compra debe ser mayor o igual a cero.'
+  }
+
+  if (Number.isNaN(datos.precioVenta) || datos.precioVenta < 0) {
+    errores.precioVenta = 'El precio de venta debe ser mayor o igual a cero.'
+  }
+
+  return errores
+}
+
+export async function registrarLote(req, res, next) {
+  try {
+    const datos = limpiarLote(req.body)
+    const errores = validarLote(datos)
+
+    if (Object.keys(errores).length > 0) {
+      return res.status(400).json({ mensaje: 'Datos de lote invalidos.', errores })
+    }
+
+    const lote = await lotesModel.crearLote(datos)
+    return res.status(201).json(lote)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export async function actualizarLote(req, res, next) {
+  try {
+    const datos = limpiarLote(req.body)
+    const errores = validarLote(datos)
+
+    if (Object.keys(errores).length > 0) {
+      return res.status(400).json({ mensaje: 'Datos de lote invalidos.', errores })
+    }
+
+    const lote = await lotesModel.actualizarLote(Number(req.params.id), datos)
+
+    if (!lote) {
+      return res.status(404).json({ mensaje: 'Lote no encontrado.' })
+    }
+
+    return res.json(lote)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export async function eliminarLote(req, res, next) {
+  try {
+    const lote = await lotesModel.eliminarLote(Number(req.params.id))
+
+    if (!lote) {
+      return res.status(404).json({ mensaje: 'Lote no encontrado.' })
+    }
+
+    return res.json({ mensaje: 'Lote eliminado.' })
+  } catch (error) {
+    return next(error)
+  }
+}

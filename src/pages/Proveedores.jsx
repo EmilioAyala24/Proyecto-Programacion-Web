@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
+import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
 import FiltrosProveedores from '../components/filtros/FiltrosProveedores'
 import ProveedorForm from '../components/proveedores/ProveedorForm'
 import ProveedoresTable from '../components/proveedores/ProveedoresTable'
-import { crearProveedor, obtenerProveedores } from '../services/proveedoresService'
+import {
+  actualizarProveedor,
+  crearProveedor,
+  eliminarProveedor,
+  obtenerProveedores,
+} from '../services/proveedoresService'
 
 function Proveedores() {
   const [proveedores, setProveedores] = useState([])
@@ -15,6 +21,8 @@ function Proveedores() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [modalAbierto, setModalAbierto] = useState(false)
+  const [proveedorEditando, setProveedorEditando] = useState(null)
+  const [proveedorViendo, setProveedorViendo] = useState(null)
 
   useEffect(() => {
     obtenerProveedores()
@@ -43,6 +51,35 @@ function Proveedores() {
       setProveedores((actuales) => [proveedorCreado, ...actuales])
       setError('')
       setModalAbierto(false)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const manejarActualizarProveedor = async (datos) => {
+    try {
+      const proveedorActualizado = await actualizarProveedor(proveedorEditando.id, datos)
+      setProveedores((actuales) =>
+        actuales.map((proveedor) =>
+          proveedor.id === proveedorActualizado.id ? proveedorActualizado : proveedor,
+        ),
+      )
+      setProveedorEditando(null)
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const manejarEliminarProveedor = async (id) => {
+    if (!window.confirm('Estas seguro de que deseas eliminar este proveedor?')) {
+      return
+    }
+
+    try {
+      await eliminarProveedor(id)
+      setProveedores((actuales) => actuales.filter((proveedor) => proveedor.id !== id))
+      setError('')
     } catch (err) {
       setError(err.message)
     }
@@ -89,7 +126,12 @@ function Proveedores() {
         {cargando ? (
           <p className="texto-secundario">Cargando proveedores...</p>
         ) : (
-          <ProveedoresTable proveedores={proveedoresFiltrados} />
+          <ProveedoresTable
+            proveedores={proveedoresFiltrados}
+            onEditar={setProveedorEditando}
+            onEliminar={manejarEliminarProveedor}
+            onVer={setProveedorViendo}
+          />
         )}
       </div>
 
@@ -99,6 +141,35 @@ function Proveedores() {
         title="Agregar nuevo proveedor"
       >
         <ProveedorForm onCrearProveedor={manejarCrearProveedor} />
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(proveedorEditando)}
+        onClose={() => setProveedorEditando(null)}
+        title="Editar proveedor"
+      >
+        <ProveedorForm
+          proveedorInicial={proveedorEditando}
+          onGuardar={manejarActualizarProveedor}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(proveedorViendo)}
+        onClose={() => setProveedorViendo(null)}
+        title="Detalle del proveedor"
+      >
+        {proveedorViendo && (
+          <DetalleRegistro
+            campos={[
+              { etiqueta: 'Nombre', valor: proveedorViendo.nombre },
+              { etiqueta: 'Telefono', valor: proveedorViendo.telefono },
+              { etiqueta: 'Correo', valor: proveedorViendo.correo },
+              { etiqueta: 'Direccion', valor: proveedorViendo.direccion },
+              { etiqueta: 'Estado', valor: proveedorViendo.estado },
+            ]}
+          />
+        )}
       </Modal>
     </section>
   )

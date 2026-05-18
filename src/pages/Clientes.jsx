@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
+import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
 import FiltrosClientes from '../components/filtros/FiltrosClientes'
 import ClienteForm from '../components/clientes/ClienteForm'
 import ClientesTable from '../components/clientes/ClientesTable'
-import { crearCliente, eliminarCliente, obtenerClientes } from '../services/clientesService'
+import {
+  actualizarCliente,
+  crearCliente,
+  eliminarCliente,
+  obtenerClientes,
+} from '../services/clientesService'
 
 function Clientes() {
   const [clientes, setClientes] = useState([])
@@ -15,6 +21,8 @@ function Clientes() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [modalAbierto, setModalAbierto] = useState(false)
+  const [clienteEditando, setClienteEditando] = useState(null)
+  const [clienteViendo, setClienteViendo] = useState(null)
 
   useEffect(() => {
     obtenerClientes()
@@ -60,6 +68,21 @@ function Clientes() {
     try {
       await eliminarCliente(id)
       setClientes((actuales) => actuales.filter((cliente) => cliente.id !== id))
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const manejarActualizarCliente = async (datos) => {
+    try {
+      const clienteActualizado = await actualizarCliente(clienteEditando.id, datos)
+      setClientes((actuales) =>
+        actuales.map((cliente) =>
+          cliente.id === clienteActualizado.id ? clienteActualizado : cliente,
+        ),
+      )
+      setClienteEditando(null)
       setError('')
     } catch (err) {
       setError(err.message)
@@ -114,7 +137,12 @@ function Clientes() {
         {cargando ? (
           <p className="texto-secundario">Cargando clientes...</p>
         ) : (
-          <ClientesTable clientes={clientesFiltrados} onEliminar={manejarEliminarCliente} />
+          <ClientesTable
+            clientes={clientesFiltrados}
+            onEditar={setClienteEditando}
+            onEliminar={manejarEliminarCliente}
+            onVer={setClienteViendo}
+          />
         )}
       </div>
 
@@ -124,6 +152,32 @@ function Clientes() {
         title="Registrar nuevo cliente"
       >
         <ClienteForm onCrearCliente={manejarCrearCliente} />
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(clienteEditando)}
+        onClose={() => setClienteEditando(null)}
+        title="Editar cliente"
+      >
+        <ClienteForm clienteInicial={clienteEditando} onGuardar={manejarActualizarCliente} />
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(clienteViendo)}
+        onClose={() => setClienteViendo(null)}
+        title="Detalle del cliente"
+      >
+        {clienteViendo && (
+          <DetalleRegistro
+            campos={[
+              { etiqueta: 'Nombre', valor: clienteViendo.nombre },
+              { etiqueta: 'Apellido paterno', valor: clienteViendo.apPat },
+              { etiqueta: 'Apellido materno', valor: clienteViendo.apMat },
+              { etiqueta: 'Telefono', valor: clienteViendo.telefono },
+              { etiqueta: 'Fecha de registro', valor: clienteViendo.fechaRegistro },
+            ]}
+          />
+        )}
       </Modal>
     </section>
   )

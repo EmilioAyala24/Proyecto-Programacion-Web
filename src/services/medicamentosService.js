@@ -11,6 +11,7 @@ function normalizarMedicamento(medicamento) {
     contenido: medicamento.contenido ?? '',
     requiereReceta: Boolean(medicamento.requiereReceta ?? medicamento.requiere_receta),
     stockDisponible: Number(medicamento.stockDisponible ?? medicamento.stock_disponible ?? 0),
+    precioUnitario: Number(medicamento.precioUnitario ?? medicamento.precio_unitario ?? 0),
   }
 }
 
@@ -51,4 +52,41 @@ export async function crearMedicamento(medicamento) {
 
   const datos = await respuesta.json()
   return normalizarMedicamento(datos)
+}
+
+export async function actualizarMedicamento(id, medicamento) {
+  if (!API_URL) {
+    return normalizarMedicamento({ ...medicamento, id })
+  }
+
+  const respuesta = await fetch(`${API_URL}/medicamentos/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(medicamento),
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No fue posible actualizar el medicamento.')
+  }
+
+  const datos = await respuesta.json()
+  return normalizarMedicamento(datos)
+}
+
+export async function eliminarMedicamento(id) {
+  if (!API_URL) {
+    return true
+  }
+
+  const respuesta = await fetch(`${API_URL}/medicamentos/${id}`, {
+    method: 'DELETE',
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No fue posible eliminar el medicamento. Revisa si tiene ventas relacionadas.')
+  }
+
+  return true
 }

@@ -1,8 +1,16 @@
 import { Router } from 'express'
-import { listarLotes } from '../controllers/lotesController.js'
+import {
+  actualizarLote,
+  eliminarLote,
+  listarLotes,
+  registrarLote,
+} from '../controllers/lotesController.js'
 
 const router = Router()
 
 router.get('/', listarLotes)
+router.post('/', registrarLote)
+router.put('/:id', actualizarLote)
+router.delete('/:id', eliminarLote)
 
 export default router

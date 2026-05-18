@@ -24,6 +24,7 @@ function VentaForm({ onCrearVenta, cargando }) {
     precio_unitario: '',
   })
   const [errorDetalle, setErrorDetalle] = useState('')
+  const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   useEffect(() => {
     cargarOpciones()
@@ -49,6 +50,21 @@ function VentaForm({ onCrearVenta, cargando }) {
 
   const manejarCambioDetalleActual = (event) => {
     const { name, value } = event.target
+
+    if (name === 'id_medicamento') {
+      const medicamento = medicamentosDisponibles.find(
+        (item) => item.id_med.toString() === value.toString(),
+      )
+
+      setDetalleActual((actual) => ({
+        ...actual,
+        id_medicamento: value,
+        precio_unitario: medicamento ? String(medicamento.precio_venta) : '',
+      }))
+      setErrorDetalle('')
+      return
+    }
+
     setDetalleActual((actual) => ({
       ...actual,
       [name]: value,
@@ -225,7 +241,7 @@ function VentaForm({ onCrearVenta, cargando }) {
               <option value="">-- Seleccionar medicamento --</option>
               {medicamentosDisponibles.map((medicamento) => (
                 <option key={medicamento.id_med} value={medicamento.id_med}>
-                  {medicamento.nombre} ({medicamento.presentacion}) - Stock: {medicamento.stock_actual}
+                  {medicamento.nombre} ({medicamento.presentacion}) - Stock: {medicamento.stock_actual} - ${formatoPrecio(medicamento.precio_venta)}
                 </option>
               ))}
             </select>
@@ -255,6 +271,7 @@ function VentaForm({ onCrearVenta, cargando }) {
               value={detalleActual.precio_unitario}
               onChange={manejarCambioDetalleActual}
               placeholder="0.00"
+              readOnly
             />
           </div>
 
@@ -299,9 +316,9 @@ function VentaForm({ onCrearVenta, cargando }) {
                       </div>
                     </td>
                     <td className="tabla__celda">{detalle.cantidad}</td>
-                    <td className="tabla__celda">${detalle.precio_unitario.toFixed(2)}</td>
+                    <td className="tabla__celda">${formatoPrecio(detalle.precio_unitario)}</td>
                     <td className="tabla__celda tabla__celda--enfasis">
-                      ${detalle.subtotal.toFixed(2)}
+                      ${formatoPrecio(detalle.subtotal)}
                     </td>
                     <td className="tabla__celda">
                       <button
@@ -326,7 +343,7 @@ function VentaForm({ onCrearVenta, cargando }) {
       <div className="venta-formulario__resumen">
         <div className="resumen-item">
           <span>Total de venta:</span>
-          <span className="resumen-item__valor">${totalVenta.toFixed(2)}</span>
+          <span className="resumen-item__valor">${formatoPrecio(totalVenta)}</span>
         </div>
       </div>
 

@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
+import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
 import FiltrosUsuarios from '../components/filtros/FiltrosUsuarios'
 import UsuarioForm from '../components/usuarios/UsuarioForm'
 import UsuariosTable from '../components/usuarios/UsuariosTable'
-import { crearUsuario, eliminarUsuario, obtenerUsuarios } from '../services/usuariosService'
+import {
+  actualizarUsuario,
+  crearUsuario,
+  eliminarUsuario,
+  obtenerUsuarios,
+} from '../services/usuariosService'
 
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([])
@@ -15,6 +21,8 @@ function Usuarios() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [modalAbierto, setModalAbierto] = useState(false)
+  const [usuarioEditando, setUsuarioEditando] = useState(null)
+  const [usuarioViendo, setUsuarioViendo] = useState(null)
 
   useEffect(() => {
     obtenerUsuarios()
@@ -54,6 +62,21 @@ function Usuarios() {
     try {
       await eliminarUsuario(id)
       setUsuarios((actuales) => actuales.filter((usuario) => usuario.id !== id))
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const manejarActualizarUsuario = async (datos) => {
+    try {
+      const usuarioActualizado = await actualizarUsuario(usuarioEditando.id, datos)
+      setUsuarios((actuales) =>
+        actuales.map((usuario) =>
+          usuario.id === usuarioActualizado.id ? usuarioActualizado : usuario,
+        ),
+      )
+      setUsuarioEditando(null)
       setError('')
     } catch (err) {
       setError(err.message)
@@ -104,7 +127,12 @@ function Usuarios() {
         {cargando ? (
           <p className="texto-secundario">Cargando usuarios...</p>
         ) : (
-          <UsuariosTable usuarios={usuariosFiltrados} onEliminar={manejarEliminarUsuario} />
+          <UsuariosTable
+            usuarios={usuariosFiltrados}
+            onEditar={setUsuarioEditando}
+            onEliminar={manejarEliminarUsuario}
+            onVer={setUsuarioViendo}
+          />
         )}
       </div>
 
@@ -114,6 +142,33 @@ function Usuarios() {
         title="Crear nuevo usuario"
       >
         <UsuarioForm onCrearUsuario={manejarCrearUsuario} />
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(usuarioEditando)}
+        onClose={() => setUsuarioEditando(null)}
+        title="Editar usuario"
+      >
+        <UsuarioForm usuarioInicial={usuarioEditando} onGuardar={manejarActualizarUsuario} />
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(usuarioViendo)}
+        onClose={() => setUsuarioViendo(null)}
+        title="Detalle del usuario"
+      >
+        {usuarioViendo && (
+          <DetalleRegistro
+            campos={[
+              { etiqueta: 'Usuario', valor: usuarioViendo.usuario },
+              { etiqueta: 'Nombre', valor: usuarioViendo.nombre },
+              { etiqueta: 'Rol', valor: usuarioViendo.rol },
+              { etiqueta: 'Telefono', valor: usuarioViendo.telefono },
+              { etiqueta: 'Fecha de creacion', valor: usuarioViendo.fechaCreacion },
+              { etiqueta: 'Ultima conexion', valor: usuarioViendo.ultimaConexion },
+            ]}
+          />
+        )}
       </Modal>
     </section>
   )

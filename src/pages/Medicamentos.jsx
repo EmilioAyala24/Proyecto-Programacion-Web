@@ -1,10 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
+import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
 import FiltrosMedicamentos from '../components/filtros/FiltrosMedicamentos'
 import MedicamentoForm from '../components/medicamentos/MedicamentoForm'
 import MedicamentosTable from '../components/medicamentos/MedicamentosTable'
-import { crearMedicamento, obtenerMedicamentos } from '../services/medicamentosService'
+import {
+  actualizarMedicamento,
+  crearMedicamento,
+  eliminarMedicamento,
+  obtenerMedicamentos,
+} from '../services/medicamentosService'
 
 function Medicamentos() {
   const [medicamentos, setMedicamentos] = useState([])
@@ -15,6 +21,9 @@ function Medicamentos() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [modalAbierto, setModalAbierto] = useState(false)
+  const [medicamentoEditando, setMedicamentoEditando] = useState(null)
+  const [medicamentoViendo, setMedicamentoViendo] = useState(null)
+  const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   useEffect(() => {
     obtenerMedicamentos()
@@ -47,6 +56,35 @@ function Medicamentos() {
       setMedicamentos((actuales) => [medicamentoCreado, ...actuales])
       setError('')
       setModalAbierto(false)
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const manejarActualizarMedicamento = async (datos) => {
+    try {
+      const medicamentoActualizado = await actualizarMedicamento(medicamentoEditando.id, datos)
+      setMedicamentos((actuales) =>
+        actuales.map((medicamento) =>
+          medicamento.id === medicamentoActualizado.id ? medicamentoActualizado : medicamento,
+        ),
+      )
+      setMedicamentoEditando(null)
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const manejarEliminarMedicamento = async (id) => {
+    if (!window.confirm('Estas seguro de que deseas eliminar este medicamento?')) {
+      return
+    }
+
+    try {
+      await eliminarMedicamento(id)
+      setMedicamentos((actuales) => actuales.filter((medicamento) => medicamento.id !== id))
+      setError('')
     } catch (err) {
       setError(err.message)
     }
@@ -100,7 +138,12 @@ function Medicamentos() {
         {cargando ? (
           <p className="texto-secundario">Cargando medicamentos...</p>
         ) : (
-          <MedicamentosTable medicamentos={medicamentosFiltrados} />
+          <MedicamentosTable
+            medicamentos={medicamentosFiltrados}
+            onEditar={setMedicamentoEditando}
+            onEliminar={manejarEliminarMedicamento}
+            onVer={setMedicamentoViendo}
+          />
         )}
       </div>
 
@@ -110,6 +153,37 @@ function Medicamentos() {
         title="Agregar nuevo medicamento"
       >
         <MedicamentoForm onCrearMedicamento={manejarCrearMedicamento} />
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(medicamentoEditando)}
+        onClose={() => setMedicamentoEditando(null)}
+        title="Editar medicamento"
+      >
+        <MedicamentoForm
+          medicamentoInicial={medicamentoEditando}
+          onGuardar={manejarActualizarMedicamento}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(medicamentoViendo)}
+        onClose={() => setMedicamentoViendo(null)}
+        title="Detalle del medicamento"
+      >
+        {medicamentoViendo && (
+          <DetalleRegistro
+            campos={[
+              { etiqueta: 'Nombre', valor: medicamentoViendo.nombre },
+              { etiqueta: 'Presentacion', valor: medicamentoViendo.presentacion },
+              { etiqueta: 'Concentracion', valor: medicamentoViendo.concentracion },
+              { etiqueta: 'Contenido', valor: medicamentoViendo.contenido },
+              { etiqueta: 'Receta', valor: medicamentoViendo.requiereReceta ? 'Si' : 'No' },
+              { etiqueta: 'Stock', valor: medicamentoViendo.stockDisponible },
+              { etiqueta: 'Precio unitario', valor: `$${formatoPrecio(medicamentoViendo.precioUnitario)}` },
+            ]}
+          />
+        )}
       </Modal>
     </section>
   )

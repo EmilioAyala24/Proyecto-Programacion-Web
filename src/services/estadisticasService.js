@@ -1,5 +1,9 @@
 const API_URL = import.meta.env.VITE_API_URL
 
+function obtenerTotalVenta(venta) {
+  return Number(venta.total_venta ?? venta.total ?? 0)
+}
+
 export async function obtenerEstadisticasDelDia() {
   try {
     // Obtener todas las ventas
@@ -32,7 +36,7 @@ export async function obtenerEstadisticasDelDia() {
     })
 
     // Calcular estadísticas
-    const ingresosTotales = ventasHoy.reduce((sum, venta) => sum + (venta.total_venta || venta.total || 0), 0)
+    const ingresosTotales = ventasHoy.reduce((sum, venta) => sum + obtenerTotalVenta(venta), 0)
     const numeroVentas = ventasHoy.length
     const ventaPromedio = numeroVentas > 0 ? ingresosTotales / numeroVentas : 0
 
@@ -42,7 +46,7 @@ export async function obtenerEstadisticasDelDia() {
       const fecha = new Date(venta.fecha_venta || venta.fecha)
       const hora = fecha.getHours()
       const horaLabel = `${hora}:00`
-      ventasPorHora[horaLabel] = (ventasPorHora[horaLabel] || 0) + (venta.total_venta || venta.total || 0)
+      ventasPorHora[horaLabel] = (ventasPorHora[horaLabel] || 0) + obtenerTotalVenta(venta)
     })
 
     // Convertir a formato para gráfico
@@ -57,8 +61,8 @@ export async function obtenerEstadisticasDelDia() {
     // Métodos de pago (si está disponible en los datos)
     const metodosPago = {}
     ventasHoy.forEach((venta) => {
-      const metodo = venta.metodoPago || venta.metodo_pago || 'Efectivo'
-      metodosPago[metodo] = (metodosPago[metodo] || 0) + (venta.total_venta || venta.total || 0)
+      const metodo = venta.nombre_metodo || venta.metodoPago || venta.metodo_pago || 'Efectivo'
+      metodosPago[metodo] = (metodosPago[metodo] || 0) + obtenerTotalVenta(venta)
     })
 
     const datosMetodosPago = Object.entries(metodosPago)
@@ -82,7 +86,7 @@ export async function obtenerEstadisticasDelDia() {
         return fechaVenta.getTime() === fecha.getTime()
       })
 
-      const ingresos = ventasFecha.reduce((sum, venta) => sum + (venta.total_venta || venta.total || 0), 0)
+      const ingresos = ventasFecha.reduce((sum, venta) => sum + obtenerTotalVenta(venta), 0)
       const fechaLabel = fecha.toLocaleDateString('es-CO', { month: 'short', day: 'numeric' })
 
       tendenciaSemanal.push({ fecha: fechaLabel, ingresos })

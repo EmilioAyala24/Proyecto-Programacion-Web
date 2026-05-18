@@ -3,12 +3,15 @@ const API_URL = import.meta.env.VITE_API_URL
 function normalizarVenta(venta) {
   return {
     id: venta.id_ventas,
+    id_ventas: venta.id_ventas,
     fecha: venta.fecha_venta ? new Date(venta.fecha_venta).toLocaleDateString() : '',
     usuario: venta.usuario_nombre || 'Sin asignar',
+    usuario_nombre: venta.usuario_nombre || 'Sin asignar',
     metodoPago: venta.nombre_metodo || 'No especificado',
     cliente: venta.cliente_nombre || 'Público general',
+    cliente_nombre: venta.cliente_nombre || 'Público general',
     total: Number(venta.total_venta) || 0,
-    cantidad_medicamentos: venta.cantidad_medicamentos || 0,
+    cantidad_medicamentos: Number(venta.cantidad_medicamentos) || 0,
   }
 }
 
@@ -66,7 +69,11 @@ export async function obtenerMetodosPago() {
   }
 
   const datos = await respuesta.json()
-  return datos.data || []
+  return (datos.data || []).map((medicamento) => ({
+    ...medicamento,
+    stock_actual: Number(medicamento.stock_actual) || 0,
+    precio_venta: Number(medicamento.precio_venta) || 0,
+  }))
 }
 
 export async function obtenerClientes() {

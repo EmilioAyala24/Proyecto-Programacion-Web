@@ -1,3 +1,5 @@
+import './FiltrosModulo.css'
+
 function FiltrosVentas({ filtros, onChange }) {
   return (
     <div className="filtros-modulo">

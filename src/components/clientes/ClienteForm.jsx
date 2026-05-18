@@ -8,8 +8,11 @@ const valoresIniciales = {
   telefono: '',
 }
 
-function ClienteForm({ onCrearCliente }) {
-  const [formulario, setFormulario] = useState(valoresIniciales)
+function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
+  const [formulario, setFormulario] = useState({
+    ...valoresIniciales,
+    ...clienteInicial,
+  })
   const [errores, setErrores] = useState({})
 
   const manejarCambio = (event) => {
@@ -44,12 +47,14 @@ function ClienteForm({ onCrearCliente }) {
       return
     }
 
-    onCrearCliente({
+    const datos = {
       nombre: formulario.nombre.trim(),
       apPat: formulario.apPat.trim() || '',
       apMat: formulario.apMat.trim() || '',
       telefono: formulario.telefono.trim() || '',
-    })
+    }
+
+    ;(onGuardar ?? onCrearCliente)(datos)
     setFormulario(valoresIniciales)
     setErrores({})
   }
@@ -106,7 +111,7 @@ function ClienteForm({ onCrearCliente }) {
       </div>
 
       <button type="submit" className="boton boton--primario">
-        Registrar Cliente
+        {clienteInicial ? 'Guardar cambios' : 'Registrar Cliente'}
       </button>
     </form>
   )

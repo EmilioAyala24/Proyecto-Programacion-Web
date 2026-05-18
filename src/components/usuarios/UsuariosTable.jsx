@@ -1,4 +1,4 @@
-function UsuariosTable({ usuarios, onEliminar }) {
+function UsuariosTable({ usuarios, onEditar, onEliminar, onVer }) {
   const formatoFecha = (fecha) => {
     if (!fecha) return '-'
     return new Date(fecha).toLocaleDateString('es-CO')
@@ -53,13 +53,22 @@ function UsuariosTable({ usuarios, onEliminar }) {
               <td>{formatoFecha(usuario.fechaCreacion)}</td>
               <td>{formatoFecha(usuario.ultimaConexion)}</td>
               <td>
-                <button
-                  className="boton-accion boton-accion--eliminar"
-                  onClick={() => onEliminar(usuario.id)}
-                  title="Eliminar"
-                >
-                  Eliminar
-                </button>
+                <div className="acciones-tabla">
+                  <button className="boton-accion" type="button" onClick={() => onVer(usuario)}>
+                    Ver
+                  </button>
+                  <button className="boton-accion" type="button" onClick={() => onEditar(usuario)}>
+                    Editar
+                  </button>
+                  <button
+                    className="boton-accion boton-accion--eliminar"
+                    onClick={() => onEliminar(usuario.id)}
+                    title="Eliminar"
+                    type="button"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
