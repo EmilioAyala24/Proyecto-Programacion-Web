@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL
 
 function normalizarMedicamento(medicamento) {
   return {
-    id: medicamento.id ?? medicamento.id_medicamento,
+    id: medicamento.id ?? medicamento.id_med ?? medicamento.id_medicamento,
     nombre: medicamento.nombre,
     presentacion: medicamento.presentacion ?? '',
     concentracion: medicamento.concentracion ?? '',

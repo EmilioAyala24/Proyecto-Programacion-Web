@@ -91,7 +91,7 @@ function Proveedores() {
         <div className="proveedores-panel__encabezado">
           <div>
             <h2>Registrar proveedor</h2>
-            <p>Los datos se guardan temporalmente en frontend hasta conectar la API real.</p>
+            <p>Los datos se guardan en PostgreSQL mediante la API del backend.</p>
           </div>
         </div>
         <ProveedorForm onCrearProveedor={manejarCrearProveedor} />

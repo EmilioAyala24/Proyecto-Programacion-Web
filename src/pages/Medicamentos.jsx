@@ -103,7 +103,7 @@ function Medicamentos() {
         <div className="modulo-panel__encabezado">
           <div>
             <h2>Registrar medicamento</h2>
-            <p>El registro se mantiene en frontend hasta conectar la API real.</p>
+            <p>El registro se guarda en PostgreSQL mediante la API del backend.</p>
           </div>
         </div>
         <MedicamentoForm onCrearMedicamento={manejarCrearMedicamento} />

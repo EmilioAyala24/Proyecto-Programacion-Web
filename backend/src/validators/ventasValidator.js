@@ -1,30 +1,25 @@
 export function validarVenta(datos) {
   const errores = {}
+  const idUsuario = Number(datos.id_usuario)
+  const idMetodoPago = Number(datos.id_metPag)
 
-  // Validar usuario
-  if (!datos.id_usuario) {
-    errores.id_usuario = 'El usuario es requerido'
-  } else if (typeof datos.id_usuario !== 'number' || datos.id_usuario <= 0) {
-    errores.id_usuario = 'El usuario debe ser válido'
+  if (!idUsuario || Number.isNaN(idUsuario) || idUsuario <= 0) {
+    errores.id_usuario = 'El usuario debe ser valido.'
   }
 
-  // Validar método de pago
-  if (!datos.id_metPag) {
-    errores.id_metPag = 'El método de pago es requerido'
-  } else if (typeof datos.id_metPag !== 'number' || datos.id_metPag <= 0) {
-    errores.id_metPag = 'El método de pago debe ser válido'
+  if (!idMetodoPago || Number.isNaN(idMetodoPago) || idMetodoPago <= 0) {
+    errores.id_metPag = 'El metodo de pago debe ser valido.'
   }
 
-  // Validar detalles
   if (!datos.detalles || !Array.isArray(datos.detalles) || datos.detalles.length === 0) {
-    errores.detalles = 'La venta debe contener al menos un medicamento'
+    errores.detalles = 'La venta debe contener al menos un medicamento.'
   } else {
     const detallesConError = datos.detalles.filter(
       (detalle) => !validarDetalle(detalle),
     )
 
     if (detallesConError.length > 0) {
-      errores.detalles = 'Hay errores en los medicamentos de la venta'
+      errores.detalles = 'Hay errores en los medicamentos de la venta.'
     }
   }
 
@@ -32,19 +27,19 @@ export function validarVenta(datos) {
 }
 
 export function validarDetalle(detalle) {
-  if (!detalle.id_medicamento || detalle.id_medicamento <= 0) {
+  const idMedicamento = Number(detalle.id_medicamento)
+  const cantidad = Number(detalle.cantidad)
+  const precioUnitario = Number(detalle.precio_unitario)
+
+  if (!idMedicamento || Number.isNaN(idMedicamento) || idMedicamento <= 0) {
     return false
   }
 
-  if (!detalle.cantidad || detalle.cantidad <= 0 || !Number.isInteger(detalle.cantidad)) {
+  if (!cantidad || Number.isNaN(cantidad) || cantidad <= 0 || !Number.isInteger(cantidad)) {
     return false
   }
 
-  if (!detalle.precio_unitario || detalle.precio_unitario <= 0) {
-    return false
-  }
-
-  if (!detalle.subtotal || detalle.subtotal < 0) {
+  if (!precioUnitario || Number.isNaN(precioUnitario) || precioUnitario <= 0) {
     return false
   }
 
