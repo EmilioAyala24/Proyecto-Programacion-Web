@@ -1,4 +1,4 @@
-function ProveedoresTable({ proveedores }) {
+function ProveedoresTable({ proveedores, onEditar, onEliminar, onVer }) {
   return (
     <div className="tabla-contenedor">
       <table className="tabla-datos">
@@ -9,6 +9,7 @@ function ProveedoresTable({ proveedores }) {
             <th>Correo</th>
             <th>Direccion</th>
             <th>Estado</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -24,6 +25,23 @@ function ProveedoresTable({ proveedores }) {
                 <span className={`estado estado--${proveedor.estado.toLowerCase()}`}>
                   {proveedor.estado}
                 </span>
+              </td>
+              <td>
+                <div className="acciones-tabla">
+                  <button className="boton-accion" type="button" onClick={() => onVer(proveedor)}>
+                    Ver
+                  </button>
+                  <button className="boton-accion" type="button" onClick={() => onEditar(proveedor)}>
+                    Editar
+                  </button>
+                  <button
+                    className="boton-accion boton-accion--eliminar"
+                    type="button"
+                    onClick={() => onEliminar(proveedor.id)}
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

@@ -2,6 +2,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 
 function GraficoMetodosPago({ datos }) {
   const COLORES = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']
+  const formatoPrecio = (value) => Number(value || 0).toFixed(2)
 
   return (
     <div className="grafico-contenedor">
@@ -22,7 +23,7 @@ function GraficoMetodosPago({ datos }) {
               <Cell key={`cell-${index}`} fill={COLORES[index % COLORES.length]} />
             ))}
           </Pie>
-          <Tooltip formatter={(value) => [`$${value.toFixed(2)}`, 'Total']} />
+          <Tooltip formatter={(value) => [`$${formatoPrecio(value)}`, 'Total']} />
           <Legend />
         </PieChart>
       </ResponsiveContainer>

@@ -51,21 +51,18 @@ export async function crearVenta(idUsuario, idMetPag, idCliente, detalles) {
   try {
     await cliente.query('BEGIN')
 
-    const total = detalles.reduce(
-      (sum, item) => sum + Number(item.cantidad) * Number(item.precio_unitario),
-      0,
-    )
     const resultadoVenta = await cliente.query(
       `INSERT INTO ventas (id_usuario, id_metPag, id_cliente, fecha_venta, total_venta)
-       VALUES ($1, $2, $3, NOW(), $4)
+       VALUES ($1, $2, $3, NOW(), 0)
        RETURNING id_ventas`,
-      [idUsuario, idMetPag, idCliente || null, total],
+      [idUsuario, idMetPag, idCliente || null],
     )
     const idVentas = resultadoVenta.rows[0].id_ventas
+    let total = 0
 
     for (const detalle of detalles) {
       const medicamentoResultado = await cliente.query(
-        `SELECT m.id_lote, l.stock_actual
+        `SELECT m.id_lote, l.stock_actual, COALESCE(l.precio_venta, 0) AS precio_venta
          FROM medicamento m
          JOIN lote l ON l.id_lote = m.id_lote
          WHERE m.id_med = $1
@@ -82,7 +79,9 @@ export async function crearVenta(idUsuario, idMetPag, idCliente, detalles) {
         throw new Error(`Stock insuficiente para el medicamento ${detalle.id_medicamento}.`)
       }
 
-      const subtotal = Number(detalle.cantidad) * Number(detalle.precio_unitario)
+      const precioUnitario = Number(medicamento.precio_venta)
+      const subtotal = Number(detalle.cantidad) * precioUnitario
+      total += subtotal
 
       await cliente.query(
         `INSERT INTO detalle_ventas_medicamento (
@@ -97,7 +96,7 @@ export async function crearVenta(idUsuario, idMetPag, idCliente, detalles) {
           idVentas,
           detalle.id_medicamento,
           detalle.cantidad,
-          detalle.precio_unitario,
+          precioUnitario,
           subtotal,
         ],
       )
@@ -110,6 +109,11 @@ export async function crearVenta(idUsuario, idMetPag, idCliente, detalles) {
         [detalle.cantidad, medicamento.id_lote],
       )
     }
+
+    await cliente.query(
+      'UPDATE ventas SET total_venta = $1 WHERE id_ventas = $2',
+      [total, idVentas],
+    )
 
     await cliente.query('COMMIT')
     return { id_ventas: idVentas, total }

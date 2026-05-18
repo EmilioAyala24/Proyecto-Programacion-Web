@@ -319,7 +319,9 @@ select {
 .modulo-pendiente,
 .proveedores-pagina,
 .medicamentos-pagina,
-.lotes-pagina {
+.lotes-pagina,
+.ventas-pagina,
+.inicio-pagina {
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -515,6 +517,67 @@ select {
   color: #334155;
 }
 
+.tabla-datos__monto {
+  color: #0f3d6e;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.ventas-tabla {
+  min-width: 1160px;
+  table-layout: fixed;
+}
+
+.ventas-tabla th,
+.ventas-tabla td {
+  padding: 16px 14px;
+}
+
+.ventas-tabla th {
+  white-space: nowrap;
+}
+
+.ventas-tabla th:nth-child(1),
+.ventas-tabla td:nth-child(1) {
+  width: 90px;
+}
+
+.ventas-tabla th:nth-child(2),
+.ventas-tabla td:nth-child(2) {
+  width: 120px;
+}
+
+.ventas-tabla th:nth-child(3),
+.ventas-tabla td:nth-child(3),
+.ventas-tabla th:nth-child(4),
+.ventas-tabla td:nth-child(4),
+.ventas-tabla th:nth-child(5),
+.ventas-tabla td:nth-child(5) {
+  width: 190px;
+}
+
+.ventas-tabla th:nth-child(6),
+.ventas-tabla td:nth-child(6) {
+  width: 140px;
+  text-align: center;
+}
+
+.ventas-tabla th:nth-child(7),
+.ventas-tabla td:nth-child(7) {
+  width: 130px;
+  text-align: right;
+}
+
+.ventas-tabla th:nth-child(8),
+.ventas-tabla td:nth-child(8) {
+  width: 120px;
+  text-align: center;
+}
+
+.ventas-tabla td {
+  overflow-wrap: anywhere;
+}
+
 .estado {
   border-radius: 999px;
   display: inline-flex;
@@ -568,7 +631,8 @@ select {
 }
 
 .proveedor-formulario,
-.medicamento-formulario {
+.medicamento-formulario,
+.lote-formulario {
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -599,8 +663,68 @@ select {
 }
 
 .proveedor-formulario .boton,
-.medicamento-formulario .boton {
+.medicamento-formulario .boton,
+.lote-formulario .boton {
   justify-self: start;
+}
+
+.acciones-tabla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.boton-accion {
+  background: #e8eef5;
+  border: 0;
+  border-radius: 8px;
+  color: #0f3d6e;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 800;
+  min-height: 34px;
+  padding: 7px 10px;
+}
+
+.boton-accion:hover {
+  background: #dbeafe;
+}
+
+.boton-accion--eliminar {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.boton-accion--eliminar:hover {
+  background: #fecaca;
+}
+
+.detalle-registro {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.detalle-registro__fila {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+}
+
+.detalle-registro dt {
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detalle-registro dd {
+  color: #1e2a3a;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
@@ -611,7 +735,8 @@ select {
   .proveedores-resumen,
   .modulo-resumen,
   .proveedor-formulario,
-  .medicamento-formulario {
+  .medicamento-formulario,
+  .lote-formulario {
     grid-template-columns: 1fr;
   }
 

@@ -8,10 +8,16 @@ const valoresIniciales = {
   contenido: '',
   requiereReceta: false,
   stockDisponible: '',
+  precioUnitario: '',
 }
 
-function MedicamentoForm({ onCrearMedicamento }) {
-  const [formulario, setFormulario] = useState(valoresIniciales)
+function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) {
+  const [formulario, setFormulario] = useState({
+    ...valoresIniciales,
+    ...medicamentoInicial,
+    stockDisponible: medicamentoInicial?.stockDisponible ?? '',
+    precioUnitario: medicamentoInicial?.precioUnitario ?? '',
+  })
   const [errores, setErrores] = useState({})
 
   const manejarCambio = (event) => {
@@ -31,6 +37,10 @@ function MedicamentoForm({ onCrearMedicamento }) {
       stockDisponible: validarStock(formulario.stockDisponible),
     }
 
+    if (Number(formulario.precioUnitario) < 0 || Number.isNaN(Number(formulario.precioUnitario))) {
+      nuevosErrores.precioUnitario = 'El precio unitario debe ser mayor o igual a cero.'
+    }
+
     setErrores(nuevosErrores)
     return !Object.values(nuevosErrores).some(Boolean)
   }
@@ -42,14 +52,17 @@ function MedicamentoForm({ onCrearMedicamento }) {
       return
     }
 
-    onCrearMedicamento({
+    const datos = {
       nombre: formulario.nombre.trim(),
       presentacion: formulario.presentacion.trim(),
       concentracion: formulario.concentracion.trim(),
       contenido: formulario.contenido.trim(),
       requiereReceta: formulario.requiereReceta,
       stockDisponible: Number(formulario.stockDisponible),
-    })
+      precioUnitario: Number(formulario.precioUnitario),
+    }
+
+    ;(onGuardar ?? onCrearMedicamento)(datos)
     setFormulario(valoresIniciales)
     setErrores({})
   }
@@ -118,6 +131,21 @@ function MedicamentoForm({ onCrearMedicamento }) {
         {errores.stockDisponible && <span className="mensaje-error">{errores.stockDisponible}</span>}
       </div>
 
+      <div className="campo-formulario">
+        <label htmlFor="medicamento-precio">Precio unitario</label>
+        <input
+          id="medicamento-precio"
+          name="precioUnitario"
+          min="0"
+          placeholder="35.50"
+          step="0.01"
+          type="number"
+          value={formulario.precioUnitario}
+          onChange={manejarCambio}
+        />
+        {errores.precioUnitario && <span className="mensaje-error">{errores.precioUnitario}</span>}
+      </div>
+
       <label className="campo-check" htmlFor="medicamento-receta">
         <input
           id="medicamento-receta"
@@ -130,7 +158,7 @@ function MedicamentoForm({ onCrearMedicamento }) {
       </label>
 
       <button className="boton boton--primario" type="submit">
-        Registrar medicamento
+        {medicamentoInicial ? 'Guardar cambios' : 'Registrar medicamento'}
       </button>
     </form>
   )

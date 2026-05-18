@@ -10,7 +10,9 @@ export async function obtenerMedicamentos() {
        m.concentracion,
        m.presentacion AS contenido,
        m.requiere_receta,
-       l.stock_actual AS stock_disponible
+       l.id_lote,
+       l.stock_actual AS stock_disponible,
+       l.precio_venta AS precio_unitario
      FROM medicamento m
      JOIN lote l ON l.id_lote = m.id_lote
      ORDER BY m.nombre ASC`,
@@ -61,6 +63,7 @@ export async function crearMedicamento(datos) {
       client,
       idProv,
       stockActual: datos.stockDisponible,
+      precioVenta: datos.precioUnitario,
     })
 
     const resultado = await client.query(
@@ -74,7 +77,7 @@ export async function crearMedicamento(datos) {
          estado_colorimetria
        )
        VALUES ($1, $2, $3, $4, $5, CURRENT_DATE, $6)
-       RETURNING id_med, nombre, presentacion, concentracion, presentacion AS contenido, requiere_receta`,
+       RETURNING id_med, id_lote, nombre, presentacion, concentracion, presentacion AS contenido, requiere_receta`,
       [
         lote.id_lote,
         datos.nombre,
@@ -90,6 +93,7 @@ export async function crearMedicamento(datos) {
     return {
       ...resultado.rows[0],
       stock_disponible: datos.stockDisponible,
+      precio_unitario: datos.precioUnitario,
     }
   } catch (error) {
     await client.query('ROLLBACK')
@@ -97,4 +101,74 @@ export async function crearMedicamento(datos) {
   } finally {
     client.release()
   }
+}
+
+export async function actualizarMedicamento(id, datos) {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const actual = await client.query(
+      'SELECT id_lote FROM medicamento WHERE id_med = $1',
+      [id],
+    )
+
+    if (!actual.rows[0]) {
+      await client.query('ROLLBACK')
+      return null
+    }
+
+    const idLote = actual.rows[0].id_lote
+
+    const resultado = await client.query(
+      `UPDATE medicamento
+       SET nombre = $1,
+           presentacion = $2,
+           concentracion = $3,
+           requiere_receta = $4,
+           estado_colorimetria = $5
+       WHERE id_med = $6
+       RETURNING id_med, id_lote, nombre, presentacion, concentracion, presentacion AS contenido, requiere_receta`,
+      [
+        datos.nombre,
+        datos.contenido || datos.presentacion,
+        datos.concentracion,
+        datos.requiereReceta,
+        obtenerEstadoColorimetria(datos.stockDisponible),
+        id,
+      ],
+    )
+
+    await client.query(
+      `UPDATE lote
+       SET stock_actual = $1,
+           precio_venta = $2,
+           activo = CASE WHEN $1 <= 0 THEN FALSE ELSE TRUE END
+       WHERE id_lote = $3`,
+      [datos.stockDisponible, datos.precioUnitario, idLote],
+    )
+
+    await client.query('COMMIT')
+
+    return {
+      ...resultado.rows[0],
+      stock_disponible: datos.stockDisponible,
+      precio_unitario: datos.precioUnitario,
+    }
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
+
+export async function eliminarMedicamento(id) {
+  const resultado = await pool.query(
+    'DELETE FROM medicamento WHERE id_med = $1 RETURNING id_med',
+    [id],
+  )
+
+  return resultado.rows[0]
 }

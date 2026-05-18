@@ -22,9 +22,14 @@ export function validarMedicamento(datos) {
     contenido: validarTexto(datos.contenido, 'El contenido'),
   }
   const stockDisponible = Number(datos.stockDisponible ?? datos.stock_disponible)
+  const precioUnitario = Number(datos.precioUnitario ?? datos.precio_unitario ?? 0)
 
   if (Number.isNaN(stockDisponible) || stockDisponible < 0) {
     errores.stockDisponible = 'El stock debe ser un numero mayor o igual a cero.'
+  }
+
+  if (Number.isNaN(precioUnitario) || precioUnitario < 0) {
+    errores.precioUnitario = 'El precio unitario debe ser un numero mayor o igual a cero.'
   }
 
   Object.keys(errores).forEach((llave) => {
@@ -43,6 +48,7 @@ export function validarMedicamento(datos) {
       contenido: datos.contenido?.trim(),
       requiereReceta: Boolean(datos.requiereReceta ?? datos.requiere_receta),
       stockDisponible,
+      precioUnitario,
     },
   }
 }

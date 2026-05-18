@@ -9,6 +9,7 @@ function Inicio() {
   const [estadisticas, setEstadisticas] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
+  const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   useEffect(() => {
     obtenerEstadisticasDelDia()
@@ -49,7 +50,7 @@ function Inicio() {
       >
         <TarjetaMetrica
           titulo="Ingresos del día"
-          valor={`$${estadisticas.ingresosTotales.toFixed(2)}`}
+          valor={`$${formatoPrecio(estadisticas.ingresosTotales)}`}
           subtitulo="Total acumulado"
           icono="💰"
           color="#10b981"
@@ -63,7 +64,7 @@ function Inicio() {
         />
         <TarjetaMetrica
           titulo="Venta promedio"
-          valor={`$${estadisticas.ventaPromedio.toFixed(2)}`}
+          valor={`$${formatoPrecio(estadisticas.ventaPromedio)}`}
           subtitulo="Monto promedio por venta"
           icono="📊"
           color="#f59e0b"

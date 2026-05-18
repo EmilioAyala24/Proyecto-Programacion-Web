@@ -27,3 +27,43 @@ export async function registrarProveedor(req, res, next) {
     return next(error)
   }
 }
+
+export async function actualizarProveedor(req, res, next) {
+  try {
+    const validacion = validarProveedor(req.body)
+
+    if (!validacion.valido) {
+      return res.status(400).json({
+        mensaje: 'Datos de proveedor invalidos.',
+        errores: validacion.errores,
+      })
+    }
+
+    const proveedor = await proveedoresModel.actualizarProveedor(
+      Number(req.params.id),
+      validacion.datosLimpios,
+    )
+
+    if (!proveedor) {
+      return res.status(404).json({ mensaje: 'Proveedor no encontrado.' })
+    }
+
+    return res.json(proveedor)
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export async function eliminarProveedor(req, res, next) {
+  try {
+    const proveedor = await proveedoresModel.eliminarProveedor(Number(req.params.id))
+
+    if (!proveedor) {
+      return res.status(404).json({ mensaje: 'Proveedor no encontrado.' })
+    }
+
+    return res.json({ mensaje: 'Proveedor eliminado.' })
+  } catch (error) {
+    return next(error)
+  }
+}

@@ -10,6 +10,8 @@ import {
 } from 'recharts'
 
 function GraficoVentasDelDia({ datos }) {
+  const formatoPrecio = (value) => Number(value || 0).toFixed(2)
+
   return (
     <div className="grafico-contenedor">
       <h3>Ventas por hora</h3>
@@ -20,7 +22,7 @@ function GraficoVentasDelDia({ datos }) {
           <YAxis />
           <Tooltip 
             contentStyle={{ background: '#fff', border: '1px solid #ccc' }}
-            formatter={(value) => [`$${value.toFixed(2)}`, 'Ingresos']}
+            formatter={(value) => [`$${formatoPrecio(value)}`, 'Ingresos']}
           />
           <Legend />
           <Bar dataKey="ingresos" fill="#3b82f6" name="Ingresos" />

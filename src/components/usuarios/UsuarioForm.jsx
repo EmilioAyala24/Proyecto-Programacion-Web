@@ -10,8 +10,11 @@ const valoresIniciales = {
   telefono: '',
 }
 
-function UsuarioForm({ onCrearUsuario }) {
-  const [formulario, setFormulario] = useState(valoresIniciales)
+function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
+  const [formulario, setFormulario] = useState({
+    ...valoresIniciales,
+    ...usuarioInicial,
+  })
   const [errores, setErrores] = useState({})
 
   const manejarCambio = (event) => {
@@ -40,6 +43,12 @@ function UsuarioForm({ onCrearUsuario }) {
     // Validar nombre
     nuevosErrores.nombre = validarTextoFarmacia(formulario.nombre, 'El nombre')
 
+    Object.keys(nuevosErrores).forEach((llave) => {
+      if (!nuevosErrores[llave]) {
+        delete nuevosErrores[llave]
+      }
+    })
+
     setErrores(nuevosErrores)
     return Object.keys(nuevosErrores).length === 0
   }
@@ -51,14 +60,16 @@ function UsuarioForm({ onCrearUsuario }) {
       return
     }
 
-    onCrearUsuario({
+    const datos = {
       usuario: formulario.usuario.trim(),
       rol: formulario.rol,
       nombre: formulario.nombre.trim(),
       apPat: formulario.apPat.trim() || '',
       apMat: formulario.apMat.trim() || '',
       telefono: formulario.telefono.trim() || '',
-    })
+    }
+
+    ;(onGuardar ?? onCrearUsuario)(datos)
     setFormulario(valoresIniciales)
     setErrores({})
   }
@@ -135,7 +146,7 @@ function UsuarioForm({ onCrearUsuario }) {
       </div>
 
       <button type="submit" className="boton boton--primario">
-        Crear Usuario
+        {usuarioInicial ? 'Guardar cambios' : 'Crear Usuario'}
       </button>
     </form>
   )

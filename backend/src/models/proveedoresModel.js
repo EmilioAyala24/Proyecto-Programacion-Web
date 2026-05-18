@@ -20,3 +20,24 @@ export async function crearProveedor({ nombre, telefono, correo, direccion }) {
 
   return resultado.rows[0]
 }
+
+export async function actualizarProveedor(id, { nombre, telefono, correo, direccion }) {
+  const resultado = await pool.query(
+    `UPDATE proveedor
+     SET nombre = $1, telefono = $2, correo = $3, direccion = $4
+     WHERE id_prov = $5
+     RETURNING id_prov, telefono, nombre, correo, direccion`,
+    [nombre, telefono, correo, direccion, id],
+  )
+
+  return resultado.rows[0]
+}
+
+export async function eliminarProveedor(id) {
+  const resultado = await pool.query(
+    'DELETE FROM proveedor WHERE id_prov = $1 RETURNING id_prov',
+    [id],
+  )
+
+  return resultado.rows[0]
+}

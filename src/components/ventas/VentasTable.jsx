@@ -1,4 +1,6 @@
-function VentasTable({ ventas, cargando, error }) {
+function VentasTable({ ventas, cargando, error, onVer }) {
+  const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
+
   if (cargando) {
     return (
       <div className="tabla-contenedor">
@@ -25,33 +27,39 @@ function VentasTable({ ventas, cargando, error }) {
 
   return (
     <div className="tabla-contenedor">
-      <table className="tabla">
-        <thead className="tabla__cabecera">
-          <tr className="tabla__fila">
-            <th className="tabla__celda tabla__celda--encabezado">ID Venta</th>
-            <th className="tabla__celda tabla__celda--encabezado">Fecha</th>
-            <th className="tabla__celda tabla__celda--encabezado">Usuario</th>
-            <th className="tabla__celda tabla__celda--encabezado">Cliente</th>
-            <th className="tabla__celda tabla__celda--encabezado">Método de Pago</th>
-            <th className="tabla__celda tabla__celda--encabezado">Medicamentos</th>
-            <th className="tabla__celda tabla__celda--encabezado">Total</th>
+      <table className="tabla-datos ventas-tabla">
+        <thead>
+          <tr>
+            <th>ID Venta</th>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Cliente</th>
+            <th>Metodo de pago</th>
+            <th>Cant.</th>
+            <th>Total</th>
+            <th>Acciones</th>
           </tr>
         </thead>
-        <tbody className="tabla__cuerpo">
+        <tbody>
           {ventas.map((venta) => (
-            <tr key={venta.id} className="tabla__fila">
-              <td className="tabla__celda">
+            <tr key={venta.id}>
+              <td>
                 <span className="mono">#{venta.id}</span>
               </td>
-              <td className="tabla__celda">{venta.fecha}</td>
-              <td className="tabla__celda">{venta.usuario}</td>
-              <td className="tabla__celda">{venta.cliente}</td>
-              <td className="tabla__celda">{venta.metodoPago}</td>
-              <td className="tabla__celda">
+              <td>{venta.fecha}</td>
+              <td>{venta.usuario}</td>
+              <td>{venta.cliente}</td>
+              <td>{venta.metodoPago}</td>
+              <td>
                 <span className="insignia">{venta.cantidad_medicamentos}</span>
               </td>
-              <td className="tabla__celda tabla__celda--enfasis">
-                ${venta.total.toFixed(2)}
+              <td className="tabla-datos__monto">${formatoPrecio(venta.total)}</td>
+              <td>
+                <div className="acciones-tabla">
+                  <button className="boton-accion" type="button" onClick={() => onVer(venta)}>
+                    Ver
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

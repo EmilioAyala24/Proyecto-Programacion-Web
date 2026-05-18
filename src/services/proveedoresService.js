@@ -52,3 +52,40 @@ export async function crearProveedor(proveedor) {
   const datos = await respuesta.json()
   return normalizarProveedor(datos)
 }
+
+export async function actualizarProveedor(id, proveedor) {
+  if (!API_URL) {
+    return normalizarProveedor({ ...proveedor, id })
+  }
+
+  const respuesta = await fetch(`${API_URL}/proveedores/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(proveedor),
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No fue posible actualizar el proveedor.')
+  }
+
+  const datos = await respuesta.json()
+  return normalizarProveedor(datos)
+}
+
+export async function eliminarProveedor(id) {
+  if (!API_URL) {
+    return true
+  }
+
+  const respuesta = await fetch(`${API_URL}/proveedores/${id}`, {
+    method: 'DELETE',
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No fue posible eliminar el proveedor. Revisa si tiene lotes asociados.')
+  }
+
+  return true
+}

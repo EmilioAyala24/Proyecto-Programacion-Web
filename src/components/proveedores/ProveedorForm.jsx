@@ -8,8 +8,11 @@ const valoresIniciales = {
   direccion: '',
 }
 
-function ProveedorForm({ onCrearProveedor }) {
-  const [formulario, setFormulario] = useState(valoresIniciales)
+function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
+  const [formulario, setFormulario] = useState({
+    ...valoresIniciales,
+    ...proveedorInicial,
+  })
   const [errores, setErrores] = useState({})
 
   const manejarCambio = (event) => {
@@ -39,12 +42,14 @@ function ProveedorForm({ onCrearProveedor }) {
       return
     }
 
-    onCrearProveedor({
+    const datos = {
       nombre: formulario.nombre.trim(),
       telefono: formulario.telefono.trim(),
       correo: formulario.correo.trim(),
       direccion: formulario.direccion.trim(),
-    })
+    }
+
+    ;(onGuardar ?? onCrearProveedor)(datos)
     setFormulario(valoresIniciales)
     setErrores({})
   }
@@ -102,7 +107,7 @@ function ProveedorForm({ onCrearProveedor }) {
       </div>
 
       <button className="boton boton--primario" type="submit">
-        Registrar proveedor
+        {proveedorInicial ? 'Guardar cambios' : 'Registrar proveedor'}
       </button>
     </form>
   )

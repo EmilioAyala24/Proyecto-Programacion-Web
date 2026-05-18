@@ -18,7 +18,7 @@ Docker descarga PostgreSQL 16, crea un contenedor llamado `farmacia_inclusiva_po
 
 ```txt
 Host: localhost
-Puerto: 5432
+Puerto: 5433
 Base de datos: farmacia_inclusiva
 Usuario: postgres
 Contrasena: postgres
@@ -39,7 +39,7 @@ El archivo `.env.local` debe tener:
 PORT=3001
 VITE_API_URL=http://localhost:3001/api
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=5433
 DB_NAME=farmacia_inclusiva
 DB_USER=postgres
 DB_PASSWORD=postgres
@@ -114,7 +114,7 @@ HeidiSQL puede conectarse al PostgreSQL de Docker con estos datos:
 ```txt
 Tipo de red: PostgreSQL
 Host: 127.0.0.1
-Puerto: 5432
+Puerto: 5433
 Usuario: postgres
 Contrasena: postgres
 Base de datos: farmacia_inclusiva

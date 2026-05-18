@@ -26,7 +26,7 @@ export function validarCliente(cliente) {
 
   // Validar teléfono (opcional)
   if (cliente.telefono && typeof cliente.telefono === 'string') {
-    if (!/^[0-9\-\+\(\)\s]{7,15}$/.test(cliente.telefono.trim())) {
+    if (!/^[0-9+\-()\s]{7,15}$/.test(cliente.telefono.trim())) {
       errores.telefono = 'El teléfono debe ser válido (7-15 caracteres)'
     }
   }
