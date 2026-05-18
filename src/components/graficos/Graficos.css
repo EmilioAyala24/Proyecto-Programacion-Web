@@ -1,0 +1,57 @@
+.grafico-contenedor {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.grafico-contenedor h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.tarjeta-metrica {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  border-left: 4px solid #3b82f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tarjeta-metrica__contenido {
+  flex: 1;
+}
+
+.tarjeta-metrica__titulo {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.tarjeta-metrica__valor {
+  display: block;
+  font-size: 28px;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.tarjeta-metrica__subtitulo {
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.tarjeta-metrica__icono {
+  font-size: 36px;
+  opacity: 0.2;
+  margin-left: 20px;
+}

@@ -1,15 +1,23 @@
 import { useEffect, useMemo, useState } from 'react'
+import AddButton from '../components/common/AddButton'
+import Modal from '../components/common/Modal'
+import FiltrosVentas from '../components/filtros/FiltrosVentas'
 import VentaForm from '../components/ventas/VentaForm'
 import VentasTable from '../components/ventas/VentasTable'
 import { crearVenta, obtenerVentas } from '../services/ventasService'
 
 function Ventas() {
   const [ventas, setVentas] = useState([])
-  const [busqueda, setBusqueda] = useState('')
+  const [filtros, setFiltros] = useState({
+    id: '',
+    cliente: '',
+    usuario: '',
+  })
   const [cargando, setCargando] = useState(true)
   const [cargandoCrear, setCargandoCrear] = useState(false)
   const [error, setError] = useState('')
   const [exitoMensaje, setExitoMensaje] = useState('')
+  const [modalAbierto, setModalAbierto] = useState(false)
 
   useEffect(() => {
     obtenerVentas()
@@ -19,26 +27,23 @@ function Ventas() {
   }, [])
 
   const ventasFiltradas = useMemo(() => {
-    const valor = busqueda.trim().toLowerCase()
+    return ventas.filter((venta) => {
+      const coincideId =
+        !filtros.id || (venta.id_ventas && venta.id_ventas.toString().includes(filtros.id))
 
-    if (!valor) {
-      return ventas
-    }
+      const coincideCliente =
+        !filtros.cliente ||
+        (venta.cliente_nombre &&
+          venta.cliente_nombre.toLowerCase().includes(filtros.cliente.toLowerCase()))
 
-    return ventas.filter((venta) =>
-      [
-        venta.id.toString(),
-        venta.fecha,
-        venta.usuario,
-        venta.cliente,
-        venta.metodoPago,
-        venta.total.toString(),
-      ]
-        .join(' ')
-        .toLowerCase()
-        .includes(valor),
-    )
-  }, [busqueda, ventas])
+      const coincideUsuario =
+        !filtros.usuario ||
+        (venta.usuario_nombre &&
+          venta.usuario_nombre.toLowerCase().includes(filtros.usuario.toLowerCase()))
+
+      return coincideId && coincideCliente && coincideUsuario
+    })
+  }, [filtros, ventas])
 
   const manejarCrearVenta = async (nuevaVenta) => {
     setCargandoCrear(true)
@@ -48,6 +53,7 @@ function Ventas() {
     try {
       await crearVenta(nuevaVenta)
       setExitoMensaje('¡Venta registrada exitosamente!')
+      setModalAbierto(false)
 
       // Recargar ventas
       const ventasActualizadas = await obtenerVentas()
@@ -109,28 +115,30 @@ function Ventas() {
         </article>
       </div>
 
-      {/* Sección de formulario */}
-      <section className="seccion-modulo">
-        <h2 className="seccion-modulo__titulo">Nueva venta</h2>
-        <VentaForm onCrearVenta={manejarCrearVenta} cargando={cargandoCrear} />
-      </section>
-
       {/* Sección de búsqueda */}
       <section className="seccion-modulo">
         <h2 className="seccion-modulo__titulo">Historial de ventas</h2>
 
-        <div className="buscador">
-          <input
-            type="text"
-            className="buscador__entrada"
-            placeholder="Buscar por ID, fecha, usuario, cliente, método de pago o monto..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+        <div style={{ marginBottom: '16px' }}>
+          <AddButton
+            onClick={() => setModalAbierto(true)}
+            title="Registrar nueva venta"
+            style={{ alignSelf: 'flex-end' }}
           />
         </div>
 
+        <FiltrosVentas filtros={filtros} onChange={setFiltros} />
+
         <VentasTable ventas={ventasFiltradas} cargando={cargando} error={error} />
       </section>
+
+      <Modal
+        isOpen={modalAbierto}
+        onClose={() => setModalAbierto(false)}
+        title="Registrar nueva venta"
+      >
+        <VentaForm onCrearVenta={manejarCrearVenta} cargando={cargandoCrear} />
+      </Modal>
     </section>
   )
 }

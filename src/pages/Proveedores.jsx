@@ -1,13 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
+import AddButton from '../components/common/AddButton'
+import Modal from '../components/common/Modal'
+import FiltrosProveedores from '../components/filtros/FiltrosProveedores'
 import ProveedorForm from '../components/proveedores/ProveedorForm'
 import ProveedoresTable from '../components/proveedores/ProveedoresTable'
 import { crearProveedor, obtenerProveedores } from '../services/proveedoresService'
 
 function Proveedores() {
   const [proveedores, setProveedores] = useState([])
-  const [busqueda, setBusqueda] = useState('')
+  const [filtros, setFiltros] = useState({
+    nombre: '',
+    correo: '',
+  })
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
+  const [modalAbierto, setModalAbierto] = useState(false)
 
   useEffect(() => {
     obtenerProveedores()
@@ -17,25 +24,25 @@ function Proveedores() {
   }, [])
 
   const proveedoresFiltrados = useMemo(() => {
-    const valor = busqueda.trim().toLowerCase()
+    return proveedores.filter((proveedor) => {
+      const coincideNombre =
+        !filtros.nombre ||
+        proveedor.nombre.toLowerCase().includes(filtros.nombre.toLowerCase())
 
-    if (!valor) {
-      return proveedores
-    }
+      const coincideCorreo =
+        !filtros.correo ||
+        (proveedor.correo && proveedor.correo.toLowerCase().includes(filtros.correo.toLowerCase()))
 
-    return proveedores.filter((proveedor) =>
-      [proveedor.nombre, proveedor.telefono, proveedor.correo, proveedor.direccion]
-        .join(' ')
-        .toLowerCase()
-        .includes(valor),
-    )
-  }, [busqueda, proveedores])
+      return coincideNombre && coincideCorreo
+    })
+  }, [filtros, proveedores])
 
   const manejarCrearProveedor = async (nuevoProveedor) => {
     try {
       const proveedorCreado = await crearProveedor(nuevoProveedor)
       setProveedores((actuales) => [proveedorCreado, ...actuales])
       setError('')
+      setModalAbierto(false)
     } catch (err) {
       setError(err.message)
     }
@@ -68,16 +75,15 @@ function Proveedores() {
         <div className="proveedores-panel__encabezado">
           <div>
             <h2>Listado</h2>
-            <p>Busca por nombre, correo, telefono o direccion.</p>
+            <p>Filtra por nombre o correo electrónico.</p>
           </div>
-          <input
-            aria-label="Buscar proveedor"
-            className="buscador"
-            placeholder="Buscar proveedor"
-            value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
+          <AddButton
+            onClick={() => setModalAbierto(true)}
+            title="Agregar nuevo proveedor"
           />
         </div>
+
+        <FiltrosProveedores filtros={filtros} onChange={setFiltros} />
 
         {error && <div className="alerta-error">{error}</div>}
         {cargando ? (
@@ -87,15 +93,13 @@ function Proveedores() {
         )}
       </div>
 
-      <div className="proveedores-panel">
-        <div className="proveedores-panel__encabezado">
-          <div>
-            <h2>Registrar proveedor</h2>
-            <p>Los datos se guardan en PostgreSQL mediante la API del backend.</p>
-          </div>
-        </div>
+      <Modal
+        isOpen={modalAbierto}
+        onClose={() => setModalAbierto(false)}
+        title="Agregar nuevo proveedor"
+      >
         <ProveedorForm onCrearProveedor={manejarCrearProveedor} />
-      </div>
+      </Modal>
     </section>
   )
 }
