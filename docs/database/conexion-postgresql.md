@@ -93,6 +93,12 @@ Ver logs de PostgreSQL:
 npm run db:logs
 ```
 
+Insertar o reinsertar datos iniciales sin borrar la base:
+
+```bash
+npm run db:seed
+```
+
 Reiniciar la base desde cero y volver a ejecutar los SQL iniciales:
 
 ```bash

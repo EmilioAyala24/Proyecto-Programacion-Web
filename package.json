@@ -9,6 +9,7 @@
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
     "db:logs": "docker compose logs -f postgres",
+    "db:seed": "docker exec farmacia_inclusiva_postgres psql -U postgres -d farmacia_inclusiva -f /docker-entrypoint-initdb.d/03-seed-catalogo.sql",
     "db:reset": "docker compose down -v && docker compose up -d postgres",
     "build": "vite build",
     "lint": "eslint .",

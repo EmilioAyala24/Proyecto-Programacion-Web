@@ -20,6 +20,7 @@ function obtenerEstadoPorCaducidad(fechaCaducidad) {
 
 function normalizarLote(lote) {
   const fechaCaducidad = lote.fechaCaducidad ?? lote.fecha_caducidad
+  const fechaIngreso = lote.fechaIngreso ?? lote.fecha_ingreso ?? ''
 
   return {
     id: lote.id ?? lote.id_lote,
@@ -27,8 +28,8 @@ function normalizarLote(lote) {
     medicamento: lote.medicamento ?? lote.nombre_medicamento ?? '',
     proveedor: lote.proveedor ?? lote.nombre_proveedor ?? '',
     stockDisponible: Number(lote.stockDisponible ?? lote.stock_disponible ?? 0),
-    fechaIngreso: lote.fechaIngreso ?? lote.fecha_ingreso ?? '',
-    fechaCaducidad,
+    fechaIngreso: String(fechaIngreso).split('T')[0],
+    fechaCaducidad: String(fechaCaducidad).split('T')[0],
     estado: lote.estado ?? obtenerEstadoPorCaducidad(fechaCaducidad),
   }
 }
