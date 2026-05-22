@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { verificarConexion } from '../config/database.js'
+import authRoutes from './authRoutes.js'
 import clientesRoutes from './clientesRoutes.js'
 import lotesRoutes from './lotesRoutes.js'
 import medicamentosRoutes from './medicamentosRoutes.js'
@@ -24,6 +25,7 @@ router.get('/salud', async (_req, res, next) => {
 })
 
 router.use('/clientes', clientesRoutes)
+router.use('/auth', authRoutes)
 router.use('/usuarios', usuariosRoutes)
 router.use('/proveedores', proveedoresRoutes)
 router.use('/medicamentos', medicamentosRoutes)

@@ -21,6 +21,7 @@ CREATE TABLE usuario (
     id_usuario      SERIAL          NOT NULL,
     usuario         VARCHAR(60)     NOT NULL UNIQUE,
     rol             VARCHAR(30)     NOT NULL,
+    password_hash   VARCHAR(180)    NOT NULL,
     fecha_creacion  DATE            DEFAULT NULL,
     ultima_conexion TIMESTAMP       DEFAULT NULL,
     nombre          VARCHAR(80)     NOT NULL,

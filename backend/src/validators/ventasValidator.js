@@ -35,11 +35,23 @@ export function validarDetalle(detalle) {
     return false
   }
 
-  if (!cantidad || Number.isNaN(cantidad) || cantidad <= 0 || !Number.isInteger(cantidad)) {
+  if (
+    !cantidad ||
+    Number.isNaN(cantidad) ||
+    cantidad <= 0 ||
+    cantidad > 999999 ||
+    !Number.isInteger(cantidad)
+  ) {
     return false
   }
 
-  if (!precioUnitario || Number.isNaN(precioUnitario) || precioUnitario <= 0) {
+  if (
+    !precioUnitario ||
+    Number.isNaN(precioUnitario) ||
+    precioUnitario <= 0 ||
+    precioUnitario > 99999999.99 ||
+    !/^\d+(\.\d{1,2})?$/.test(String(detalle.precio_unitario))
+  ) {
     return false
   }
 

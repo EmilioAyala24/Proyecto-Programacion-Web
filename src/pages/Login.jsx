@@ -1,12 +1,13 @@
 import { Navigate } from 'react-router-dom'
 import LoginForm from '../components/auth/LoginForm'
 import { useAuth } from '../hooks/useAuth'
+import { obtenerRutaInicialPorRol } from '../utils/permisos'
 
 function Login() {
-  const { estaAutenticado } = useAuth()
+  const { estaAutenticado, usuario } = useAuth()
 
   if (estaAutenticado) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to={obtenerRutaInicialPorRol(usuario?.rol)} replace />
   }
 
   return (

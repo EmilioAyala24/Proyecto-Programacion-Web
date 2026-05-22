@@ -1,35 +1,78 @@
+const LIMITES = {
+  nombre: 80,
+  apellido: 60,
+  telefono: 15,
+}
+
+const patronNombrePersona = /^[a-zA-ZÁÉÍÓÚÜÑáéíóúüñ\s'-]+$/
+const patronTelefono = /^[0-9+\-()\s]+$/
+
+function validarNombrePersona(valor, campo, maximo, obligatorio = true) {
+  const texto = typeof valor === 'string' ? valor.trim() : ''
+
+  if (!texto) {
+    return obligatorio ? `${campo} es requerido` : ''
+  }
+
+  if (texto.length < 2) {
+    return `${campo} debe tener al menos 2 caracteres`
+  }
+
+  if (texto.length > maximo) {
+    return `${campo} no puede exceder ${maximo} caracteres`
+  }
+
+  if (!patronNombrePersona.test(texto)) {
+    return `${campo} solo puede contener letras, espacios, apostrofe o guion`
+  }
+
+  return ''
+}
+
+function validarTelefono(valor) {
+  const texto = typeof valor === 'string' ? valor.trim() : ''
+
+  if (!texto) {
+    return ''
+  }
+
+  const digitos = texto.replace(/\D/g, '').length
+
+  if (
+    texto.length > LIMITES.telefono ||
+    digitos < 7 ||
+    digitos > 15 ||
+    !patronTelefono.test(texto)
+  ) {
+    return 'El telefono debe ser valido y tener de 7 a 15 digitos'
+  }
+
+  return ''
+}
+
 export function validarCliente(cliente) {
   const errores = {}
 
-  // Validar nombre
-  if (!cliente.nombre || typeof cliente.nombre !== 'string') {
-    errores.nombre = 'El nombre es requerido y debe ser texto'
-  } else if (cliente.nombre.trim().length < 3) {
-    errores.nombre = 'El nombre debe tener al menos 3 caracteres'
-  } else if (cliente.nombre.trim().length > 80) {
-    errores.nombre = 'El nombre no puede exceder 80 caracteres'
-  }
+  errores.nombre = validarNombrePersona(cliente.nombre, 'El nombre', LIMITES.nombre)
+  errores.ap_pat = validarNombrePersona(
+    cliente.ap_pat,
+    'El apellido paterno',
+    LIMITES.apellido,
+    false,
+  )
+  errores.ap_mat = validarNombrePersona(
+    cliente.ap_mat,
+    'El apellido materno',
+    LIMITES.apellido,
+    false,
+  )
+  errores.telefono = validarTelefono(cliente.telefono)
 
-  // Validar apellido paterno (opcional)
-  if (cliente.ap_pat && typeof cliente.ap_pat === 'string') {
-    if (cliente.ap_pat.trim().length > 60) {
-      errores.ap_pat = 'El apellido paterno no puede exceder 60 caracteres'
+  Object.keys(errores).forEach((llave) => {
+    if (!errores[llave]) {
+      delete errores[llave]
     }
-  }
-
-  // Validar apellido materno (opcional)
-  if (cliente.ap_mat && typeof cliente.ap_mat === 'string') {
-    if (cliente.ap_mat.trim().length > 60) {
-      errores.ap_mat = 'El apellido materno no puede exceder 60 caracteres'
-    }
-  }
-
-  // Validar teléfono (opcional)
-  if (cliente.telefono && typeof cliente.telefono === 'string') {
-    if (!/^[0-9+\-()\s]{7,15}$/.test(cliente.telefono.trim())) {
-      errores.telefono = 'El teléfono debe ser válido (7-15 caracteres)'
-    }
-  }
+  })
 
   return errores
 }

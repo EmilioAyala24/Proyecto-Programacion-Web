@@ -4,6 +4,7 @@ import ProtectedRoute from './components/common/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import AppLayout from './layouts/AppLayout'
 import Clientes from './pages/Clientes'
+import Dashboard from './pages/Dashboard'
 import Inicio from './pages/Inicio'
 import Login from './pages/Login'
 import Lotes from './pages/Lotes'
@@ -20,6 +21,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/inicio" element={<Inicio />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/medicamentos" element={<Medicamentos />} />
             <Route path="/lotes" element={<Lotes />} />
             <Route path="/proveedores" element={<Proveedores />} />

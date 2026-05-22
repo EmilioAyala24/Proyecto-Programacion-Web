@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { validarCorreo, validarProveedor, validarTelefono } from '../../utils/validaciones'
+import {
+  LIMITES,
+  sanitizarDireccion,
+  sanitizarProveedor,
+  sanitizarTelefono,
+  validarCorreo,
+  validarDireccion,
+  validarProveedor,
+  validarTelefono,
+} from '../../utils/validaciones'
 
 const valoresIniciales = {
   nombre: '',
@@ -17,9 +26,16 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
 
   const manejarCambio = (event) => {
     const { name, value } = event.target
+    const filtros = {
+      nombre: sanitizarProveedor,
+      telefono: sanitizarTelefono,
+      correo: (texto) => texto.trim().slice(0, LIMITES.correo),
+      direccion: sanitizarDireccion,
+    }
+
     setFormulario((actual) => ({
       ...actual,
-      [name]: value,
+      [name]: filtros[name] ? filtros[name](value) : value,
     }))
   }
 
@@ -28,7 +44,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
       nombre: validarProveedor(formulario.nombre),
       telefono: validarTelefono(formulario.telefono),
       correo: validarCorreo(formulario.correo),
-      direccion: formulario.direccion.trim() ? '' : 'La direccion es obligatoria.',
+      direccion: validarDireccion(formulario.direccion),
     }
 
     setErrores(nuevosErrores)
@@ -64,6 +80,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
           placeholder="Distribuidora Salud Total"
           value={formulario.nombre}
           onChange={manejarCambio}
+          maxLength={LIMITES.proveedor}
         />
         {errores.nombre && <span className="mensaje-error">{errores.nombre}</span>}
       </div>
@@ -77,6 +94,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
           placeholder="3121457890"
           value={formulario.telefono}
           onChange={manejarCambio}
+          maxLength={LIMITES.telefono}
         />
         {errores.telefono && <span className="mensaje-error">{errores.telefono}</span>}
       </div>
@@ -90,6 +108,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
           placeholder="contacto@proveedor.mx"
           value={formulario.correo}
           onChange={manejarCambio}
+          maxLength={LIMITES.correo}
         />
         {errores.correo && <span className="mensaje-error">{errores.correo}</span>}
       </div>
@@ -102,6 +121,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
           placeholder="Calle, numero, ciudad y estado"
           value={formulario.direccion}
           onChange={manejarCambio}
+          maxLength={LIMITES.direccion}
         />
         {errores.direccion && <span className="mensaje-error">{errores.direccion}</span>}
       </div>

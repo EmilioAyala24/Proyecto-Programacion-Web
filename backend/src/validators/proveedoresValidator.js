@@ -1,6 +1,14 @@
-const patronNombreProveedor = /^[a-zA-Z0-9 .,&-]+$/
+const LIMITES = {
+  nombre: 100,
+  telefono: 15,
+  correo: 100,
+  direccion: 200,
+}
+
+const patronNombreProveedor = /^[a-zA-ZÁÉÍÓÚÜÑáéíóúüñ0-9 .,&'-]+$/
 const patronTelefono = /^[0-9+\-\s()]+$/
 const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const patronDireccion = /^[a-zA-ZÁÉÍÓÚÜÑáéíóúüñ0-9 .,#/()-]+$/
 
 export function validarProveedor(datos) {
   const errores = {}
@@ -8,27 +16,43 @@ export function validarProveedor(datos) {
   const telefono = datos.telefono?.trim() ?? ''
   const correo = datos.correo?.trim() ?? ''
   const direccion = datos.direccion?.trim() ?? ''
+  const digitosTelefono = telefono.replace(/\D/g, '').length
 
   if (!nombre) {
     errores.nombre = 'El nombre del proveedor es obligatorio.'
-  } else if (nombre.length < 3 || !patronNombreProveedor.test(nombre)) {
+  } else if (nombre.length < 3) {
+    errores.nombre = 'El nombre debe tener al menos 3 caracteres.'
+  } else if (nombre.length > LIMITES.nombre) {
+    errores.nombre = `El nombre no puede exceder ${LIMITES.nombre} caracteres.`
+  } else if (!patronNombreProveedor.test(nombre)) {
     errores.nombre = 'El nombre del proveedor contiene caracteres no permitidos.'
   }
 
   if (!telefono) {
     errores.telefono = 'El telefono es obligatorio.'
-  } else if (!patronTelefono.test(telefono) || telefono.replace(/\D/g, '').length < 10) {
-    errores.telefono = 'El telefono debe tener al menos 10 digitos.'
+  } else if (
+    telefono.length > LIMITES.telefono ||
+    digitosTelefono < 7 ||
+    digitosTelefono > 15 ||
+    !patronTelefono.test(telefono)
+  ) {
+    errores.telefono = 'El telefono debe tener de 7 a 15 digitos.'
   }
 
   if (!correo) {
     errores.correo = 'El correo es obligatorio.'
+  } else if (correo.length > LIMITES.correo) {
+    errores.correo = `El correo no puede exceder ${LIMITES.correo} caracteres.`
   } else if (!patronCorreo.test(correo)) {
     errores.correo = 'El correo no tiene un formato valido.'
   }
 
   if (!direccion) {
     errores.direccion = 'La direccion es obligatoria.'
+  } else if (direccion.length > LIMITES.direccion) {
+    errores.direccion = `La direccion no puede exceder ${LIMITES.direccion} caracteres.`
+  } else if (!patronDireccion.test(direccion)) {
+    errores.direccion = 'La direccion contiene caracteres no permitidos.'
   }
 
   return {

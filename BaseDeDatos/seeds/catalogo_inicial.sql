@@ -4,8 +4,8 @@ INSERT INTO metodo_pago (id_metPag, nombre_metodo, descripcion) VALUES
 (3, 'Transferencia', 'Pago por transferencia bancaria')
 ON CONFLICT (id_metPag) DO NOTHING;
 
-INSERT INTO usuario (id_usuario, usuario, rol, fecha_creacion, nombre, ap_pat, ap_mat, telefono) VALUES
-(1, 'admin', 'Administrador', CURRENT_DATE, 'Administrador', 'General', NULL, '3120000000')
+INSERT INTO usuario (id_usuario, usuario, rol, password_hash, fecha_creacion, nombre, ap_pat, ap_mat, telefono) VALUES
+(1, 'admin', 'admin', '8d3f85760f7f1bbdb83cb3d1d52f1b7f:205459b3c63dbaab2a0f83608c9456d71e42c693ee3b44d536a328e4af68294d97fcbd49867b68bf05a31bfa9d8856a42bace8197004c4c0029b2cf22473de79', CURRENT_DATE, 'Administrador', 'General', NULL, '3120000000')
 ON CONFLICT (id_usuario) DO NOTHING;
 
 INSERT INTO cliente (id_cliente, nombre, ap_pat, ap_mat, fecha_registro, telefono) VALUES

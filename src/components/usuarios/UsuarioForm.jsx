@@ -1,5 +1,13 @@
 import { useState } from 'react'
-import { validarTextoFarmacia } from '../../utils/validaciones'
+import {
+  LIMITES,
+  sanitizarNombrePersona,
+  sanitizarTelefono,
+  sanitizarUsuario,
+  validarNombrePersona,
+  validarTelefono,
+  validarUsuario,
+} from '../../utils/validaciones'
 
 const valoresIniciales = {
   usuario: '',
@@ -8,6 +16,7 @@ const valoresIniciales = {
   apPat: '',
   apMat: '',
   telefono: '',
+  password: '',
 }
 
 function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
@@ -19,29 +28,61 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
 
   const manejarCambio = (event) => {
     const { name, value } = event.target
+    const filtros = {
+      usuario: sanitizarUsuario,
+      nombre: (texto) => sanitizarNombrePersona(texto, LIMITES.nombrePersona),
+      apPat: (texto) => sanitizarNombrePersona(texto, LIMITES.apellido),
+      apMat: (texto) => sanitizarNombrePersona(texto, LIMITES.apellido),
+      telefono: sanitizarTelefono,
+      password: (texto) => texto.slice(0, 100),
+    }
+
     setFormulario((actual) => ({
       ...actual,
-      [name]: value,
+      [name]: filtros[name] ? filtros[name](value) : value,
     }))
   }
 
   const validarFormulario = () => {
-    const nuevosErrores = {}
-
-    // Validar usuario
-    if (!formulario.usuario.trim()) {
-      nuevosErrores.usuario = 'El usuario es requerido'
-    } else if (formulario.usuario.trim().length < 3) {
-      nuevosErrores.usuario = 'El usuario debe tener al menos 3 caracteres'
+    const nuevosErrores = {
+      usuario: validarUsuario(formulario.usuario),
+      nombre: validarNombrePersona(formulario.nombre, 'El nombre', LIMITES.nombrePersona),
+      telefono: validarTelefono(formulario.telefono, false),
     }
 
-    // Validar rol
-    if (!formulario.rol) {
-      nuevosErrores.rol = 'El rol es requerido'
+    if (!usuarioInicial || formulario.password) {
+      if (!formulario.password) {
+        nuevosErrores.password = 'La contrasena es requerida'
+      } else if (formulario.password.length < 8) {
+        nuevosErrores.password = 'La contrasena debe tener al menos 8 caracteres'
+      } else if (
+        !/[A-Z]/.test(formulario.password) ||
+        !/[a-z]/.test(formulario.password) ||
+        !/\d/.test(formulario.password)
+      ) {
+        nuevosErrores.password = 'Incluye mayuscula, minuscula y numero'
+      }
     }
 
-    // Validar nombre
-    nuevosErrores.nombre = validarTextoFarmacia(formulario.nombre, 'El nombre')
+    if (!['admin', 'cajero'].includes(formulario.rol)) {
+      nuevosErrores.rol = 'El rol debe ser admin o cajero.'
+    }
+
+    if (formulario.apPat) {
+      nuevosErrores.apPat = validarNombrePersona(
+        formulario.apPat,
+        'El apellido paterno',
+        LIMITES.apellido,
+      )
+    }
+
+    if (formulario.apMat) {
+      nuevosErrores.apMat = validarNombrePersona(
+        formulario.apMat,
+        'El apellido materno',
+        LIMITES.apellido,
+      )
+    }
 
     Object.keys(nuevosErrores).forEach((llave) => {
       if (!nuevosErrores[llave]) {
@@ -67,6 +108,7 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
       apPat: formulario.apPat.trim() || '',
       apMat: formulario.apMat.trim() || '',
       telefono: formulario.telefono.trim() || '',
+      password: formulario.password,
     }
 
     ;(onGuardar ?? onCrearUsuario)(datos)
@@ -84,6 +126,7 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
           placeholder="juan.perez"
           value={formulario.usuario}
           onChange={manejarCambio}
+          maxLength={LIMITES.usuario}
           required
         />
         {errores.usuario && <span className="mensaje-error">{errores.usuario}</span>}
@@ -99,6 +142,23 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
       </div>
 
       <div className="campo-formulario">
+        <label htmlFor="usuario-password">
+          {usuarioInicial ? 'Nueva contrasena' : 'Contrasena *'}
+        </label>
+        <input
+          id="usuario-password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          value={formulario.password}
+          onChange={manejarCambio}
+          maxLength={100}
+          required={!usuarioInicial}
+        />
+        {errores.password && <span className="mensaje-error">{errores.password}</span>}
+      </div>
+
+      <div className="campo-formulario">
         <label htmlFor="usuario-nombre">Nombre *</label>
         <input
           id="usuario-nombre"
@@ -106,6 +166,7 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
           placeholder="Juan"
           value={formulario.nombre}
           onChange={manejarCambio}
+          maxLength={LIMITES.nombrePersona}
           required
         />
         {errores.nombre && <span className="mensaje-error">{errores.nombre}</span>}
@@ -116,10 +177,12 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
         <input
           id="usuario-ap-pat"
           name="apPat"
-          placeholder="Pérez"
+          placeholder="Perez"
           value={formulario.apPat}
           onChange={manejarCambio}
+          maxLength={LIMITES.apellido}
         />
+        {errores.apPat && <span className="mensaje-error">{errores.apPat}</span>}
       </div>
 
       <div className="campo-formulario">
@@ -127,22 +190,26 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
         <input
           id="usuario-ap-mat"
           name="apMat"
-          placeholder="García"
+          placeholder="Garcia"
           value={formulario.apMat}
           onChange={manejarCambio}
+          maxLength={LIMITES.apellido}
         />
+        {errores.apMat && <span className="mensaje-error">{errores.apMat}</span>}
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="usuario-telefono">Teléfono</label>
+        <label htmlFor="usuario-telefono">Telefono</label>
         <input
           id="usuario-telefono"
           name="telefono"
           type="tel"
-          placeholder="+57 123 456 7890"
+          placeholder="+52 312 123 4567"
           value={formulario.telefono}
           onChange={manejarCambio}
+          maxLength={LIMITES.telefono}
         />
+        {errores.telefono && <span className="mensaje-error">{errores.telefono}</span>}
       </div>
 
       <button type="submit" className="boton boton--primario">

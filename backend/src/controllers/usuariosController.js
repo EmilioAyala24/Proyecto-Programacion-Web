@@ -1,4 +1,5 @@
 import * as usuariosModel from '../models/usuariosModel.js'
+import { generarPasswordHash } from '../utils/password.js'
 import { validarUsuario } from '../validators/usuariosValidator.js'
 
 export async function listarUsuarios(_req, res, next) {
@@ -39,7 +40,7 @@ export async function obtenerUsuario(req, res, next) {
 
 export async function crearUsuario(req, res, next) {
   try {
-    const { usuario, rol, nombre, ap_pat, ap_mat, telefono } = req.body
+    const { usuario, rol, nombre, ap_pat, ap_mat, telefono, password } = req.body
 
     const erroresValidacion = validarUsuario({
       usuario,
@@ -48,6 +49,8 @@ export async function crearUsuario(req, res, next) {
       ap_pat,
       ap_mat,
       telefono,
+      password,
+      requierePassword: true,
     })
 
     if (Object.keys(erroresValidacion).length > 0) {
@@ -56,11 +59,12 @@ export async function crearUsuario(req, res, next) {
 
     const usuarioCreado = await usuariosModel.crearUsuario(
       usuario,
-      rol,
+      rol.toLowerCase(),
       nombre,
       ap_pat,
       ap_mat,
       telefono,
+      generarPasswordHash(password),
     )
 
     res.status(201).json({
@@ -75,7 +79,7 @@ export async function crearUsuario(req, res, next) {
 export async function actualizarUsuario(req, res, next) {
   try {
     const { id } = req.params
-    const { usuario, rol, nombre, ap_pat, ap_mat, telefono } = req.body
+    const { usuario, rol, nombre, ap_pat, ap_mat, telefono, password } = req.body
 
     if (!id || isNaN(id)) {
       return res.status(400).json({
@@ -90,6 +94,8 @@ export async function actualizarUsuario(req, res, next) {
       ap_pat,
       ap_mat,
       telefono,
+      password,
+      requierePassword: false,
     })
 
     if (Object.keys(erroresValidacion).length > 0) {
@@ -99,11 +105,12 @@ export async function actualizarUsuario(req, res, next) {
     const usuarioActualizado = await usuariosModel.actualizarUsuario(
       Number(id),
       usuario,
-      rol,
+      rol.toLowerCase(),
       nombre,
       ap_pat,
       ap_mat,
       telefono,
+      password ? generarPasswordHash(password) : null,
     )
 
     if (!usuarioActualizado) {
