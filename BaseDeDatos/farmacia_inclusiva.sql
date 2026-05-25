@@ -22,7 +22,7 @@ CREATE TABLE usuario (
     usuario         VARCHAR(60)     NOT NULL UNIQUE,
     rol             VARCHAR(30)     NOT NULL,
     password_hash   VARCHAR(180)    NOT NULL,
-    fecha_creacion  DATE            DEFAULT NULL,
+    fecha_creacion  TIMESTAMP       DEFAULT NULL,
     ultima_conexion TIMESTAMP       DEFAULT NULL,
     nombre          VARCHAR(80)     NOT NULL,
     ap_pat          VARCHAR(60)     DEFAULT NULL,
@@ -39,8 +39,9 @@ CREATE TABLE cliente (
     nombre          VARCHAR(80)     NOT NULL,
     ap_pat          VARCHAR(60)     DEFAULT NULL,
     ap_mat          VARCHAR(60)     DEFAULT NULL,
-    fecha_registro  DATE            DEFAULT NULL,
+    fecha_registro  TIMESTAMP       DEFAULT NULL,
     telefono        VARCHAR(15)     DEFAULT NULL,
+    correo          VARCHAR(100)    DEFAULT NULL,
     PRIMARY KEY (id_cliente)
 );
 
@@ -62,6 +63,7 @@ CREATE TABLE proveedor (
 CREATE TABLE lote (
     id_lote             SERIAL          NOT NULL,
     id_prov             INTEGER         NOT NULL,
+    id_med              INTEGER         DEFAULT NULL,
     numero_lote         VARCHAR(60)     NOT NULL,
     fecha_fabricacion   DATE            DEFAULT NULL,
     fecha_caducidad     DATE            DEFAULT NULL,
@@ -80,10 +82,11 @@ CREATE TABLE lote (
 -- -------------------------------------------------------------
 CREATE TABLE medicamento (
     id_med              SERIAL          NOT NULL,
-    id_lote             INTEGER         NOT NULL,
+    id_lote             INTEGER         DEFAULT NULL,
     nombre              VARCHAR(120)    NOT NULL,
     presentacion        VARCHAR(80)     DEFAULT NULL,
     concentracion       VARCHAR(60)     DEFAULT NULL,
+    contenido           VARCHAR(80)     DEFAULT NULL,
     requiere_receta     BOOLEAN         DEFAULT FALSE,
     fecha_registro      DATE            DEFAULT NULL,
     estado_colorimetria VARCHAR(20)     DEFAULT 'sin_stock'
@@ -91,6 +94,9 @@ CREATE TABLE medicamento (
     PRIMARY KEY (id_med),
     CONSTRAINT fk_med_lote FOREIGN KEY (id_lote) REFERENCES lote(id_lote)
 );
+
+ALTER TABLE lote
+    ADD CONSTRAINT fk_lote_med FOREIGN KEY (id_med) REFERENCES medicamento(id_med);
 
 -- -------------------------------------------------------------
 -- 7. CODIGOS QR

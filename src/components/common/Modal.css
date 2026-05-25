@@ -13,13 +13,22 @@
 
 .modal-contenido {
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   max-width: 600px;
   width: 90%;
   max-height: 90vh;
+  overflow-x: hidden;
   overflow-y: auto;
   animation: slideUp 0.3s ease-out;
+}
+
+.modal-contenido--grande {
+  max-width: 960px;
+}
+
+.modal-contenido--extra-grande {
+  max-width: 1040px;
 }
 
 @keyframes slideUp {

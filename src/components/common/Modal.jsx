@@ -1,11 +1,11 @@
 import './Modal.css'
 
-function Modal({ isOpen, onClose, title, children }) {
+function Modal({ isOpen, onClose, title, children, size = 'normal' }) {
   if (!isOpen) return null
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-contenido" onClick={(e) => e.stopPropagation()}>
+      <div className={`modal-contenido modal-contenido--${size}`} onClick={(e) => e.stopPropagation()}>
         <div className="modal-encabezado">
           <h2>{title}</h2>
           <button

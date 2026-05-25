@@ -4,27 +4,48 @@ import {
   sanitizarDecimal,
   sanitizarEntero,
   sanitizarTextoFarmacia,
-  validarPrecio,
-  validarStock,
   validarTextoFarmacia,
 } from '../../utils/validaciones'
 
 const valoresIniciales = {
   nombre: '',
   presentacion: '',
-  concentracion: '',
-  contenido: '',
+  concentracionValor: '',
+  concentracionUnidad: 'mg',
+  contenidoValor: '',
+  contenidoUnidad: 'tabletas',
   requiereReceta: false,
-  stockDisponible: '',
-  precioUnitario: '',
+}
+
+const unidadesConcentracion = ['mg', 'g', 'mcg', 'mL', 'mg/mL', '%', 'UI']
+const unidadesContenido = ['tabletas', 'capsulas', 'comprimidos', 'mL', 'g', 'sobres', 'ampolletas', 'piezas']
+
+function separarValorUnidad(texto, unidadPredeterminada) {
+  const partes = String(texto ?? '').trim().split(/\s+/)
+
+  if (partes.length < 2) {
+    return {
+      valor: partes[0] ?? '',
+      unidad: unidadPredeterminada,
+    }
+  }
+
+  return {
+    valor: partes.slice(0, -1).join(' '),
+    unidad: partes.at(-1),
+  }
 }
 
 function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) {
+  const concentracionInicial = separarValorUnidad(medicamentoInicial?.concentracion, 'mg')
+  const contenidoInicial = separarValorUnidad(medicamentoInicial?.contenido, 'tabletas')
   const [formulario, setFormulario] = useState({
     ...valoresIniciales,
     ...medicamentoInicial,
-    stockDisponible: medicamentoInicial?.stockDisponible ?? '',
-    precioUnitario: medicamentoInicial?.precioUnitario ?? '',
+    concentracionValor: concentracionInicial.valor,
+    concentracionUnidad: concentracionInicial.unidad,
+    contenidoValor: contenidoInicial.valor,
+    contenidoUnidad: contenidoInicial.unidad,
   })
   const [errores, setErrores] = useState({})
 
@@ -33,10 +54,8 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
     const filtros = {
       nombre: (texto) => sanitizarTextoFarmacia(texto, LIMITES.medicamentoNombre),
       presentacion: (texto) => sanitizarTextoFarmacia(texto, LIMITES.presentacion),
-      concentracion: (texto) => sanitizarTextoFarmacia(texto, LIMITES.concentracion),
-      contenido: (texto) => sanitizarTextoFarmacia(texto, LIMITES.contenido),
-      stockDisponible: sanitizarEntero,
-      precioUnitario: sanitizarDecimal,
+      concentracionValor: sanitizarDecimal,
+      contenidoValor: sanitizarEntero,
     }
 
     setFormulario((actual) => ({
@@ -46,6 +65,8 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
   }
 
   const validarFormulario = () => {
+    const concentracion = `${formulario.concentracionValor} ${formulario.concentracionUnidad}`.trim()
+    const contenido = `${formulario.contenidoValor} ${formulario.contenidoUnidad}`.trim()
     const nuevosErrores = {
       nombre: validarTextoFarmacia(formulario.nombre, 'El nombre', LIMITES.medicamentoNombre),
       presentacion: validarTextoFarmacia(
@@ -54,13 +75,11 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
         LIMITES.presentacion,
       ),
       concentracion: validarTextoFarmacia(
-        formulario.concentracion,
+        concentracion,
         'La concentracion',
         LIMITES.concentracion,
       ),
-      contenido: validarTextoFarmacia(formulario.contenido, 'El contenido', LIMITES.contenido),
-      stockDisponible: validarStock(formulario.stockDisponible),
-      precioUnitario: validarPrecio(formulario.precioUnitario, 'El precio unitario'),
+      contenido: validarTextoFarmacia(contenido, 'El contenido', LIMITES.contenido),
     }
 
     setErrores(nuevosErrores)
@@ -74,14 +93,15 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
       return
     }
 
+    const concentracion = `${formulario.concentracionValor} ${formulario.concentracionUnidad}`.trim()
+    const contenido = `${formulario.contenidoValor} ${formulario.contenidoUnidad}`.trim()
+
     const datos = {
       nombre: formulario.nombre.trim(),
       presentacion: formulario.presentacion.trim(),
-      concentracion: formulario.concentracion.trim(),
-      contenido: formulario.contenido.trim(),
+      concentracion,
+      contenido,
       requiereReceta: formulario.requiereReceta,
-      stockDisponible: Number(formulario.stockDisponible),
-      precioUnitario: Number(formulario.precioUnitario),
     }
 
     ;(onGuardar ?? onCrearMedicamento)(datos)
@@ -119,56 +139,56 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
 
       <div className="campo-formulario">
         <label htmlFor="medicamento-concentracion">Concentracion</label>
-        <input
-          id="medicamento-concentracion"
-          name="concentracion"
-          placeholder="500 mg"
-          value={formulario.concentracion}
-          onChange={manejarCambio}
-          maxLength={LIMITES.concentracion}
-        />
+        <div className="campo-compuesto">
+          <input
+            id="medicamento-concentracion"
+            name="concentracionValor"
+            inputMode="decimal"
+            placeholder="500"
+            value={formulario.concentracionValor}
+            onChange={manejarCambio}
+          />
+          <select
+            aria-label="Unidad de concentracion"
+            name="concentracionUnidad"
+            value={formulario.concentracionUnidad}
+            onChange={manejarCambio}
+          >
+            {unidadesConcentracion.map((unidad) => (
+              <option key={unidad} value={unidad}>
+                {unidad}
+              </option>
+            ))}
+          </select>
+        </div>
         {errores.concentracion && <span className="mensaje-error">{errores.concentracion}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="medicamento-contenido">Contenido</label>
-        <input
-          id="medicamento-contenido"
-          name="contenido"
-          placeholder="20 tabletas"
-          value={formulario.contenido}
-          onChange={manejarCambio}
-          maxLength={LIMITES.contenido}
-        />
+        <div className="campo-compuesto">
+          <input
+            id="medicamento-contenido"
+            name="contenidoValor"
+            inputMode="numeric"
+            placeholder="20"
+            value={formulario.contenidoValor}
+            onChange={manejarCambio}
+          />
+          <select
+            aria-label="Unidad de contenido"
+            name="contenidoUnidad"
+            value={formulario.contenidoUnidad}
+            onChange={manejarCambio}
+          >
+            {unidadesContenido.map((unidad) => (
+              <option key={unidad} value={unidad}>
+                {unidad}
+              </option>
+            ))}
+          </select>
+        </div>
         {errores.contenido && <span className="mensaje-error">{errores.contenido}</span>}
-      </div>
-
-      <div className="campo-formulario">
-        <label htmlFor="medicamento-stock">Stock disponible</label>
-        <input
-          id="medicamento-stock"
-          name="stockDisponible"
-          inputMode="numeric"
-          min="0"
-          placeholder="25"
-          value={formulario.stockDisponible}
-          onChange={manejarCambio}
-        />
-        {errores.stockDisponible && <span className="mensaje-error">{errores.stockDisponible}</span>}
-      </div>
-
-      <div className="campo-formulario">
-        <label htmlFor="medicamento-precio">Precio unitario</label>
-        <input
-          id="medicamento-precio"
-          name="precioUnitario"
-          inputMode="decimal"
-          min="0"
-          placeholder="35.50"
-          value={formulario.precioUnitario}
-          onChange={manejarCambio}
-        />
-        {errores.precioUnitario && <span className="mensaje-error">{errores.precioUnitario}</span>}
       </div>
 
       <label className="campo-check" htmlFor="medicamento-receta">

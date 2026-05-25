@@ -9,6 +9,8 @@ const patronNombreProveedor = /^[a-zA-ZÁÉÍÓÚÜÑáéíóúüñ0-9 .,&'-]+$/
 const patronTelefono = /^[0-9+\-\s()]+$/
 const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const patronDireccion = /^[a-zA-ZÁÉÍÓÚÜÑáéíóúüñ0-9 .,#/()-]+$/
+const PREFIJO_TELEFONO = '(312)'
+const DIGITOS_TELEFONO_LOCAL = 7
 
 export function validarProveedor(datos) {
   const errores = {}
@@ -16,7 +18,10 @@ export function validarProveedor(datos) {
   const telefono = datos.telefono?.trim() ?? ''
   const correo = datos.correo?.trim() ?? ''
   const direccion = datos.direccion?.trim() ?? ''
-  const digitosTelefono = telefono.replace(/\D/g, '').length
+  const digitosTelefono = telefono.replace(/\D/g, '')
+  const digitosLocalesTelefono = digitosTelefono.startsWith('312')
+    ? digitosTelefono.slice(3)
+    : digitosTelefono
 
   if (!nombre) {
     errores.nombre = 'El nombre del proveedor es obligatorio.'
@@ -32,11 +37,11 @@ export function validarProveedor(datos) {
     errores.telefono = 'El telefono es obligatorio.'
   } else if (
     telefono.length > LIMITES.telefono ||
-    digitosTelefono < 7 ||
-    digitosTelefono > 15 ||
+    !telefono.startsWith(PREFIJO_TELEFONO) ||
+    digitosLocalesTelefono.length !== DIGITOS_TELEFONO_LOCAL ||
     !patronTelefono.test(telefono)
   ) {
-    errores.telefono = 'El telefono debe tener de 7 a 15 digitos.'
+    errores.telefono = `El telefono debe completar ${DIGITOS_TELEFONO_LOCAL} digitos despues de ${PREFIJO_TELEFONO}.`
   }
 
   if (!correo) {

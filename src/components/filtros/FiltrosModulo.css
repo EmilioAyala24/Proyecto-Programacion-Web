@@ -1,11 +1,23 @@
 .filtros-modulo {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  background: #f8fafc;
-  padding: 14px;
+  grid-template-columns: repeat(4, minmax(150px, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+  background: #f8fbfd;
+  padding: 18px;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #dbe8ef;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  margin-bottom: 18px;
+}
+
+.filtros-modulo__titulo {
+  grid-column: 1 / -1;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .filtro-grupo {
@@ -16,19 +28,19 @@
 
 .filtro-grupo label {
   font-size: 12px;
-  font-weight: 600;
-  color: #666;
-  text-transform: uppercase;
+  font-weight: 700;
+  color: #64748b;
 }
 
 .filtro-grupo input,
 .filtro-grupo select {
   padding: 8px 12px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #dbe3ea;
   border-radius: 8px;
-  font-size: 14px;
+  color: #334155;
+  font-size: 15px;
   font-family: inherit;
-  min-height: 42px;
+  min-height: 40px;
   min-width: 0;
   transition: border-color 0.2s;
   width: 100%;
@@ -42,5 +54,31 @@
 }
 
 .filtro-grupo input::placeholder {
-  color: #ccc;
+  color: #9aa8b5;
+}
+
+.filtros-modulo__botones {
+  display: flex;
+  gap: 8px;
+}
+
+.filtros-modulo__botones .boton {
+  min-height: 40px;
+  padding-inline: 18px;
+}
+
+@media (max-width: 980px) {
+  .filtros-modulo {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+
+  .filtros-modulo__botones {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .filtros-modulo {
+    grid-template-columns: 1fr;
+  }
 }

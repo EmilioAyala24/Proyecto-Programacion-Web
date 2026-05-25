@@ -2,10 +2,14 @@ const LIMITES = {
   nombre: 80,
   apellido: 60,
   telefono: 15,
+  correo: 100,
 }
 
 const patronNombrePersona = /^[a-zA-ZÁÉÍÓÚÜÑáéíóúüñ\s'-]+$/
 const patronTelefono = /^[0-9+\-()\s]+$/
+const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PREFIJO_TELEFONO = '(312)'
+const DIGITOS_TELEFONO_LOCAL = 7
 
 function validarNombrePersona(valor, campo, maximo, obligatorio = true) {
   const texto = typeof valor === 'string' ? valor.trim() : ''
@@ -36,15 +40,30 @@ function validarTelefono(valor) {
     return ''
   }
 
-  const digitos = texto.replace(/\D/g, '').length
+  const digitos = texto.replace(/\D/g, '')
+  const digitosLocales = digitos.startsWith('312') ? digitos.slice(3) : digitos
 
   if (
     texto.length > LIMITES.telefono ||
-    digitos < 7 ||
-    digitos > 15 ||
+    !texto.startsWith(PREFIJO_TELEFONO) ||
+    digitosLocales.length !== DIGITOS_TELEFONO_LOCAL ||
     !patronTelefono.test(texto)
   ) {
-    return 'El telefono debe ser valido y tener de 7 a 15 digitos'
+    return `El telefono debe completar ${DIGITOS_TELEFONO_LOCAL} digitos despues de ${PREFIJO_TELEFONO}`
+  }
+
+  return ''
+}
+
+function validarCorreo(valor) {
+  const texto = typeof valor === 'string' ? valor.trim() : ''
+
+  if (!texto) {
+    return ''
+  }
+
+  if (texto.length > LIMITES.correo || !patronCorreo.test(texto)) {
+    return 'Ingresa un correo valido.'
   }
 
   return ''
@@ -67,6 +86,7 @@ export function validarCliente(cliente) {
     false,
   )
   errores.telefono = validarTelefono(cliente.telefono)
+  errores.correo = validarCorreo(cliente.correo)
 
   Object.keys(errores).forEach((llave) => {
     if (!errores[llave]) {

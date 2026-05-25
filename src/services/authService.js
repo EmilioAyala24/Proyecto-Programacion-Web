@@ -68,6 +68,16 @@ export function obtenerSesion() {
   }
 }
 
-export function logout() {
+export async function logout() {
+  const sesion = obtenerSesion()
+
+  if (API_URL && sesion?.id) {
+    await fetch(`${API_URL}/auth/logout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: sesion.id }),
+    }).catch(() => {})
+  }
+
   localStorage.removeItem(STORAGE_KEY)
 }

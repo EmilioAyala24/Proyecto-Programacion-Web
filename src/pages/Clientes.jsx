@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
 import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
+import Paginacion from '../components/common/Paginacion'
 import FiltrosClientes from '../components/filtros/FiltrosClientes'
 import ClienteForm from '../components/clientes/ClienteForm'
 import ClientesTable from '../components/clientes/ClientesTable'
@@ -11,6 +12,17 @@ import {
   eliminarCliente,
   obtenerClientes,
 } from '../services/clientesService'
+
+function obtenerFechaDesdeRegistro(fechaRegistro) {
+  const coincidencia = String(fechaRegistro ?? '').match(/^(\d{2})-(\d{2})-(\d{4})/)
+
+  if (!coincidencia) {
+    return null
+  }
+
+  const [, dia, mes, anio] = coincidencia
+  return new Date(Number(anio), Number(mes) - 1, Number(dia))
+}
 
 function Clientes() {
   const [clientes, setClientes] = useState([])
@@ -23,6 +35,8 @@ function Clientes() {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [clienteEditando, setClienteEditando] = useState(null)
   const [clienteViendo, setClienteViendo] = useState(null)
+  const [paginaActual, setPaginaActual] = useState(1)
+  const registrosPorPagina = 8
 
   useEffect(() => {
     obtenerClientes()
@@ -48,6 +62,12 @@ function Clientes() {
       return coincideNombre && coincideTelefono
     })
   }, [filtros, clientes])
+
+  const totalPaginas = Math.max(1, Math.ceil(clientesFiltrados.length / registrosPorPagina))
+  const clientesPaginados = clientesFiltrados.slice(
+    (paginaActual - 1) * registrosPorPagina,
+    paginaActual * registrosPorPagina,
+  )
 
   const manejarCrearCliente = async (nuevoCliente) => {
     try {
@@ -108,10 +128,10 @@ function Clientes() {
           <strong>
             {
               clientes.filter((cliente) => {
-                const fecha = new Date(cliente.fechaRegistro)
+                const fecha = obtenerFechaDesdeRegistro(cliente.fechaRegistro)
                 const hoy = new Date()
                 const hace7Dias = new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000)
-                return fecha > hace7Dias
+                return fecha && fecha > hace7Dias
               }).length
             }
           </strong>
@@ -131,19 +151,31 @@ function Clientes() {
           />
         </div>
 
-        <FiltrosClientes filtros={filtros} onChange={setFiltros} />
+        <FiltrosClientes
+          filtros={filtros}
+          onChange={(nuevosFiltros) => {
+            setFiltros(nuevosFiltros)
+            setPaginaActual(1)
+          }}
+        />
 
         {error && <div className="alerta-error">{error}</div>}
         {cargando ? (
           <p className="texto-secundario">Cargando clientes...</p>
         ) : (
           <ClientesTable
-            clientes={clientesFiltrados}
+            clientes={clientesPaginados}
             onEditar={setClienteEditando}
             onEliminar={manejarEliminarCliente}
             onVer={setClienteViendo}
           />
         )}
+        <Paginacion
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          totalRegistros={clientesFiltrados.length}
+          onChange={setPaginaActual}
+        />
       </div>
 
       <Modal
@@ -174,6 +206,7 @@ function Clientes() {
               { etiqueta: 'Apellido paterno', valor: clienteViendo.apPat },
               { etiqueta: 'Apellido materno', valor: clienteViendo.apMat },
               { etiqueta: 'Telefono', valor: clienteViendo.telefono },
+              { etiqueta: 'Correo electronico', valor: clienteViendo.correo },
               { etiqueta: 'Fecha de registro', valor: clienteViendo.fechaRegistro },
             ]}
           />

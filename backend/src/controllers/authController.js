@@ -19,8 +19,6 @@ export async function login(req, res, next) {
       return res.status(401).json({ mensaje: 'Usuario o contrasena incorrectos.' })
     }
 
-    await usuariosModel.registrarConexion(usuario.id_usuario)
-
     return res.json({
       data: {
         id: usuario.id_usuario,
@@ -31,6 +29,25 @@ export async function login(req, res, next) {
         telefono: usuario.telefono,
         rol: usuario.rol,
       },
+    })
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export async function logout(req, res, next) {
+  try {
+    const idUsuario = Number(req.body?.id ?? req.body?.id_usuario)
+
+    if (!idUsuario || Number.isNaN(idUsuario)) {
+      return res.status(400).json({ mensaje: 'El usuario es requerido para cerrar sesion.' })
+    }
+
+    const conexion = await usuariosModel.registrarConexion(idUsuario)
+
+    return res.json({
+      mensaje: 'Sesion cerrada.',
+      data: conexion,
     })
   } catch (error) {
     return next(error)

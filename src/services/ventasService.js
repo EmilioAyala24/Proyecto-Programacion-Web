@@ -1,10 +1,84 @@
 const API_URL = import.meta.env.VITE_API_URL
+const ZONA_HORARIA = 'America/Mexico_City'
+
+function obtenerPartesFechaMexico(fecha) {
+  return new Intl.DateTimeFormat('es-MX', {
+    timeZone: ZONA_HORARIA,
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).formatToParts(fecha).reduce((partes, parte) => {
+    partes[parte.type] = parte.value
+    return partes
+  }, {})
+}
+
+function normalizarFechaVenta(valor, diaServidor, horaServidor) {
+  if (!valor) {
+    return {
+      fecha: '',
+      fecha_venta: '',
+      fecha_venta_dia: diaServidor || '',
+      fecha_venta_hora: Number(horaServidor),
+    }
+  }
+
+  if (/^\d{2}-\d{2}-\d{4}/.test(String(valor))) {
+    const [fecha, hora = ''] = String(valor).split('|').map((parte) => parte.trim())
+    const [day, month, year] = fecha.split('-')
+
+    return {
+      fecha: `${fecha} | ${hora}`,
+      fecha_venta: `${fecha} | ${hora}`,
+      fecha_venta_dia: year && month && day ? `${year}-${month}-${day}` : diaServidor || '',
+      fecha_venta_hora: Number(horaServidor ?? hora.split(':')[0]),
+    }
+  }
+
+  const fecha = new Date(valor)
+  if (Number.isNaN(fecha.getTime())) {
+    return {
+      fecha: String(valor),
+      fecha_venta: String(valor),
+      fecha_venta_dia: diaServidor || '',
+      fecha_venta_hora: Number(horaServidor),
+    }
+  }
+
+  const ahora = new Date()
+  const fechaAjustada = fecha > new Date(ahora.getTime() + 5 * 60 * 1000)
+    ? new Date(fecha.getTime() - 6 * 60 * 60 * 1000)
+    : fecha
+  const partes = obtenerPartesFechaMexico(fechaAjustada)
+  const fechaFormateada = `${partes.day}-${partes.month}-${partes.year} | ${partes.hour}:${partes.minute}:${partes.second}`
+
+  return {
+    fecha: fechaFormateada,
+    fecha_venta: fechaFormateada,
+    fecha_venta_dia: `${partes.year}-${partes.month}-${partes.day}`,
+    fecha_venta_hora: Number(partes.hour),
+  }
+}
 
 function normalizarVenta(venta) {
+  const fechaVenta = normalizarFechaVenta(
+    venta.fecha_venta,
+    venta.fecha_venta_dia,
+    venta.fecha_venta_hora,
+  )
+
   return {
     id: venta.id_ventas,
     id_ventas: venta.id_ventas,
-    fecha: venta.fecha_venta ? new Date(venta.fecha_venta).toLocaleDateString() : '',
+    fecha: fechaVenta.fecha,
+    fecha_venta: fechaVenta.fecha_venta,
+    fecha_venta_iso: venta.fecha_venta_iso || '',
+    fecha_venta_dia: fechaVenta.fecha_venta_dia,
+    fecha_venta_hora: fechaVenta.fecha_venta_hora,
     usuario: venta.usuario_nombre || 'Sin asignar',
     usuario_nombre: venta.usuario_nombre || 'Sin asignar',
     metodoPago: venta.nombre_metodo || 'No especificado',
@@ -69,11 +143,7 @@ export async function obtenerMetodosPago() {
   }
 
   const datos = await respuesta.json()
-  return (datos.data || []).map((medicamento) => ({
-    ...medicamento,
-    stock_actual: Number(medicamento.stock_actual) || 0,
-    precio_venta: Number(medicamento.precio_venta) || 0,
-  }))
+  return datos.data || []
 }
 
 export async function obtenerClientes() {
@@ -103,7 +173,11 @@ export async function obtenerMedicamentosDisponibles() {
   }
 
   const datos = await respuesta.json()
-  return datos.data || []
+  return (datos.data || []).map((medicamento) => ({
+    ...medicamento,
+    stock_actual: Number(medicamento.stock_actual) || 0,
+    precio_venta: Number(medicamento.precio_venta) || 0,
+  }))
 }
 
 export async function crearVenta(datosVenta) {

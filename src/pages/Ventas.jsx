@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
 import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
+import Paginacion from '../components/common/Paginacion'
 import FiltrosVentas from '../components/filtros/FiltrosVentas'
 import VentaForm from '../components/ventas/VentaForm'
 import VentasTable from '../components/ventas/VentasTable'
@@ -21,6 +22,8 @@ function Ventas() {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [ventaViendo, setVentaViendo] = useState(null)
   const [detalleVenta, setDetalleVenta] = useState([])
+  const [paginaActual, setPaginaActual] = useState(1)
+  const registrosPorPagina = 8
   const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   useEffect(() => {
@@ -48,6 +51,12 @@ function Ventas() {
       return coincideId && coincideCliente && coincideUsuario
     })
   }, [filtros, ventas])
+
+  const totalPaginas = Math.max(1, Math.ceil(ventasFiltradas.length / registrosPorPagina))
+  const ventasPaginadas = ventasFiltradas.slice(
+    (paginaActual - 1) * registrosPorPagina,
+    paginaActual * registrosPorPagina,
+  )
 
   const manejarCrearVenta = async (nuevaVenta) => {
     setCargandoCrear(true)
@@ -135,13 +144,25 @@ function Ventas() {
           />
         </div>
 
-        <FiltrosVentas filtros={filtros} onChange={setFiltros} />
+        <FiltrosVentas
+          filtros={filtros}
+          onChange={(nuevosFiltros) => {
+            setFiltros(nuevosFiltros)
+            setPaginaActual(1)
+          }}
+        />
 
         <VentasTable
-          ventas={ventasFiltradas}
+          ventas={ventasPaginadas}
           cargando={cargando}
           error={error}
           onVer={manejarVerVenta}
+        />
+        <Paginacion
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          totalRegistros={ventasFiltradas.length}
+          onChange={setPaginaActual}
         />
       </section>
 
@@ -149,6 +170,7 @@ function Ventas() {
         isOpen={modalAbierto}
         onClose={() => setModalAbierto(false)}
         title="Registrar nueva venta"
+        size="grande"
       >
         <VentaForm onCrearVenta={manejarCrearVenta} cargando={cargandoCrear} />
       </Modal>

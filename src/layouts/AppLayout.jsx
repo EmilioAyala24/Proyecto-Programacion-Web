@@ -7,8 +7,8 @@ function AppLayout() {
   const navigate = useNavigate()
   const modulos = obtenerModulosPorRol(usuario?.rol)
 
-  const manejarCerrarSesion = () => {
-    cerrarSesion()
+  const manejarCerrarSesion = async () => {
+    await cerrarSesion()
     navigate('/login', { replace: true })
   }
 

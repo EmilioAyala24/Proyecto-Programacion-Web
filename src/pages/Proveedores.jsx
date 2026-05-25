@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
 import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
+import Paginacion from '../components/common/Paginacion'
 import FiltrosProveedores from '../components/filtros/FiltrosProveedores'
 import ProveedorForm from '../components/proveedores/ProveedorForm'
 import ProveedoresTable from '../components/proveedores/ProveedoresTable'
@@ -23,6 +24,8 @@ function Proveedores() {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [proveedorEditando, setProveedorEditando] = useState(null)
   const [proveedorViendo, setProveedorViendo] = useState(null)
+  const [paginaActual, setPaginaActual] = useState(1)
+  const registrosPorPagina = 8
 
   useEffect(() => {
     obtenerProveedores()
@@ -44,6 +47,12 @@ function Proveedores() {
       return coincideNombre && coincideCorreo
     })
   }, [filtros, proveedores])
+
+  const totalPaginas = Math.max(1, Math.ceil(proveedoresFiltrados.length / registrosPorPagina))
+  const proveedoresPaginados = proveedoresFiltrados.slice(
+    (paginaActual - 1) * registrosPorPagina,
+    paginaActual * registrosPorPagina,
+  )
 
   const manejarCrearProveedor = async (nuevoProveedor) => {
     try {
@@ -120,19 +129,31 @@ function Proveedores() {
           />
         </div>
 
-        <FiltrosProveedores filtros={filtros} onChange={setFiltros} />
+        <FiltrosProveedores
+          filtros={filtros}
+          onChange={(nuevosFiltros) => {
+            setFiltros(nuevosFiltros)
+            setPaginaActual(1)
+          }}
+        />
 
         {error && <div className="alerta-error">{error}</div>}
         {cargando ? (
           <p className="texto-secundario">Cargando proveedores...</p>
         ) : (
           <ProveedoresTable
-            proveedores={proveedoresFiltrados}
+            proveedores={proveedoresPaginados}
             onEditar={setProveedorEditando}
             onEliminar={manejarEliminarProveedor}
             onVer={setProveedorViendo}
           />
         )}
+        <Paginacion
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          totalRegistros={proveedoresFiltrados.length}
+          onChange={setPaginaActual}
+        />
       </div>
 
       <Modal

@@ -1,28 +1,32 @@
 import { pool } from '../config/database.js'
 
+const consultaLotes = `
+  SELECT
+    l.id_lote,
+    l.numero_lote AS codigo_lote,
+    l.id_prov,
+    l.id_med,
+    l.fecha_fabricacion,
+    l.stock_actual AS stock_disponible,
+    l.fecha_ingreso,
+    l.fecha_caducidad,
+    l.precio_compra,
+    l.precio_venta,
+    p.nombre AS nombre_proveedor,
+    COALESCE(m.nombre, 'Sin medicamento') AS nombre_medicamento,
+    CASE
+      WHEN l.fecha_caducidad < CURRENT_DATE THEN 'Caducado'
+      WHEN l.fecha_caducidad <= CURRENT_DATE + INTERVAL '60 days' THEN 'Proximo'
+      ELSE 'Vigente'
+    END AS estado
+  FROM lote l
+  JOIN proveedor p ON p.id_prov = l.id_prov
+  LEFT JOIN medicamento m ON m.id_med = l.id_med
+`
+
 export async function obtenerLotes() {
   const resultado = await pool.query(
-    `SELECT
-       l.id_lote,
-       l.numero_lote AS codigo_lote,
-       l.id_prov,
-       l.fecha_fabricacion,
-       l.stock_actual AS stock_disponible,
-       l.fecha_ingreso,
-       l.fecha_caducidad,
-       l.precio_compra,
-       l.precio_venta,
-       m.id_med,
-       p.nombre AS nombre_proveedor,
-       COALESCE(m.nombre, 'Sin medicamento') AS nombre_medicamento,
-       CASE
-         WHEN l.fecha_caducidad < CURRENT_DATE THEN 'Caducado'
-         WHEN l.fecha_caducidad <= CURRENT_DATE + INTERVAL '60 days' THEN 'Proximo'
-         ELSE 'Vigente'
-       END AS estado
-     FROM lote l
-     JOIN proveedor p ON p.id_prov = l.id_prov
-     LEFT JOIN medicamento m ON m.id_lote = l.id_lote
+    `${consultaLotes}
      ORDER BY l.fecha_caducidad ASC, l.numero_lote ASC`,
   )
 
@@ -32,6 +36,7 @@ export async function obtenerLotes() {
 export async function crearLoteBase({
   client = pool,
   idProv,
+  idMedicamento,
   stockActual,
   numeroLote,
   fechaFabricacion,
@@ -44,6 +49,7 @@ export async function crearLoteBase({
   const resultado = await client.query(
     `INSERT INTO lote (
        id_prov,
+       id_med,
        numero_lote,
        fecha_fabricacion,
        fecha_caducidad,
@@ -56,19 +62,21 @@ export async function crearLoteBase({
      )
      VALUES (
        $1,
-       COALESCE($3, 'AUTO-' || TO_CHAR(NOW(), 'YYYYMMDDHH24MISSMS')),
-       COALESCE($4, CURRENT_DATE),
-       COALESCE($5, CURRENT_DATE + INTERVAL '1 year'),
-       COALESCE($6, CURRENT_DATE),
        $2,
-       TRUE,
+       COALESCE($4, 'AUTO-' || TO_CHAR(NOW(), 'YYYYMMDDHH24MISSMS')),
+       COALESCE($5, CURRENT_DATE),
+       COALESCE($6, CURRENT_DATE + INTERVAL '1 year'),
        COALESCE($7, CURRENT_DATE),
-       COALESCE($8, 0),
-       COALESCE($9, 0)
+       $3,
+       CASE WHEN $3 <= 0 THEN FALSE ELSE TRUE END,
+       COALESCE($8, CURRENT_DATE),
+       COALESCE($9, 0::NUMERIC),
+       COALESCE($10, 0::NUMERIC)
      )
      RETURNING id_lote, numero_lote AS codigo_lote`,
     [
       idProv,
+      idMedicamento || null,
       stockActual,
       numeroLote || null,
       fechaFabricacion || null,
@@ -83,159 +91,72 @@ export async function crearLoteBase({
   return resultado.rows[0]
 }
 
-async function copiarMedicamentoEnLote(client, idMedicamento, idLote, stockActual) {
-  if (!idMedicamento) {
-    return
-  }
-
-  const base = await client.query(
-    `SELECT nombre, presentacion, concentracion, requiere_receta
-     FROM medicamento
-     WHERE id_med = $1`,
-    [idMedicamento],
-  )
-
-  if (!base.rows[0]) {
-    throw new Error('El medicamento seleccionado no existe.')
-  }
-
-  const medicamento = base.rows[0]
-
-  await client.query(
-    `INSERT INTO medicamento (
-       id_lote,
-       nombre,
-       presentacion,
-       concentracion,
-       requiere_receta,
-       fecha_registro,
-       estado_colorimetria
-     )
-     VALUES (
-       $1,
-       $2,
-       $3,
-       $4,
-       $5,
-       CURRENT_DATE,
-       CASE
-         WHEN $6 <= 0 THEN 'sin_stock'
-         WHEN $6 <= 10 THEN 'rojo'
-         WHEN $6 <= 50 THEN 'amarillo'
-         ELSE 'verde'
-       END
-     )`,
-    [
-      idLote,
-      medicamento.nombre,
-      medicamento.presentacion,
-      medicamento.concentracion,
-      medicamento.requiere_receta,
-      stockActual,
-    ],
-  )
-}
-
-async function actualizarMedicamentoDelLote(idMedicamentoOrigen, idLote, stockActual) {
-  if (!idMedicamentoOrigen) {
-    return
-  }
-
+async function obtenerLotePorId(idLote) {
   const resultado = await pool.query(
-    `UPDATE medicamento AS destino
-     SET nombre = origen.nombre,
-         presentacion = origen.presentacion,
-         concentracion = origen.concentracion,
-         requiere_receta = origen.requiere_receta,
-         estado_colorimetria = CASE
-           WHEN $3 <= 0 THEN 'sin_stock'
-           WHEN $3 <= 10 THEN 'rojo'
-           WHEN $3 <= 50 THEN 'amarillo'
-           ELSE 'verde'
-         END
-     FROM medicamento AS origen
-     WHERE destino.id_lote = $1
-       AND origen.id_med = $2
-     RETURNING destino.id_med`,
-    [idLote, idMedicamentoOrigen, stockActual],
-  )
-
-  if (!resultado.rows[0]) {
-    await copiarMedicamentoEnLote(pool, idMedicamentoOrigen, idLote, stockActual)
-  }
-}
-
-export async function crearLote(datos) {
-  const client = await pool.connect()
-  let idLoteCreado
-
-  try {
-    await client.query('BEGIN')
-
-    const lote = await crearLoteBase({
-      client,
-      idProv: datos.idProv,
-      stockActual: datos.stockActual,
-      numeroLote: datos.numeroLote,
-      fechaFabricacion: datos.fechaFabricacion,
-      fechaCaducidad: datos.fechaCaducidad,
-      fechaIngreso: datos.fechaIngreso,
-      fechaCompra: datos.fechaCompra,
-      precioCompra: datos.precioCompra,
-      precioVenta: datos.precioVenta,
-    })
-
-    await copiarMedicamentoEnLote(client, datos.idMedicamento, lote.id_lote, datos.stockActual)
-    idLoteCreado = lote.id_lote
-
-    await client.query('COMMIT')
-  } catch (error) {
-    await client.query('ROLLBACK')
-    throw error
-  } finally {
-    client.release()
-  }
-
-  const resultado = await pool.query(
-    `SELECT
-       l.id_lote,
-       l.numero_lote AS codigo_lote,
-       l.id_prov,
-       l.fecha_fabricacion,
-       l.stock_actual AS stock_disponible,
-       l.fecha_ingreso,
-       l.fecha_caducidad,
-       l.precio_compra,
-       l.precio_venta,
-       m.id_med,
-       p.nombre AS nombre_proveedor,
-       COALESCE(m.nombre, 'Sin medicamento') AS nombre_medicamento
-     FROM lote l
-     JOIN proveedor p ON p.id_prov = l.id_prov
-     LEFT JOIN medicamento m ON m.id_lote = l.id_lote
+    `${consultaLotes}
      WHERE l.id_lote = $1`,
-    [idLoteCreado],
+    [idLote],
   )
 
   return resultado.rows[0]
 }
 
+export async function crearLote(datos) {
+  if (datos.idMedicamento) {
+    const medicamento = await pool.query('SELECT id_med FROM medicamento WHERE id_med = $1', [
+      datos.idMedicamento,
+    ])
+
+    if (!medicamento.rows[0]) {
+      throw new Error('El medicamento seleccionado no existe.')
+    }
+  }
+
+  const lote = await crearLoteBase({
+    idProv: datos.idProv,
+    idMedicamento: datos.idMedicamento,
+    stockActual: datos.stockActual,
+    numeroLote: datos.numeroLote,
+    fechaFabricacion: datos.fechaFabricacion,
+    fechaCaducidad: datos.fechaCaducidad,
+    fechaIngreso: datos.fechaIngreso,
+    fechaCompra: datos.fechaCompra,
+    precioCompra: datos.precioCompra,
+    precioVenta: datos.precioVenta,
+  })
+
+  return obtenerLotePorId(lote.id_lote)
+}
+
 export async function actualizarLote(id, datos) {
+  if (datos.idMedicamento) {
+    const medicamento = await pool.query('SELECT id_med FROM medicamento WHERE id_med = $1', [
+      datos.idMedicamento,
+    ])
+
+    if (!medicamento.rows[0]) {
+      throw new Error('El medicamento seleccionado no existe.')
+    }
+  }
+
   const resultado = await pool.query(
     `UPDATE lote
      SET id_prov = $1,
-         numero_lote = $2,
-         fecha_fabricacion = $3,
-         fecha_caducidad = $4,
-         fecha_ingreso = $5,
-         stock_actual = $6,
-         fecha_compra = $7,
-         precio_compra = $8,
-         precio_venta = $9
-     WHERE id_lote = $10
+         id_med = $2,
+         numero_lote = $3,
+         fecha_fabricacion = $4,
+         fecha_caducidad = $5,
+         fecha_ingreso = $6,
+         stock_actual = $7,
+         activo = CASE WHEN $7 <= 0 THEN FALSE ELSE TRUE END,
+         fecha_compra = $8,
+         precio_compra = $9,
+         precio_venta = $10
+     WHERE id_lote = $11
      RETURNING id_lote`,
     [
       datos.idProv,
+      datos.idMedicamento || null,
       datos.numeroLote,
       datos.fechaFabricacion || null,
       datos.fechaCaducidad || null,
@@ -252,10 +173,7 @@ export async function actualizarLote(id, datos) {
     return null
   }
 
-  await actualizarMedicamentoDelLote(datos.idMedicamento, id, datos.stockActual)
-
-  const lotes = await obtenerLotes()
-  return lotes.find((lote) => lote.id_lote === Number(id))
+  return obtenerLotePorId(id)
 }
 
 export async function eliminarLote(id) {

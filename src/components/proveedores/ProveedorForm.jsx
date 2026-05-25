@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import {
   LIMITES,
+  normalizarTelefonoCaptura,
+  PREFIJO_TELEFONO,
   sanitizarDireccion,
   sanitizarProveedor,
   sanitizarTelefono,
@@ -12,7 +14,7 @@ import {
 
 const valoresIniciales = {
   nombre: '',
-  telefono: '',
+  telefono: PREFIJO_TELEFONO,
   correo: '',
   direccion: '',
 }
@@ -21,6 +23,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
   const [formulario, setFormulario] = useState({
     ...valoresIniciales,
     ...proveedorInicial,
+    telefono: sanitizarTelefono(proveedorInicial?.telefono ?? valoresIniciales.telefono),
   })
   const [errores, setErrores] = useState({})
 
@@ -60,7 +63,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
 
     const datos = {
       nombre: formulario.nombre.trim(),
-      telefono: formulario.telefono.trim(),
+      telefono: normalizarTelefonoCaptura(formulario.telefono),
       correo: formulario.correo.trim(),
       direccion: formulario.direccion.trim(),
     }
@@ -91,7 +94,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
           id="telefono"
           name="telefono"
           inputMode="tel"
-          placeholder="3121457890"
+          placeholder="(312)1234567"
           value={formulario.telefono}
           onChange={manejarCambio}
           maxLength={LIMITES.telefono}

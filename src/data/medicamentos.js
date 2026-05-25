@@ -1,6 +1,7 @@
 export const medicamentosIniciales = [
   {
     id: 1,
+    idLote: 1,
     nombre: 'Paracetamol',
     presentacion: 'Tabletas',
     concentracion: '500 mg',
@@ -10,6 +11,7 @@ export const medicamentosIniciales = [
   },
   {
     id: 2,
+    idLote: 2,
     nombre: 'Amoxicilina',
     presentacion: 'Capsulas',
     concentracion: '500 mg',
@@ -19,6 +21,7 @@ export const medicamentosIniciales = [
   },
   {
     id: 3,
+    idLote: 3,
     nombre: 'Loratadina',
     presentacion: 'Tabletas',
     concentracion: '10 mg',

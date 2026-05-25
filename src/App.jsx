@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard'
 import Inicio from './pages/Inicio'
 import Login from './pages/Login'
 import Lotes from './pages/Lotes'
+import MedicamentoDetalle from './pages/MedicamentoDetalle'
 import Medicamentos from './pages/Medicamentos'
 import Proveedores from './pages/Proveedores'
 import Usuarios from './pages/Usuarios'
@@ -23,6 +24,7 @@ function App() {
             <Route path="/inicio" element={<Inicio />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/medicamentos" element={<Medicamentos />} />
+            <Route path="/medicamentos/:id" element={<MedicamentoDetalle />} />
             <Route path="/lotes" element={<Lotes />} />
             <Route path="/proveedores" element={<Proveedores />} />
             <Route path="/ventas" element={<Ventas />} />

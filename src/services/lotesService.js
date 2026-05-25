@@ -65,7 +65,7 @@ export async function obtenerLotes() {
 function serializarLote(lote) {
   return {
     idProv: Number(lote.idProveedor),
-    idMedicamento: Number(lote.idMedicamento),
+    idMedicamento: lote.idMedicamento ? Number(lote.idMedicamento) : null,
     numeroLote: lote.codigo,
     fechaFabricacion: lote.fechaFabricacion || null,
     fechaCaducidad: lote.fechaCaducidad || null,

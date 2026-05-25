@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import {
   LIMITES,
+  normalizarTelefonoCaptura,
+  PREFIJO_TELEFONO,
   sanitizarNombrePersona,
   sanitizarTelefono,
+  validarCorreo,
   validarNombrePersona,
   validarTelefono,
 } from '../../utils/validaciones'
@@ -11,13 +14,15 @@ const valoresIniciales = {
   nombre: '',
   apPat: '',
   apMat: '',
-  telefono: '',
+  telefono: PREFIJO_TELEFONO,
+  correo: '',
 }
 
 function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
   const [formulario, setFormulario] = useState({
     ...valoresIniciales,
     ...clienteInicial,
+    telefono: sanitizarTelefono(clienteInicial?.telefono ?? valoresIniciales.telefono),
   })
   const [errores, setErrores] = useState({})
 
@@ -28,6 +33,7 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
       apPat: (texto) => sanitizarNombrePersona(texto, LIMITES.apellido),
       apMat: (texto) => sanitizarNombrePersona(texto, LIMITES.apellido),
       telefono: sanitizarTelefono,
+      correo: (texto) => texto.trim().slice(0, LIMITES.correo),
     }
 
     setFormulario((actual) => ({
@@ -40,6 +46,7 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
     const nuevosErrores = {
       nombre: validarNombrePersona(formulario.nombre, 'El nombre', LIMITES.nombrePersona),
       telefono: validarTelefono(formulario.telefono, false),
+      correo: formulario.correo ? validarCorreo(formulario.correo) : '',
     }
 
     if (formulario.apPat) {
@@ -73,7 +80,8 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
       nombre: formulario.nombre.trim(),
       apPat: formulario.apPat.trim() || '',
       apMat: formulario.apMat.trim() || '',
-      telefono: formulario.telefono.trim() || '',
+      telefono: normalizarTelefonoCaptura(formulario.telefono),
+      correo: formulario.correo.trim() || '',
     }
 
     ;(onGuardar ?? onCrearCliente)(datos)
@@ -129,12 +137,26 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
           id="cliente-telefono"
           name="telefono"
           type="tel"
-          placeholder="+52 312 123 4567"
+          placeholder="(312)1234567"
           value={formulario.telefono}
           onChange={manejarCambio}
           maxLength={LIMITES.telefono}
         />
         {errores.telefono && <span className="mensaje-error">{errores.telefono}</span>}
+      </div>
+
+      <div className="campo-formulario">
+        <label htmlFor="cliente-correo">Correo electronico</label>
+        <input
+          id="cliente-correo"
+          name="correo"
+          type="email"
+          placeholder="cliente@correo.com"
+          value={formulario.correo}
+          onChange={manejarCambio}
+          maxLength={LIMITES.correo}
+        />
+        {errores.correo && <span className="mensaje-error">{errores.correo}</span>}
       </div>
 
       <button type="submit" className="boton boton--primario">

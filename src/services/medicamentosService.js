@@ -5,6 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL
 function normalizarMedicamento(medicamento) {
   return {
     id: medicamento.id ?? medicamento.id_med ?? medicamento.id_medicamento,
+    idLote: medicamento.idLote ?? medicamento.id_lote,
     nombre: medicamento.nombre,
     presentacion: medicamento.presentacion ?? '',
     concentracion: medicamento.concentracion ?? '',
@@ -12,6 +13,11 @@ function normalizarMedicamento(medicamento) {
     requiereReceta: Boolean(medicamento.requiereReceta ?? medicamento.requiere_receta),
     stockDisponible: Number(medicamento.stockDisponible ?? medicamento.stock_disponible ?? 0),
     precioUnitario: Number(medicamento.precioUnitario ?? medicamento.precio_unitario ?? 0),
+    totalLotes: Number(medicamento.totalLotes ?? medicamento.total_lotes ?? 0),
+    lotesVigentes: Number(medicamento.lotesVigentes ?? medicamento.lotes_vigentes ?? 0),
+    lotesProximos: Number(medicamento.lotesProximos ?? medicamento.lotes_proximos ?? 0),
+    lotesCaducados: Number(medicamento.lotesCaducados ?? medicamento.lotes_caducados ?? 0),
+    estadoLotes: medicamento.estadoLotes ?? medicamento.estado_lotes ?? 'Vigente',
   }
 }
 

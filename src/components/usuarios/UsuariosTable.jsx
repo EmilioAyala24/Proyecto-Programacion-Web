@@ -1,9 +1,4 @@
 function UsuariosTable({ usuarios, onEditar, onEliminar, onVer }) {
-  const formatoFecha = (fecha) => {
-    if (!fecha) return '-'
-    return new Date(fecha).toLocaleDateString('es-CO')
-  }
-
   const rolesBadge = {
     admin: '#ff6b6b',
     cajero: '#4ecdc4',
@@ -50,8 +45,8 @@ function UsuariosTable({ usuarios, onEditar, onEliminar, onVer }) {
                 </span>
               </td>
               <td>{usuario.telefono || '-'}</td>
-              <td>{formatoFecha(usuario.fechaCreacion)}</td>
-              <td>{formatoFecha(usuario.ultimaConexion)}</td>
+              <td>{usuario.fechaCreacion || '-'}</td>
+              <td>{usuario.ultimaConexion || '-'}</td>
               <td>
                 <div className="acciones-tabla">
                   <button className="boton-accion" type="button" onClick={() => onVer(usuario)}>
