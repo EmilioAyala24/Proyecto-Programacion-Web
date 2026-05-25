@@ -1,5 +1,13 @@
 import { useState } from 'react'
-import { validarStock, validarTextoFarmacia } from '../../utils/validaciones'
+import {
+  LIMITES,
+  sanitizarCodigoLote,
+  sanitizarDecimal,
+  sanitizarEntero,
+  validarCodigoLote,
+  validarPrecio,
+  validarStock,
+} from '../../utils/validaciones'
 
 const valoresIniciales = {
   codigo: '',
@@ -27,13 +35,25 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
 
   const manejarCambio = (event) => {
     const { name, value } = event.target
-    setFormulario((actual) => ({ ...actual, [name]: value }))
+    const filtros = {
+      codigo: sanitizarCodigoLote,
+      stockDisponible: sanitizarEntero,
+      precioCompra: sanitizarDecimal,
+      precioVenta: sanitizarDecimal,
+    }
+
+    setFormulario((actual) => ({
+      ...actual,
+      [name]: filtros[name] ? filtros[name](value) : value,
+    }))
   }
 
   const validarFormulario = () => {
     const nuevosErrores = {
-      codigo: validarTextoFarmacia(formulario.codigo, 'El numero de lote'),
+      codigo: validarCodigoLote(formulario.codigo),
       stockDisponible: validarStock(formulario.stockDisponible),
+      precioCompra: validarPrecio(formulario.precioCompra || '0', 'El precio de compra'),
+      precioVenta: validarPrecio(formulario.precioVenta || '0', 'El precio de venta'),
     }
 
     if (!formulario.idProveedor) {
@@ -46,14 +66,6 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
 
     if (!formulario.fechaCaducidad) {
       nuevosErrores.fechaCaducidad = 'La fecha de caducidad es obligatoria.'
-    }
-
-    if (Number(formulario.precioCompra || 0) < 0) {
-      nuevosErrores.precioCompra = 'El precio de compra no puede ser negativo.'
-    }
-
-    if (Number(formulario.precioVenta || 0) < 0) {
-      nuevosErrores.precioVenta = 'El precio de venta no puede ser negativo.'
     }
 
     setErrores(nuevosErrores)
@@ -95,6 +107,7 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
           placeholder="L-2026-001"
           value={formulario.codigo}
           onChange={manejarCambio}
+          maxLength={LIMITES.lote}
         />
         {errores.codigo && <span className="mensaje-error">{errores.codigo}</span>}
       </div>
@@ -139,10 +152,10 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
         <label htmlFor="lote-stock">Stock</label>
         <input
           id="lote-stock"
+          inputMode="numeric"
           min="0"
           name="stockDisponible"
           placeholder="50"
-          type="number"
           value={formulario.stockDisponible}
           onChange={manejarCambio}
         />
@@ -187,10 +200,9 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
         <label htmlFor="lote-precio-compra">Precio compra</label>
         <input
           id="lote-precio-compra"
+          inputMode="decimal"
           min="0"
           name="precioCompra"
-          step="0.01"
-          type="number"
           value={formulario.precioCompra}
           onChange={manejarCambio}
         />
@@ -201,10 +213,9 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
         <label htmlFor="lote-precio-venta">Precio venta</label>
         <input
           id="lote-precio-venta"
+          inputMode="decimal"
           min="0"
           name="precioVenta"
-          step="0.01"
-          type="number"
           value={formulario.precioVenta}
           onChange={manejarCambio}
         />

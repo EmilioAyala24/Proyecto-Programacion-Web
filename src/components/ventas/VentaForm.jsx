@@ -4,6 +4,8 @@ import {
   obtenerMedicamentosDisponibles,
   obtenerMetodosPago,
 } from '../../services/ventasService'
+import { useAuth } from '../../hooks/useAuth'
+import { sanitizarEntero } from '../../utils/validaciones'
 
 const valoresIniciales = {
   id_cliente: '',
@@ -12,6 +14,7 @@ const valoresIniciales = {
 }
 
 function VentaForm({ onCrearVenta, cargando }) {
+  const { usuario } = useAuth()
   const [formulario, setFormulario] = useState(valoresIniciales)
   const [errores, setErrores] = useState({})
   const [metodosPago, setMetodosPago] = useState([])
@@ -67,7 +70,7 @@ function VentaForm({ onCrearVenta, cargando }) {
 
     setDetalleActual((actual) => ({
       ...actual,
-      [name]: value,
+      [name]: name === 'cantidad' ? sanitizarEntero(value) : value,
     }))
     setErrorDetalle('')
   }
@@ -79,12 +82,15 @@ function VentaForm({ onCrearVenta, cargando }) {
       return
     }
 
-    if (!detalleActual.cantidad || isNaN(detalleActual.cantidad) || detalleActual.cantidad <= 0) {
+    const cantidad = Number(detalleActual.cantidad)
+    const precioUnitario = Number(detalleActual.precio_unitario)
+
+    if (!cantidad || Number.isNaN(cantidad) || cantidad <= 0 || !Number.isInteger(cantidad)) {
       setErrorDetalle('La cantidad debe ser un número positivo')
       return
     }
 
-    if (!detalleActual.precio_unitario || isNaN(detalleActual.precio_unitario) || detalleActual.precio_unitario <= 0) {
+    if (!precioUnitario || Number.isNaN(precioUnitario) || precioUnitario <= 0) {
       setErrorDetalle('El precio unitario debe ser un número positivo')
       return
     }
@@ -100,7 +106,7 @@ function VentaForm({ onCrearVenta, cargando }) {
     }
 
     // Validar stock
-    if (detalleActual.cantidad > medicamento.stock_actual) {
+    if (cantidad > medicamento.stock_actual) {
       setErrorDetalle(
         `Stock insuficiente. Disponible: ${medicamento.stock_actual}`,
       )
@@ -108,12 +114,12 @@ function VentaForm({ onCrearVenta, cargando }) {
     }
 
     // Calcular subtotal
-    const subtotal = detalleActual.cantidad * detalleActual.precio_unitario
+    const subtotal = cantidad * precioUnitario
 
     const nuevoDetalle = {
       id_medicamento: Number(detalleActual.id_medicamento),
-      cantidad: Number(detalleActual.cantidad),
-      precio_unitario: Number(detalleActual.precio_unitario),
+      cantidad,
+      precio_unitario: precioUnitario,
       subtotal,
       medicamento_nombre: medicamento.nombre,
       presentacion: medicamento.presentacion,
@@ -164,7 +170,7 @@ function VentaForm({ onCrearVenta, cargando }) {
     }
 
     const datosVenta = {
-      id_usuario: 1, // TODO: Obtener del contexto de autenticación
+      id_usuario: usuario?.id,
       id_metPag: Number(formulario.id_metPag),
       id_cliente: formulario.id_cliente ? Number(formulario.id_cliente) : null,
       detalles: formulario.detalles,
@@ -252,7 +258,7 @@ function VentaForm({ onCrearVenta, cargando }) {
             <input
               id="venta-cantidad"
               name="cantidad"
-              type="number"
+              inputMode="numeric"
               min="1"
               value={detalleActual.cantidad}
               onChange={manejarCambioDetalleActual}

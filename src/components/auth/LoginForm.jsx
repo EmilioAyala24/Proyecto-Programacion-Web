@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { obtenerRutaInicialPorRol } from '../../utils/permisos'
 import {
+  LIMITES,
   obtenerSeguridadPassword,
+  sanitizarUsuario,
   validarPassword,
   validarUsuario,
 } from '../../utils/validaciones'
@@ -26,9 +29,10 @@ function LoginForm() {
 
   const manejarCambio = (event) => {
     const { name, value } = event.target
+
     setFormulario((actual) => ({
       ...actual,
-      [name]: value,
+      [name]: name === 'usuario' ? sanitizarUsuario(value) : value.slice(0, 100),
     }))
     setErrorGeneral('')
   }
@@ -43,7 +47,7 @@ function LoginForm() {
     return !nuevosErrores.usuario && !nuevosErrores.password
   }
 
-  const manejarEnvio = (event) => {
+  const manejarEnvio = async (event) => {
     event.preventDefault()
 
     if (!validarFormulario()) {
@@ -51,8 +55,8 @@ function LoginForm() {
     }
 
     try {
-      iniciarSesion(formulario)
-      navigate('/dashboard', { replace: true })
+      const sesion = await iniciarSesion(formulario)
+      navigate(obtenerRutaInicialPorRol(sesion.rol), { replace: true })
     } catch (error) {
       setErrorGeneral(error.message)
     }
@@ -69,27 +73,28 @@ function LoginForm() {
           placeholder="admin"
           value={formulario.usuario}
           onChange={manejarCambio}
+          maxLength={LIMITES.usuario}
         />
         {errores.usuario && <span className="mensaje-error">{errores.usuario}</span>}
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="password">Contraseña</label>
+        <label htmlFor="password">Contrasena</label>
         <input
           id="password"
           name="password"
           type="password"
           autoComplete="current-password"
-          placeholder="Admin123!"
           value={formulario.password}
           onChange={manejarCambio}
+          maxLength={100}
         />
         {errores.password && <span className="mensaje-error">{errores.password}</span>}
       </div>
 
       <div className={`seguridad-password seguridad-password--${seguridad.clase}`}>
         <div className="seguridad-password__encabezado">
-          <span>Seguridad de contraseña</span>
+          <span>Seguridad de contrasena</span>
           <strong>{seguridad.nivel}</strong>
         </div>
         <div className="seguridad-password__barra" aria-hidden="true">
@@ -107,12 +112,8 @@ function LoginForm() {
       {errorGeneral && <div className="alerta-error">{errorGeneral}</div>}
 
       <button className="boton boton--primario" type="submit">
-        Iniciar sesión
+        Iniciar sesion
       </button>
-
-      <p className="login-formulario__ayuda">
-        Usuario de prueba: <strong>admin</strong> · Contraseña: <strong>Admin123!</strong>
-      </p>
     </form>
   )
 }

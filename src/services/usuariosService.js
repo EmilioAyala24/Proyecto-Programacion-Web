@@ -57,6 +57,7 @@ export async function crearUsuario(nuevoUsuario) {
       ap_pat: nuevoUsuario.apPat || null,
       ap_mat: nuevoUsuario.apMat || null,
       telefono: nuevoUsuario.telefono || null,
+      password: nuevoUsuario.password,
     }),
   })
 
@@ -94,6 +95,7 @@ export async function actualizarUsuario(id, usuarioActualizado) {
       ap_pat: usuarioActualizado.apPat || null,
       ap_mat: usuarioActualizado.apMat || null,
       telefono: usuarioActualizado.telefono || null,
+      password: usuarioActualizado.password || undefined,
     }),
   })
 

@@ -1,5 +1,13 @@
 import { useState } from 'react'
-import { validarStock, validarTextoFarmacia } from '../../utils/validaciones'
+import {
+  LIMITES,
+  sanitizarDecimal,
+  sanitizarEntero,
+  sanitizarTextoFarmacia,
+  validarPrecio,
+  validarStock,
+  validarTextoFarmacia,
+} from '../../utils/validaciones'
 
 const valoresIniciales = {
   nombre: '',
@@ -22,23 +30,37 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
 
   const manejarCambio = (event) => {
     const { checked, name, type, value } = event.target
+    const filtros = {
+      nombre: (texto) => sanitizarTextoFarmacia(texto, LIMITES.medicamentoNombre),
+      presentacion: (texto) => sanitizarTextoFarmacia(texto, LIMITES.presentacion),
+      concentracion: (texto) => sanitizarTextoFarmacia(texto, LIMITES.concentracion),
+      contenido: (texto) => sanitizarTextoFarmacia(texto, LIMITES.contenido),
+      stockDisponible: sanitizarEntero,
+      precioUnitario: sanitizarDecimal,
+    }
+
     setFormulario((actual) => ({
       ...actual,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : filtros[name]?.(value) ?? value,
     }))
   }
 
   const validarFormulario = () => {
     const nuevosErrores = {
-      nombre: validarTextoFarmacia(formulario.nombre, 'El nombre'),
-      presentacion: validarTextoFarmacia(formulario.presentacion, 'La presentacion'),
-      concentracion: validarTextoFarmacia(formulario.concentracion, 'La concentracion'),
-      contenido: validarTextoFarmacia(formulario.contenido, 'El contenido'),
+      nombre: validarTextoFarmacia(formulario.nombre, 'El nombre', LIMITES.medicamentoNombre),
+      presentacion: validarTextoFarmacia(
+        formulario.presentacion,
+        'La presentacion',
+        LIMITES.presentacion,
+      ),
+      concentracion: validarTextoFarmacia(
+        formulario.concentracion,
+        'La concentracion',
+        LIMITES.concentracion,
+      ),
+      contenido: validarTextoFarmacia(formulario.contenido, 'El contenido', LIMITES.contenido),
       stockDisponible: validarStock(formulario.stockDisponible),
-    }
-
-    if (Number(formulario.precioUnitario) < 0 || Number.isNaN(Number(formulario.precioUnitario))) {
-      nuevosErrores.precioUnitario = 'El precio unitario debe ser mayor o igual a cero.'
+      precioUnitario: validarPrecio(formulario.precioUnitario, 'El precio unitario'),
     }
 
     setErrores(nuevosErrores)
@@ -77,6 +99,7 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
           placeholder="Paracetamol"
           value={formulario.nombre}
           onChange={manejarCambio}
+          maxLength={LIMITES.medicamentoNombre}
         />
         {errores.nombre && <span className="mensaje-error">{errores.nombre}</span>}
       </div>
@@ -89,6 +112,7 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
           placeholder="Tabletas"
           value={formulario.presentacion}
           onChange={manejarCambio}
+          maxLength={LIMITES.presentacion}
         />
         {errores.presentacion && <span className="mensaje-error">{errores.presentacion}</span>}
       </div>
@@ -101,6 +125,7 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
           placeholder="500 mg"
           value={formulario.concentracion}
           onChange={manejarCambio}
+          maxLength={LIMITES.concentracion}
         />
         {errores.concentracion && <span className="mensaje-error">{errores.concentracion}</span>}
       </div>
@@ -113,6 +138,7 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
           placeholder="20 tabletas"
           value={formulario.contenido}
           onChange={manejarCambio}
+          maxLength={LIMITES.contenido}
         />
         {errores.contenido && <span className="mensaje-error">{errores.contenido}</span>}
       </div>
@@ -122,9 +148,9 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
         <input
           id="medicamento-stock"
           name="stockDisponible"
+          inputMode="numeric"
           min="0"
           placeholder="25"
-          type="number"
           value={formulario.stockDisponible}
           onChange={manejarCambio}
         />
@@ -136,10 +162,9 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
         <input
           id="medicamento-precio"
           name="precioUnitario"
+          inputMode="decimal"
           min="0"
           placeholder="35.50"
-          step="0.01"
-          type="number"
           value={formulario.precioUnitario}
           onChange={manejarCambio}
         />

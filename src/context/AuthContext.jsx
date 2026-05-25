@@ -8,8 +8,8 @@ export function AuthProvider({ children }) {
   const value = useMemo(() => ({
     usuario,
     estaAutenticado: Boolean(usuario),
-    iniciarSesion: (credenciales) => {
-      const sesion = loginService(credenciales)
+    iniciarSesion: async (credenciales) => {
+      const sesion = await loginService(credenciales)
       setUsuario(sesion)
       return sesion
     },

@@ -1,5 +1,11 @@
 import { useState } from 'react'
-import { validarTextoFarmacia } from '../../utils/validaciones'
+import {
+  LIMITES,
+  sanitizarNombrePersona,
+  sanitizarTelefono,
+  validarNombrePersona,
+  validarTelefono,
+} from '../../utils/validaciones'
 
 const valoresIniciales = {
   nombre: '',
@@ -17,23 +23,39 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
 
   const manejarCambio = (event) => {
     const { name, value } = event.target
+    const filtros = {
+      nombre: (texto) => sanitizarNombrePersona(texto, LIMITES.nombrePersona),
+      apPat: (texto) => sanitizarNombrePersona(texto, LIMITES.apellido),
+      apMat: (texto) => sanitizarNombrePersona(texto, LIMITES.apellido),
+      telefono: sanitizarTelefono,
+    }
+
     setFormulario((actual) => ({
       ...actual,
-      [name]: value,
+      [name]: filtros[name] ? filtros[name](value) : value,
     }))
   }
 
   const validarFormulario = () => {
     const nuevosErrores = {
-      nombre: validarTextoFarmacia(formulario.nombre, 'El nombre'),
+      nombre: validarNombrePersona(formulario.nombre, 'El nombre', LIMITES.nombrePersona),
+      telefono: validarTelefono(formulario.telefono, false),
     }
 
-    // Validar apellidos y teléfono (opcionales)
-    if (formulario.apPat && formulario.apPat.trim().length > 60) {
-      nuevosErrores.apPat = 'El apellido paterno no puede exceder 60 caracteres'
+    if (formulario.apPat) {
+      nuevosErrores.apPat = validarNombrePersona(
+        formulario.apPat,
+        'El apellido paterno',
+        LIMITES.apellido,
+      )
     }
-    if (formulario.apMat && formulario.apMat.trim().length > 60) {
-      nuevosErrores.apMat = 'El apellido materno no puede exceder 60 caracteres'
+
+    if (formulario.apMat) {
+      nuevosErrores.apMat = validarNombrePersona(
+        formulario.apMat,
+        'El apellido materno',
+        LIMITES.apellido,
+      )
     }
 
     setErrores(nuevosErrores)
@@ -69,6 +91,7 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
           placeholder="Juan"
           value={formulario.nombre}
           onChange={manejarCambio}
+          maxLength={LIMITES.nombrePersona}
           required
         />
         {errores.nombre && <span className="mensaje-error">{errores.nombre}</span>}
@@ -79,9 +102,10 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
         <input
           id="cliente-ap-pat"
           name="apPat"
-          placeholder="Pérez"
+          placeholder="Perez"
           value={formulario.apPat}
           onChange={manejarCambio}
+          maxLength={LIMITES.apellido}
         />
         {errores.apPat && <span className="mensaje-error">{errores.apPat}</span>}
       </div>
@@ -91,23 +115,26 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
         <input
           id="cliente-ap-mat"
           name="apMat"
-          placeholder="García"
+          placeholder="Garcia"
           value={formulario.apMat}
           onChange={manejarCambio}
+          maxLength={LIMITES.apellido}
         />
         {errores.apMat && <span className="mensaje-error">{errores.apMat}</span>}
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="cliente-telefono">Teléfono</label>
+        <label htmlFor="cliente-telefono">Telefono</label>
         <input
           id="cliente-telefono"
           name="telefono"
           type="tel"
-          placeholder="+57 123 456 7890"
+          placeholder="+52 312 123 4567"
           value={formulario.telefono}
           onChange={manejarCambio}
+          maxLength={LIMITES.telefono}
         />
+        {errores.telefono && <span className="mensaje-error">{errores.telefono}</span>}
       </div>
 
       <button type="submit" className="boton boton--primario">

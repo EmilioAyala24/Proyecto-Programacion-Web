@@ -103,8 +103,8 @@ function Usuarios() {
           <small>Con permisos totales</small>
         </article>
         <article className="indicador">
-          <span>Vendedores</span>
-          <strong>{usuarios.filter((u) => u.rol === 'vendedor').length}</strong>
+          <span>Cajeros</span>
+          <strong>{usuarios.filter((u) => u.rol === 'cajero').length}</strong>
           <small>En el sistema</small>
         </article>
       </div>
