@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
-import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
+import Paginacion from '../components/common/Paginacion'
 import FiltrosMedicamentos from '../components/filtros/FiltrosMedicamentos'
 import MedicamentoForm from '../components/medicamentos/MedicamentoForm'
 import MedicamentosTable from '../components/medicamentos/MedicamentosTable'
@@ -16,18 +16,25 @@ function Medicamentos() {
   const [medicamentos, setMedicamentos] = useState([])
   const [filtros, setFiltros] = useState({
     nombre: '',
+    stock: '',
+    caducidad: '',
     receta: '',
   })
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [modalAbierto, setModalAbierto] = useState(false)
   const [medicamentoEditando, setMedicamentoEditando] = useState(null)
-  const [medicamentoViendo, setMedicamentoViendo] = useState(null)
-  const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
+  const [paginaActual, setPaginaActual] = useState(1)
+  const registrosPorPagina = 8
+  const abrirDetalleMedicamento = (medicamento) => {
+    window.open(`/medicamentos/${medicamento.id}`, '_blank', 'noopener,noreferrer')
+  }
 
   useEffect(() => {
     obtenerMedicamentos()
-      .then(setMedicamentos)
+      .then((medicamentosDatos) => {
+        setMedicamentos(medicamentosDatos)
+      })
       .catch((err) => setError(err.message))
       .finally(() => setCargando(false))
   }, [])
@@ -45,10 +52,21 @@ function Medicamentos() {
         !filtros.receta ||
         (filtros.receta === 'si' && medicamento.requiereReceta) ||
         (filtros.receta === 'no' && !medicamento.requiereReceta)
+      const coincideStock =
+        !filtros.stock ||
+        (filtros.stock === 'con-stock' && medicamento.stockDisponible > 0) ||
+        (filtros.stock === 'sin-stock' && medicamento.stockDisponible <= 0)
+      const coincideCaducidad = !filtros.caducidad || medicamento.estadoLotes === filtros.caducidad
 
-      return coincideNombre && coincideReceta
+      return coincideNombre && coincideReceta && coincideStock && coincideCaducidad
     })
   }, [filtros, medicamentos])
+
+  const totalPaginas = Math.max(1, Math.ceil(medicamentosFiltrados.length / registrosPorPagina))
+  const medicamentosPaginados = medicamentosFiltrados.slice(
+    (paginaActual - 1) * registrosPorPagina,
+    paginaActual * registrosPorPagina,
+  )
 
   const manejarCrearMedicamento = async (nuevoMedicamento) => {
     try {
@@ -132,19 +150,31 @@ function Medicamentos() {
           />
         </div>
 
-        <FiltrosMedicamentos filtros={filtros} onChange={setFiltros} />
+        <FiltrosMedicamentos
+          filtros={filtros}
+          onChange={(nuevosFiltros) => {
+            setFiltros(nuevosFiltros)
+            setPaginaActual(1)
+          }}
+        />
 
         {error && <div className="alerta-error">{error}</div>}
         {cargando ? (
           <p className="texto-secundario">Cargando medicamentos...</p>
         ) : (
           <MedicamentosTable
-            medicamentos={medicamentosFiltrados}
+            medicamentos={medicamentosPaginados}
             onEditar={setMedicamentoEditando}
             onEliminar={manejarEliminarMedicamento}
-            onVer={setMedicamentoViendo}
+            onVer={abrirDetalleMedicamento}
           />
         )}
+        <Paginacion
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          totalRegistros={medicamentosFiltrados.length}
+          onChange={setPaginaActual}
+        />
       </div>
 
       <Modal
@@ -152,7 +182,9 @@ function Medicamentos() {
         onClose={() => setModalAbierto(false)}
         title="Agregar nuevo medicamento"
       >
-        <MedicamentoForm onCrearMedicamento={manejarCrearMedicamento} />
+        <MedicamentoForm
+          onCrearMedicamento={manejarCrearMedicamento}
+        />
       </Modal>
 
       <Modal
@@ -164,26 +196,6 @@ function Medicamentos() {
           medicamentoInicial={medicamentoEditando}
           onGuardar={manejarActualizarMedicamento}
         />
-      </Modal>
-
-      <Modal
-        isOpen={Boolean(medicamentoViendo)}
-        onClose={() => setMedicamentoViendo(null)}
-        title="Detalle del medicamento"
-      >
-        {medicamentoViendo && (
-          <DetalleRegistro
-            campos={[
-              { etiqueta: 'Nombre', valor: medicamentoViendo.nombre },
-              { etiqueta: 'Presentacion', valor: medicamentoViendo.presentacion },
-              { etiqueta: 'Concentracion', valor: medicamentoViendo.concentracion },
-              { etiqueta: 'Contenido', valor: medicamentoViendo.contenido },
-              { etiqueta: 'Receta', valor: medicamentoViendo.requiereReceta ? 'Si' : 'No' },
-              { etiqueta: 'Stock', valor: medicamentoViendo.stockDisponible },
-              { etiqueta: 'Precio unitario', valor: `$${formatoPrecio(medicamentoViendo.precioUnitario)}` },
-            ]}
-          />
-        )}
       </Modal>
     </section>
   )

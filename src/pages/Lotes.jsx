@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
 import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
+import Paginacion from '../components/common/Paginacion'
+import FiltrosLotes from '../components/filtros/FiltrosLotes'
 import LoteForm from '../components/lotes/LoteForm'
 import LotesTable from '../components/lotes/LotesTable'
 import {
@@ -15,8 +17,12 @@ import { obtenerProveedores } from '../services/proveedoresService'
 
 function Lotes() {
   const [lotes, setLotes] = useState([])
-  const [busqueda, setBusqueda] = useState('')
-  const [estadoSeleccionado, setEstadoSeleccionado] = useState('Todos')
+  const [filtros, setFiltros] = useState({
+    busqueda: '',
+    stock: '',
+    caducidad: '',
+    medicamento: '',
+  })
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [proveedores, setProveedores] = useState([])
@@ -24,6 +30,8 @@ function Lotes() {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [loteEditando, setLoteEditando] = useState(null)
   const [loteViendo, setLoteViendo] = useState(null)
+  const [paginaActual, setPaginaActual] = useState(1)
+  const registrosPorPagina = 8
   const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   useEffect(() => {
@@ -38,18 +46,30 @@ function Lotes() {
   }, [])
 
   const lotesFiltrados = useMemo(() => {
-    const valor = busqueda.trim().toLowerCase()
+    const valor = filtros.busqueda.trim().toLowerCase()
 
     return lotes.filter((lote) => {
       const coincideBusqueda = [lote.codigo, lote.medicamento, lote.proveedor]
         .join(' ')
         .toLowerCase()
         .includes(valor)
-      const coincideEstado = estadoSeleccionado === 'Todos' || lote.estado === estadoSeleccionado
+      const coincideEstado = !filtros.caducidad || lote.estado === filtros.caducidad
+      const coincideStock =
+        !filtros.stock ||
+        (filtros.stock === 'con-stock' && lote.stockDisponible > 0) ||
+        (filtros.stock === 'sin-stock' && lote.stockDisponible <= 0)
+      const coincideMedicamento =
+        !filtros.medicamento || String(lote.idMedicamento) === String(filtros.medicamento)
 
-      return coincideBusqueda && coincideEstado
+      return coincideBusqueda && coincideEstado && coincideStock && coincideMedicamento
     })
-  }, [busqueda, estadoSeleccionado, lotes])
+  }, [filtros, lotes])
+
+  const totalPaginas = Math.max(1, Math.ceil(lotesFiltrados.length / registrosPorPagina))
+  const lotesPaginados = lotesFiltrados.slice(
+    (paginaActual - 1) * registrosPorPagina,
+    paginaActual * registrosPorPagina,
+  )
 
   const medicamentosCatalogo = useMemo(() => {
     const mapa = new Map()
@@ -147,38 +167,32 @@ function Lotes() {
           />
         </div>
 
-        <div className="modulo-panel__filtros">
-          <input
-            aria-label="Buscar lote"
-            className="buscador"
-            placeholder="Buscar lote"
-            value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
-          />
-          <select
-            aria-label="Filtrar por estado"
-            className="selector"
-            value={estadoSeleccionado}
-            onChange={(event) => setEstadoSeleccionado(event.target.value)}
-          >
-            <option>Todos</option>
-            <option>Vigente</option>
-            <option>Proximo</option>
-            <option>Caducado</option>
-          </select>
-        </div>
+        <FiltrosLotes
+          filtros={filtros}
+          medicamentos={medicamentosCatalogo}
+          onChange={(nuevosFiltros) => {
+            setFiltros(nuevosFiltros)
+            setPaginaActual(1)
+          }}
+        />
 
         {error && <div className="alerta-error">{error}</div>}
         {cargando ? (
           <p className="texto-secundario">Cargando lotes...</p>
         ) : (
           <LotesTable
-            lotes={lotesFiltrados}
+            lotes={lotesPaginados}
             onEditar={setLoteEditando}
             onEliminar={manejarEliminarLote}
             onVer={setLoteViendo}
           />
         )}
+        <Paginacion
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          totalRegistros={lotesFiltrados.length}
+          onChange={setPaginaActual}
+        />
       </div>
 
       <Modal

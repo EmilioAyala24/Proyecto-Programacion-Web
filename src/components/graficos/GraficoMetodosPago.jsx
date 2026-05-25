@@ -7,7 +7,7 @@ function GraficoMetodosPago({ datos }) {
   return (
     <div className="grafico-contenedor">
       <h3>Métodos de pago</h3>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={220}>
         <PieChart>
           <Pie
             data={datos}
@@ -15,7 +15,7 @@ function GraficoMetodosPago({ datos }) {
             cy="50%"
             labelLine={false}
             label={({ nombre, porcentaje }) => `${nombre} ${porcentaje}%`}
-            outerRadius={100}
+            outerRadius={72}
             fill="#8884d8"
             dataKey="valor"
           >

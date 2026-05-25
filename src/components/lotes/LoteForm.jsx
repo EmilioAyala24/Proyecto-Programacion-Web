@@ -5,6 +5,7 @@ import {
   sanitizarDecimal,
   sanitizarEntero,
   validarCodigoLote,
+  validarFechaISO,
   validarPrecio,
   validarStock,
 } from '../../utils/validaciones'
@@ -54,18 +55,50 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
       stockDisponible: validarStock(formulario.stockDisponible),
       precioCompra: validarPrecio(formulario.precioCompra || '0', 'El precio de compra'),
       precioVenta: validarPrecio(formulario.precioVenta || '0', 'El precio de venta'),
+      fechaFabricacion: validarFechaISO(formulario.fechaFabricacion, 'La fecha de fabricacion'),
+      fechaIngreso: validarFechaISO(formulario.fechaIngreso, 'La fecha de ingreso'),
     }
 
     if (!formulario.idProveedor) {
       nuevosErrores.idProveedor = 'Selecciona un proveedor.'
     }
 
-    if (!formulario.idMedicamento) {
-      nuevosErrores.idMedicamento = 'Selecciona un medicamento.'
-    }
-
     if (!formulario.fechaCaducidad) {
       nuevosErrores.fechaCaducidad = 'La fecha de caducidad es obligatoria.'
+    } else {
+      nuevosErrores.fechaCaducidad = validarFechaISO(
+        formulario.fechaCaducidad,
+        'La fecha de caducidad',
+      )
+    }
+
+    if (!nuevosErrores.fechaIngreso && formulario.fechaFabricacion && formulario.fechaIngreso) {
+      const fabricacion = new Date(`${formulario.fechaFabricacion}T00:00:00`)
+      const ingreso = new Date(`${formulario.fechaIngreso}T00:00:00`)
+
+      if (ingreso < fabricacion) {
+        nuevosErrores.fechaIngreso = 'La fecha de ingreso no puede ser anterior a la fabricacion.'
+      }
+    }
+
+    if (!nuevosErrores.fechaCaducidad && formulario.fechaCaducidad) {
+      const caducidad = new Date(`${formulario.fechaCaducidad}T00:00:00`)
+
+      if (formulario.fechaFabricacion) {
+        const fabricacion = new Date(`${formulario.fechaFabricacion}T00:00:00`)
+
+        if (caducidad <= fabricacion) {
+          nuevosErrores.fechaCaducidad = 'La caducidad debe ser posterior a la fabricacion.'
+        }
+      }
+
+      if (!nuevosErrores.fechaCaducidad && formulario.fechaIngreso) {
+        const ingreso = new Date(`${formulario.fechaIngreso}T00:00:00`)
+
+        if (caducidad < ingreso) {
+          nuevosErrores.fechaCaducidad = 'La caducidad no puede ser anterior al ingreso.'
+        }
+      }
     }
 
     setErrores(nuevosErrores)
@@ -84,7 +117,7 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
 
     onGuardar({
       codigo: formulario.codigo.trim(),
-      idMedicamento: Number(formulario.idMedicamento),
+      idMedicamento: formulario.idMedicamento ? Number(formulario.idMedicamento) : null,
       medicamento: medicamento?.nombre ?? '',
       idProveedor: Number(formulario.idProveedor),
       proveedor: proveedor?.nombre ?? '',
@@ -120,7 +153,7 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
           value={formulario.idMedicamento}
           onChange={manejarCambio}
         >
-          <option value="">Seleccionar medicamento</option>
+          <option value="">Sin medicamento</option>
           {medicamentos.map((medicamento) => (
             <option key={medicamento.id} value={medicamento.id}>
               {medicamento.nombre} {medicamento.concentracion}
@@ -171,6 +204,9 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
           value={formulario.fechaFabricacion}
           onChange={manejarCambio}
         />
+        {errores.fechaFabricacion && (
+          <span className="mensaje-error">{errores.fechaFabricacion}</span>
+        )}
       </div>
 
       <div className="campo-formulario">
@@ -182,6 +218,7 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
           value={formulario.fechaIngreso}
           onChange={manejarCambio}
         />
+        {errores.fechaIngreso && <span className="mensaje-error">{errores.fechaIngreso}</span>}
       </div>
 
       <div className="campo-formulario">

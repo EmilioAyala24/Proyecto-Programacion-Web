@@ -16,7 +16,7 @@ function formatearFecha(fecha) {
   }).format(new Date(`${fecha}T00:00:00`))
 }
 
-function LotesTable({ lotes, onEditar, onEliminar, onVer }) {
+function LotesTable({ lotes, onEditar, onEliminar, onVer, mostrarAcciones = true }) {
   return (
     <div className="tabla-contenedor">
       <table className="tabla-datos">
@@ -29,7 +29,7 @@ function LotesTable({ lotes, onEditar, onEliminar, onVer }) {
             <th>Ingreso</th>
             <th>Caducidad</th>
             <th>Estado</th>
-            <th>Acciones</th>
+            {mostrarAcciones && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
@@ -52,23 +52,25 @@ function LotesTable({ lotes, onEditar, onEliminar, onVer }) {
                   {lote.estado === 'Proximo' ? 'Proximo a caducar' : lote.estado}
                 </span>
               </td>
-              <td>
-                <div className="acciones-tabla">
-                  <button className="boton-accion" type="button" onClick={() => onVer(lote)}>
-                    Ver
-                  </button>
-                  <button className="boton-accion" type="button" onClick={() => onEditar(lote)}>
-                    Editar
-                  </button>
-                  <button
-                    className="boton-accion boton-accion--eliminar"
-                    type="button"
-                    onClick={() => onEliminar(lote.id)}
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </td>
+              {mostrarAcciones && (
+                <td>
+                  <div className="acciones-tabla">
+                    <button className="boton-accion" type="button" onClick={() => onVer(lote)}>
+                      Ver
+                    </button>
+                    <button className="boton-accion" type="button" onClick={() => onEditar(lote)}>
+                      Editar
+                    </button>
+                    <button
+                      className="boton-accion boton-accion--eliminar"
+                      type="button"
+                      onClick={() => onEliminar(lote.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

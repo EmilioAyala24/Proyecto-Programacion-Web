@@ -1,10 +1,15 @@
 import { pool } from '../config/database.js'
 
+const FORMATO_FECHA_HORA = 'DD-MM-YYYY  |  HH24:MI:SS'
+
 export async function obtenerVentas() {
   const resultado = await pool.query(
     `SELECT
        v.id_ventas,
-       v.fecha_venta,
+       TO_CHAR(v.fecha_venta, '${FORMATO_FECHA_HORA}') AS fecha_venta,
+       TO_CHAR(v.fecha_venta, 'YYYY-MM-DD HH24:MI:SS') AS fecha_venta_iso,
+       TO_CHAR(v.fecha_venta, 'YYYY-MM-DD') AS fecha_venta_dia,
+       EXTRACT(HOUR FROM v.fecha_venta)::INTEGER AS fecha_venta_hora,
        v.total_venta,
        u.nombre AS usuario_nombre,
        mp.nombre_metodo,
@@ -53,7 +58,7 @@ export async function crearVenta(idUsuario, idMetPag, idCliente, detalles) {
 
     const resultadoVenta = await cliente.query(
       `INSERT INTO ventas (id_usuario, id_metPag, id_cliente, fecha_venta, total_venta)
-       VALUES ($1, $2, $3, NOW(), 0)
+       VALUES ($1, $2, $3, NOW() AT TIME ZONE 'America/Mexico_City', 0)
        RETURNING id_ventas`,
       [idUsuario, idMetPag, idCliente || null],
     )
@@ -62,21 +67,29 @@ export async function crearVenta(idUsuario, idMetPag, idCliente, detalles) {
 
     for (const detalle of detalles) {
       const medicamentoResultado = await cliente.query(
-        `SELECT m.id_lote, l.stock_actual, COALESCE(l.precio_venta, 0) AS precio_venta
+        `SELECT
+           m.id_med,
+           l.id_lote,
+           l.stock_actual,
+           COALESCE(l.precio_venta, 0) AS precio_venta
          FROM medicamento m
-         JOIN lote l ON l.id_lote = m.id_lote
+         JOIN lote l ON l.id_med = m.id_med
          WHERE m.id_med = $1
+           AND l.id_lote = $2
+           AND l.stock_actual > 0
+           AND l.activo = TRUE
+           AND (l.fecha_caducidad IS NULL OR l.fecha_caducidad >= CURRENT_DATE)
          FOR UPDATE`,
-        [detalle.id_medicamento],
+        [detalle.id_medicamento, detalle.id_lote],
       )
       const medicamento = medicamentoResultado.rows[0]
 
       if (!medicamento) {
-        throw new Error(`El medicamento ${detalle.id_medicamento} no existe.`)
+        throw new Error('El lote seleccionado no existe o no esta disponible.')
       }
 
       if (Number(detalle.cantidad) > medicamento.stock_actual) {
-        throw new Error(`Stock insuficiente para el medicamento ${detalle.id_medicamento}.`)
+        throw new Error(`Stock insuficiente para el lote ${detalle.id_lote}.`)
       }
 
       const precioUnitario = Number(medicamento.precio_venta)
@@ -126,6 +139,23 @@ export async function crearVenta(idUsuario, idMetPag, idCliente, detalles) {
 }
 
 export async function obtenerMetodosPago() {
+  await pool.query(
+    `INSERT INTO metodo_pago (nombre_metodo, descripcion)
+     SELECT nombre_metodo, descripcion
+     FROM (VALUES
+       ('Efectivo', 'Pago en efectivo en mostrador'),
+       ('Tarjeta de debito', 'Pago con tarjeta de debito'),
+       ('Tarjeta de credito', 'Pago con tarjeta de credito'),
+       ('Transferencia', 'Pago por transferencia bancaria'),
+       ('CoDi', 'Pago digital CoDi')
+     ) AS metodo(nombre_metodo, descripcion)
+     WHERE NOT EXISTS (
+       SELECT 1
+       FROM metodo_pago mp
+       WHERE LOWER(mp.nombre_metodo) = LOWER(metodo.nombre_metodo)
+     )`,
+  )
+
   const resultado = await pool.query(
     `SELECT id_metPag AS "id_metPag", nombre_metodo
      FROM metodo_pago
@@ -155,13 +185,15 @@ export async function obtenerMedicamentosDisponibles() {
        m.requiere_receta,
        l.stock_actual,
        l.precio_venta,
-       l.id_lote
+       l.id_lote,
+       l.numero_lote,
+       l.fecha_caducidad
      FROM medicamento m
-     JOIN lote l ON m.id_lote = l.id_lote
+     JOIN lote l ON l.id_med = m.id_med
      WHERE l.stock_actual > 0
        AND l.activo = TRUE
        AND (l.fecha_caducidad IS NULL OR l.fecha_caducidad >= CURRENT_DATE)
-     ORDER BY m.nombre`,
+     ORDER BY m.nombre, l.fecha_caducidad ASC NULLS LAST, l.numero_lote`,
   )
 
   return resultado.rows

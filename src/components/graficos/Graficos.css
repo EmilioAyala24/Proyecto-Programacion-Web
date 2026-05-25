@@ -13,6 +13,10 @@
   color: #1f2937;
 }
 
+.grafico-contenedor--compacto {
+  min-height: 0;
+}
+
 .tarjeta-metrica {
   background: white;
   border-radius: 8px;

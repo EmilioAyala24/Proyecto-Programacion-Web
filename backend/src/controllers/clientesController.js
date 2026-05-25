@@ -39,15 +39,15 @@ export async function obtenerCliente(req, res, next) {
 
 export async function crearCliente(req, res, next) {
   try {
-    const { nombre, ap_pat, ap_mat, telefono } = req.body
+    const { nombre, ap_pat, ap_mat, telefono, correo } = req.body
 
-    const erroresValidacion = validarCliente({ nombre, ap_pat, ap_mat, telefono })
+    const erroresValidacion = validarCliente({ nombre, ap_pat, ap_mat, telefono, correo })
 
     if (Object.keys(erroresValidacion).length > 0) {
       return res.status(400).json({ errores: erroresValidacion })
     }
 
-    const clienteCreado = await clientesModel.crearCliente(nombre, ap_pat, ap_mat, telefono)
+    const clienteCreado = await clientesModel.crearCliente(nombre, ap_pat, ap_mat, telefono, correo)
 
     res.status(201).json({
       mensaje: 'Cliente creado exitosamente',
@@ -61,7 +61,7 @@ export async function crearCliente(req, res, next) {
 export async function actualizarCliente(req, res, next) {
   try {
     const { id } = req.params
-    const { nombre, ap_pat, ap_mat, telefono } = req.body
+    const { nombre, ap_pat, ap_mat, telefono, correo } = req.body
 
     if (!id || isNaN(id)) {
       return res.status(400).json({
@@ -69,7 +69,7 @@ export async function actualizarCliente(req, res, next) {
       })
     }
 
-    const erroresValidacion = validarCliente({ nombre, ap_pat, ap_mat, telefono })
+    const erroresValidacion = validarCliente({ nombre, ap_pat, ap_mat, telefono, correo })
 
     if (Object.keys(erroresValidacion).length > 0) {
       return res.status(400).json({ errores: erroresValidacion })
@@ -81,6 +81,7 @@ export async function actualizarCliente(req, res, next) {
       ap_pat,
       ap_mat,
       telefono,
+      correo,
     )
 
     if (!clienteActualizado) {

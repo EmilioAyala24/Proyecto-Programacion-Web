@@ -30,7 +30,7 @@ export function puedeAcceder(rol, ruta) {
     return rolNormalizado === 'admin'
   }
 
-  const modulo = MODULOS.find((item) => item.ruta === ruta)
+  const modulo = MODULOS.find((item) => ruta === item.ruta || ruta.startsWith(`${item.ruta}/`))
   return Boolean(modulo?.roles.includes(rolNormalizado))
 }
 

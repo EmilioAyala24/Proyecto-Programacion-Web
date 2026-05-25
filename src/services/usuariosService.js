@@ -1,5 +1,49 @@
 const API_URL = import.meta.env.VITE_API_URL
 
+function formatearFechaHora(valor) {
+  if (!valor) {
+    return ''
+  }
+
+  const texto = String(valor).trim()
+  const iso = texto.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/)
+
+  if (iso) {
+    const [, anio, mes, dia, hora, minuto, segundo] = iso
+    return `${dia}-${mes}-${anio}  |  ${hora}:${minuto}:${segundo}`
+  }
+
+  const fechaHora = texto.match(/^(\d{2})[/-](\d{2})[/-](\d{4})\s+\|?\s*(\d{2}):(\d{2})(?::(\d{2}))?/)
+
+  if (fechaHora) {
+    const [, dia, mes, anio, hora, minuto, segundo = '00'] = fechaHora
+    return `${dia}-${mes}-${anio}  |  ${hora}:${minuto}:${segundo}`
+  }
+
+  const fechaSimple = texto.match(/^(\d{4})-(\d{2})-(\d{2})/)
+
+  if (fechaSimple) {
+    const [, anio, mes, dia] = fechaSimple
+    return `${dia}-${mes}-${anio}  |  00:00:00`
+  }
+
+  return texto
+}
+
+function normalizarUsuario(usuario) {
+  return {
+    id: usuario.id_usuario,
+    usuario: usuario.usuario,
+    rol: usuario.rol,
+    nombre: usuario.nombre,
+    apPat: usuario.ap_pat,
+    apMat: usuario.ap_mat,
+    telefono: usuario.telefono,
+    fechaCreacion: formatearFechaHora(usuario.fecha_creacion),
+    ultimaConexion: formatearFechaHora(usuario.ultima_conexion),
+  }
+}
+
 export async function obtenerUsuarios() {
   const response = await fetch(`${API_URL}/usuarios`)
 
@@ -8,17 +52,7 @@ export async function obtenerUsuarios() {
   }
 
   const json = await response.json()
-  return json.data.map((usuario) => ({
-    id: usuario.id_usuario,
-    usuario: usuario.usuario,
-    rol: usuario.rol,
-    nombre: usuario.nombre,
-    apPat: usuario.ap_pat,
-    apMat: usuario.ap_mat,
-    telefono: usuario.telefono,
-    fechaCreacion: usuario.fecha_creacion,
-    ultimaConexion: usuario.ultima_conexion,
-  }))
+  return json.data.map(normalizarUsuario)
 }
 
 export async function obtenerUsuarioPorId(id) {
@@ -31,17 +65,7 @@ export async function obtenerUsuarioPorId(id) {
   const json = await response.json()
   const usuario = json.data
 
-  return {
-    id: usuario.id_usuario,
-    usuario: usuario.usuario,
-    rol: usuario.rol,
-    nombre: usuario.nombre,
-    apPat: usuario.ap_pat,
-    apMat: usuario.ap_mat,
-    telefono: usuario.telefono,
-    fechaCreacion: usuario.fecha_creacion,
-    ultimaConexion: usuario.ultima_conexion,
-  }
+  return normalizarUsuario(usuario)
 }
 
 export async function crearUsuario(nuevoUsuario) {
@@ -69,17 +93,7 @@ export async function crearUsuario(nuevoUsuario) {
   const json = await response.json()
   const usuarioCreado = json.data
 
-  return {
-    id: usuarioCreado.id_usuario,
-    usuario: usuarioCreado.usuario,
-    rol: usuarioCreado.rol,
-    nombre: usuarioCreado.nombre,
-    apPat: usuarioCreado.ap_pat,
-    apMat: usuarioCreado.ap_mat,
-    telefono: usuarioCreado.telefono,
-    fechaCreacion: usuarioCreado.fecha_creacion,
-    ultimaConexion: usuarioCreado.ultima_conexion,
-  }
+  return normalizarUsuario(usuarioCreado)
 }
 
 export async function actualizarUsuario(id, usuarioActualizado) {
@@ -107,17 +121,7 @@ export async function actualizarUsuario(id, usuarioActualizado) {
   const json = await response.json()
   const usuarioMod = json.data
 
-  return {
-    id: usuarioMod.id_usuario,
-    usuario: usuarioMod.usuario,
-    rol: usuarioMod.rol,
-    nombre: usuarioMod.nombre,
-    apPat: usuarioMod.ap_pat,
-    apMat: usuarioMod.ap_mat,
-    telefono: usuarioMod.telefono,
-    fechaCreacion: usuarioMod.fecha_creacion,
-    ultimaConexion: usuarioMod.ultima_conexion,
-  }
+  return normalizarUsuario(usuarioMod)
 }
 
 export async function eliminarUsuario(id) {

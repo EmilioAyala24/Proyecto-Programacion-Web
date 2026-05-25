@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import AddButton from '../components/common/AddButton'
 import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
+import Paginacion from '../components/common/Paginacion'
 import FiltrosUsuarios from '../components/filtros/FiltrosUsuarios'
 import UsuarioForm from '../components/usuarios/UsuarioForm'
 import UsuariosTable from '../components/usuarios/UsuariosTable'
@@ -23,6 +24,8 @@ function Usuarios() {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [usuarioEditando, setUsuarioEditando] = useState(null)
   const [usuarioViendo, setUsuarioViendo] = useState(null)
+  const [paginaActual, setPaginaActual] = useState(1)
+  const registrosPorPagina = 8
 
   useEffect(() => {
     obtenerUsuarios()
@@ -42,6 +45,12 @@ function Usuarios() {
       return coincideUsuario && coincideRol
     })
   }, [filtros, usuarios])
+
+  const totalPaginas = Math.max(1, Math.ceil(usuariosFiltrados.length / registrosPorPagina))
+  const usuariosPaginados = usuariosFiltrados.slice(
+    (paginaActual - 1) * registrosPorPagina,
+    paginaActual * registrosPorPagina,
+  )
 
   const manejarCrearUsuario = async (nuevoUsuario) => {
     try {
@@ -121,19 +130,31 @@ function Usuarios() {
           />
         </div>
 
-        <FiltrosUsuarios filtros={filtros} onChange={setFiltros} />
+        <FiltrosUsuarios
+          filtros={filtros}
+          onChange={(nuevosFiltros) => {
+            setFiltros(nuevosFiltros)
+            setPaginaActual(1)
+          }}
+        />
 
         {error && <div className="alerta-error">{error}</div>}
         {cargando ? (
           <p className="texto-secundario">Cargando usuarios...</p>
         ) : (
           <UsuariosTable
-            usuarios={usuariosFiltrados}
+            usuarios={usuariosPaginados}
             onEditar={setUsuarioEditando}
             onEliminar={manejarEliminarUsuario}
             onVer={setUsuarioViendo}
           />
         )}
+        <Paginacion
+          paginaActual={paginaActual}
+          totalPaginas={totalPaginas}
+          totalRegistros={usuariosFiltrados.length}
+          onChange={setPaginaActual}
+        />
       </div>
 
       <Modal

@@ -2,13 +2,13 @@ import { useState } from 'react'
 import './FiltrosModulo.css'
 
 const filtrosVacios = {
-  nombre: '',
+  busqueda: '',
   stock: '',
   caducidad: '',
-  receta: '',
+  medicamento: '',
 }
 
-function FiltrosMedicamentos({ filtros, onChange }) {
+function FiltrosLotes({ filtros, medicamentos = [], onChange }) {
   const [borrador, setBorrador] = useState({ ...filtrosVacios, ...filtros })
 
   const actualizar = (campo, valor) => {
@@ -28,20 +28,20 @@ function FiltrosMedicamentos({ filtros, onChange }) {
       <span className="filtros-modulo__titulo">Filtros</span>
 
       <div className="filtro-grupo">
-        <label htmlFor="filtro-nombre">Nombre</label>
+        <label htmlFor="filtro-lote">Lote o proveedor</label>
         <input
-          id="filtro-nombre"
+          id="filtro-lote"
           type="text"
-          placeholder="Buscar por nombre..."
-          value={borrador.nombre}
-          onChange={(e) => actualizar('nombre', e.target.value)}
+          placeholder="Buscar lote..."
+          value={borrador.busqueda}
+          onChange={(e) => actualizar('busqueda', e.target.value)}
         />
       </div>
 
       <div className="filtro-grupo">
-        <label htmlFor="filtro-stock">Estado de stock</label>
+        <label htmlFor="filtro-lote-stock">Estado de stock</label>
         <select
-          id="filtro-stock"
+          id="filtro-lote-stock"
           value={borrador.stock}
           onChange={(e) => actualizar('stock', e.target.value)}
         >
@@ -52,9 +52,9 @@ function FiltrosMedicamentos({ filtros, onChange }) {
       </div>
 
       <div className="filtro-grupo">
-        <label htmlFor="filtro-caducidad">Estado de caducidad</label>
+        <label htmlFor="filtro-lote-caducidad">Estado de caducidad</label>
         <select
-          id="filtro-caducidad"
+          id="filtro-lote-caducidad"
           value={borrador.caducidad}
           onChange={(e) => actualizar('caducidad', e.target.value)}
         >
@@ -66,15 +66,18 @@ function FiltrosMedicamentos({ filtros, onChange }) {
       </div>
 
       <div className="filtro-grupo">
-        <label htmlFor="filtro-receta">Requiere receta</label>
+        <label htmlFor="filtro-lote-medicamento">Medicamento</label>
         <select
-          id="filtro-receta"
-          value={borrador.receta}
-          onChange={(e) => actualizar('receta', e.target.value)}
+          id="filtro-lote-medicamento"
+          value={borrador.medicamento}
+          onChange={(e) => actualizar('medicamento', e.target.value)}
         >
           <option value="">-- Todos --</option>
-          <option value="si">Si</option>
-          <option value="no">No</option>
+          {medicamentos.map((medicamento) => (
+            <option key={medicamento.id} value={medicamento.id}>
+              {medicamento.nombre}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -86,4 +89,4 @@ function FiltrosMedicamentos({ filtros, onChange }) {
   )
 }
 
-export default FiltrosMedicamentos
+export default FiltrosLotes

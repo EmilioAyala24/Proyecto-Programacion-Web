@@ -13,8 +13,8 @@ export function AuthProvider({ children }) {
       setUsuario(sesion)
       return sesion
     },
-    cerrarSesion: () => {
-      logoutService()
+    cerrarSesion: async () => {
+      await logoutService()
       setUsuario(null)
     },
   }), [usuario])

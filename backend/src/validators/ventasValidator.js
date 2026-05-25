@@ -28,10 +28,15 @@ export function validarVenta(datos) {
 
 export function validarDetalle(detalle) {
   const idMedicamento = Number(detalle.id_medicamento)
+  const idLote = Number(detalle.id_lote)
   const cantidad = Number(detalle.cantidad)
   const precioUnitario = Number(detalle.precio_unitario)
 
   if (!idMedicamento || Number.isNaN(idMedicamento) || idMedicamento <= 0) {
+    return false
+  }
+
+  if (!idLote || Number.isNaN(idLote) || idLote <= 0) {
     return false
   }
 

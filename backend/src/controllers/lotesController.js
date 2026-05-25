@@ -5,6 +5,14 @@ const LIMITE_STOCK = 999999
 const LIMITE_PRECIO = 99999999.99
 const patronCodigoLote = /^[a-zA-Z0-9._-]+$/
 
+function normalizarIdOpcional(valor) {
+  if (valor === undefined || valor === null || valor === '') {
+    return null
+  }
+
+  return Number(valor)
+}
+
 export async function listarLotes(_req, res, next) {
   try {
     const lotes = await lotesModel.obtenerLotes()
@@ -16,7 +24,7 @@ export async function listarLotes(_req, res, next) {
 
 function limpiarLote(datos) {
   return {
-    idMedicamento: Number(datos.idMedicamento ?? datos.id_medicamento ?? 0),
+    idMedicamento: normalizarIdOpcional(datos.idMedicamento ?? datos.id_medicamento),
     idProv: Number(datos.idProv ?? datos.id_prov),
     numeroLote: datos.numeroLote?.trim() ?? datos.numero_lote?.trim() ?? '',
     fechaFabricacion: datos.fechaFabricacion ?? datos.fecha_fabricacion ?? null,
@@ -29,6 +37,29 @@ function limpiarLote(datos) {
   }
 }
 
+function esFechaValida(fecha) {
+  if (!fecha) {
+    return true
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+    return false
+  }
+
+  const [anio, mes, dia] = fecha.split('-').map(Number)
+  const fechaNormalizada = new Date(Date.UTC(anio, mes - 1, dia))
+
+  return (
+    fechaNormalizada.getUTCFullYear() === anio &&
+    fechaNormalizada.getUTCMonth() === mes - 1 &&
+    fechaNormalizada.getUTCDate() === dia
+  )
+}
+
+function compararFechas(fechaA, fechaB) {
+  return new Date(`${fechaA}T00:00:00Z`) - new Date(`${fechaB}T00:00:00Z`)
+}
+
 function validarLote(datos) {
   const errores = {}
 
@@ -36,8 +67,8 @@ function validarLote(datos) {
     errores.idProv = 'Selecciona un proveedor.'
   }
 
-  if (!datos.idMedicamento || Number.isNaN(datos.idMedicamento)) {
-    errores.idMedicamento = 'Selecciona un medicamento.'
+  if (datos.idMedicamento !== null && (!datos.idMedicamento || Number.isNaN(datos.idMedicamento))) {
+    errores.idMedicamento = 'Selecciona un medicamento valido.'
   }
 
   if (!datos.numeroLote || datos.numeroLote.length < 2) {
@@ -46,6 +77,50 @@ function validarLote(datos) {
     errores.numeroLote = `El numero de lote no puede exceder ${LIMITE_LOTE} caracteres.`
   } else if (!patronCodigoLote.test(datos.numeroLote)) {
     errores.numeroLote = 'El numero de lote solo acepta letras, numeros, punto, guion o guion bajo.'
+  }
+
+  if (!esFechaValida(datos.fechaFabricacion)) {
+    errores.fechaFabricacion = 'La fecha de fabricacion no es valida.'
+  }
+
+  if (!esFechaValida(datos.fechaIngreso)) {
+    errores.fechaIngreso = 'La fecha de ingreso no es valida.'
+  }
+
+  if (!datos.fechaCaducidad) {
+    errores.fechaCaducidad = 'La fecha de caducidad es obligatoria.'
+  } else if (!esFechaValida(datos.fechaCaducidad)) {
+    errores.fechaCaducidad = 'La fecha de caducidad no es valida.'
+  }
+
+  if (
+    !errores.fechaFabricacion &&
+    !errores.fechaIngreso &&
+    datos.fechaFabricacion &&
+    datos.fechaIngreso &&
+    compararFechas(datos.fechaIngreso, datos.fechaFabricacion) < 0
+  ) {
+    errores.fechaIngreso = 'La fecha de ingreso no puede ser anterior a la fabricacion.'
+  }
+
+  if (
+    !errores.fechaFabricacion &&
+    !errores.fechaCaducidad &&
+    datos.fechaFabricacion &&
+    datos.fechaCaducidad &&
+    compararFechas(datos.fechaCaducidad, datos.fechaFabricacion) <= 0
+  ) {
+    errores.fechaCaducidad = 'La caducidad debe ser posterior a la fabricacion.'
+  }
+
+  if (
+    !errores.fechaIngreso &&
+    !errores.fechaCaducidad &&
+    datos.fechaIngreso &&
+    datos.fechaCaducidad &&
+    compararFechas(datos.fechaCaducidad, datos.fechaIngreso) < 0
+  ) {
+    errores.fechaCaducidad = 'La caducidad no puede ser anterior al ingreso.'
   }
 
   if (

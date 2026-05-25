@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import {
   LIMITES,
+  normalizarTelefonoCaptura,
+  PREFIJO_TELEFONO,
   sanitizarNombrePersona,
   sanitizarTelefono,
   sanitizarUsuario,
@@ -15,7 +17,7 @@ const valoresIniciales = {
   nombre: '',
   apPat: '',
   apMat: '',
-  telefono: '',
+  telefono: PREFIJO_TELEFONO,
   password: '',
 }
 
@@ -23,6 +25,7 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
   const [formulario, setFormulario] = useState({
     ...valoresIniciales,
     ...usuarioInicial,
+    telefono: sanitizarTelefono(usuarioInicial?.telefono ?? valoresIniciales.telefono),
   })
   const [errores, setErrores] = useState({})
 
@@ -107,7 +110,7 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
       nombre: formulario.nombre.trim(),
       apPat: formulario.apPat.trim() || '',
       apMat: formulario.apMat.trim() || '',
-      telefono: formulario.telefono.trim() || '',
+      telefono: normalizarTelefonoCaptura(formulario.telefono),
       password: formulario.password,
     }
 
@@ -204,7 +207,7 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
           id="usuario-telefono"
           name="telefono"
           type="tel"
-          placeholder="+52 312 123 4567"
+          placeholder="(312)1234567"
           value={formulario.telefono}
           onChange={manejarCambio}
           maxLength={LIMITES.telefono}

@@ -134,6 +134,16 @@ select {
   padding: 12px 14px;
 }
 
+.campo-compuesto {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 136px;
+}
+
+.campo-compuesto select {
+  min-height: 46px;
+}
+
 .campo-formulario input:focus {
   border-color: #0f3d6e;
   box-shadow: 0 0 0 3px rgba(15, 61, 110, 0.12);
@@ -319,8 +329,11 @@ select {
 .modulo-pendiente,
 .proveedores-pagina,
 .medicamentos-pagina,
+.medicamento-detalle,
 .lotes-pagina,
 .ventas-pagina,
+.clientes-pagina,
+.usuarios-pagina,
 .inicio-pagina {
   display: flex;
   flex-direction: column;
@@ -339,6 +352,13 @@ select {
 .modulo-pendiente p {
   color: #64748b;
   max-width: 760px;
+}
+
+.encabezado-pagina--acciones {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
 }
 
 .indicadores-grid,
@@ -436,6 +456,18 @@ select {
   color: #b91c1c;
 }
 
+.indicador--vigente strong {
+  color: #166534;
+}
+
+.indicador--proximo strong {
+  color: #a16207;
+}
+
+.indicador--caducado strong {
+  color: #b91c1c;
+}
+
 .proveedores-panel,
 .modulo-panel {
   background: #ffffff;
@@ -523,8 +555,23 @@ select {
   white-space: nowrap;
 }
 
+.enlace-tabla {
+  background: transparent;
+  border: 0;
+  color: #0f3d6e;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 0;
+  text-align: left;
+}
+
+.enlace-tabla:hover {
+  text-decoration: underline;
+}
+
 .ventas-tabla {
-  min-width: 1160px;
+  min-width: 1220px;
   table-layout: fixed;
 }
 
@@ -544,7 +591,7 @@ select {
 
 .ventas-tabla th:nth-child(2),
 .ventas-tabla td:nth-child(2) {
-  width: 120px;
+  width: 180px;
 }
 
 .ventas-tabla th:nth-child(3),
@@ -630,6 +677,92 @@ select {
   color: #991b1b;
 }
 
+.lotes-resumen {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lotes-resumen__boton {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  min-height: 34px;
+  padding: 7px 10px;
+}
+
+.lotes-resumen__boton--vigente {
+  background: #ecfdf5;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.lotes-resumen__boton--proximo {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.lotes-resumen__boton--caducado {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.lotes-resumen__punto {
+  background: currentColor;
+  border-radius: 50%;
+  height: 7px;
+  width: 7px;
+}
+
+.lotes-resumen__detalle,
+.lotes-desglose {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #475569;
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+}
+
+.lotes-desglose {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.detalle-medicamento-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.detalle-medicamento-grid div {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+}
+
+.detalle-medicamento-grid span {
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detalle-medicamento-grid strong {
+  color: #1e2a3a;
+}
+
 .proveedor-formulario,
 .medicamento-formulario,
 .lote-formulario {
@@ -672,6 +805,27 @@ select {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.paginacion {
+  align-items: center;
+  color: #64748b;
+  display: flex;
+  font-size: 0.88rem;
+  font-weight: 700;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.paginacion__acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.paginacion .boton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
 }
 
 .boton-accion {
@@ -744,6 +898,20 @@ select {
     gap: 18px;
   }
 
+  .encabezado-pagina--acciones,
+  .modulo-panel__encabezado {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lotes-desglose {
+    grid-template-columns: 1fr;
+  }
+
+  .detalle-medicamento-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .navegacion-principal {
     flex-direction: row;
     flex-wrap: wrap;
@@ -773,6 +941,10 @@ select {
   .modulo-panel__filtros {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .campo-compuesto {
+    grid-template-columns: 1fr;
   }
 
   .buscador,
@@ -816,6 +988,17 @@ select {
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.venta-formulario__grupo--venta {
+  align-items: end;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.4fr) minmax(110px, 0.7fr) minmax(130px, 0.8fr);
+}
+
+.venta-formulario__grupo--venta .boton {
+  align-self: stretch;
+  grid-column: 1 / -1;
+  min-height: 46px;
 }
 
 .venta-formulario__resumen {
@@ -873,6 +1056,22 @@ select {
 .medicamento-info__detalle {
   color: #64748b;
   font-size: 0.85rem;
+}
+
+.cantidad-tabla {
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  color: #1e2a3a;
+  min-height: 36px;
+  padding: 6px 8px;
+  width: 72px;
+}
+
+.cantidad-tabla:focus {
+  border-color: #0f3d6e;
+  box-shadow: 0 0 0 3px rgba(15, 61, 110, 0.1);
+  outline: none;
 }
 
 /* Notificaciones */
@@ -970,6 +1169,10 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .venta-formulario__grupo--venta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .venta-formulario__seccion {
     padding: 16px;
   }
@@ -984,12 +1187,20 @@ select {
     padding: 12px;
   }
 
+  .venta-formulario__grupo--venta {
+    grid-template-columns: 1fr;
+  }
+
   .venta-formulario__acciones {
     flex-direction: column;
   }
 
   .venta-formulario__acciones .boton {
     width: 100%;
+  }
+
+  .detalle-medicamento-grid {
+    grid-template-columns: 1fr;
   }
 
   .tabla--compacta th,

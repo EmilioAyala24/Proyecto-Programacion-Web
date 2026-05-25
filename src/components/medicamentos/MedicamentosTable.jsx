@@ -1,5 +1,41 @@
+import { useState } from 'react'
+
+const clasesEstado = {
+  Vigente: 'vigente',
+  Proximo: 'proximo',
+  Caducado: 'caducado',
+}
+
+function obtenerResumenLotes(medicamento) {
+  if (medicamento.lotesCaducados > 0) {
+    return {
+      texto: `${medicamento.lotesCaducados} caducado(s)`,
+      estado: 'Caducado',
+    }
+  }
+
+  if (medicamento.lotesProximos > 0) {
+    return {
+      texto: `${medicamento.lotesProximos} proximo(s)`,
+      estado: 'Proximo',
+    }
+  }
+
+  return {
+    texto: `${medicamento.lotesVigentes || 0} vigente(s)`,
+    estado: 'Vigente',
+  }
+}
+
 function MedicamentosTable({ medicamentos, onEditar, onEliminar, onVer }) {
-  const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
+  const [lotesAbiertos, setLotesAbiertos] = useState({})
+
+  const alternarLotes = (id) => {
+    setLotesAbiertos((actuales) => ({
+      ...actuales,
+      [id]: !actuales[id],
+    }))
+  }
 
   return (
     <div className="tabla-contenedor">
@@ -12,45 +48,76 @@ function MedicamentosTable({ medicamentos, onEditar, onEliminar, onVer }) {
             <th>Contenido</th>
             <th>Receta</th>
             <th>Stock</th>
-            <th>Precio</th>
+            <th>Lotes</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {medicamentos.map((medicamento) => (
-            <tr key={medicamento.id}>
-              <td>
-                <strong>{medicamento.nombre}</strong>
-              </td>
-              <td>{medicamento.presentacion}</td>
-              <td>{medicamento.concentracion}</td>
-              <td>{medicamento.contenido}</td>
-              <td>{medicamento.requiereReceta ? 'Si' : 'No'}</td>
-              <td>
-                <span className={medicamento.stockDisponible > 0 ? 'stock stock--ok' : 'stock stock--agotado'}>
-                  {medicamento.stockDisponible}
-                </span>
-              </td>
-              <td>${formatoPrecio(medicamento.precioUnitario)}</td>
-              <td>
-                <div className="acciones-tabla">
-                  <button className="boton-accion" type="button" onClick={() => onVer(medicamento)}>
-                    Ver
-                  </button>
-                  <button className="boton-accion" type="button" onClick={() => onEditar(medicamento)}>
-                    Editar
-                  </button>
+          {medicamentos.map((medicamento) => {
+            const resumen = obtenerResumenLotes(medicamento)
+            const estaAbierto = Boolean(lotesAbiertos[medicamento.id])
+
+            return (
+              <tr key={medicamento.id}>
+                <td>
                   <button
-                    className="boton-accion boton-accion--eliminar"
+                    className="enlace-tabla"
                     type="button"
-                    onClick={() => onEliminar(medicamento.id)}
+                    onClick={() => onVer(medicamento)}
                   >
-                    Eliminar
+                    {medicamento.nombre}
                   </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td>{medicamento.presentacion}</td>
+                <td>{medicamento.concentracion}</td>
+                <td>{medicamento.contenido}</td>
+                <td>{medicamento.requiereReceta ? 'Si' : 'No'}</td>
+                <td>
+                  <span className={medicamento.stockDisponible > 0 ? 'stock stock--ok' : 'stock stock--agotado'}>
+                    {medicamento.stockDisponible}
+                  </span>
+                </td>
+                <td>
+                  <div className="lotes-resumen">
+                    <button
+                      className={`lotes-resumen__boton lotes-resumen__boton--${clasesEstado[resumen.estado]}`}
+                      type="button"
+                      onClick={() => alternarLotes(medicamento.id)}
+                    >
+                      <span className="lotes-resumen__punto" />
+                      <strong>{resumen.texto}</strong>
+                      <span aria-hidden="true">{estaAbierto ? '-' : '+'}</span>
+                    </button>
+                    {estaAbierto && (
+                      <div className="lotes-resumen__detalle">
+                        <span>Total: {medicamento.totalLotes}</span>
+                        <span>Bien: {medicamento.lotesVigentes}</span>
+                        <span>Proximos: {medicamento.lotesProximos}</span>
+                        <span>Caducados: {medicamento.lotesCaducados}</span>
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td>
+                  <div className="acciones-tabla">
+                    <button className="boton-accion" type="button" onClick={() => onVer(medicamento)}>
+                      Ver
+                    </button>
+                    <button className="boton-accion" type="button" onClick={() => onEditar(medicamento)}>
+                      Editar
+                    </button>
+                    <button
+                      className="boton-accion boton-accion--eliminar"
+                      type="button"
+                      onClick={() => onEliminar(medicamento.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>

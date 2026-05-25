@@ -2,7 +2,7 @@ export const LIMITES = {
   usuario: 60,
   nombrePersona: 80,
   apellido: 60,
-  telefono: 15,
+  telefono: 12,
   proveedor: 100,
   correo: 100,
   direccion: 200,
@@ -14,6 +14,9 @@ export const LIMITES = {
   stock: 999999,
   precio: 99999999.99,
 }
+
+export const PREFIJO_TELEFONO = '(312)'
+const DIGITOS_TELEFONO_LOCAL = 7
 
 const patronUsuario = /^[a-zA-Z0-9._-]+$/
 const patronNombrePersona = /^[a-zA-ZÁÉÍÓÚÜÑáéíóúüñ\s'-]+$/
@@ -41,7 +44,15 @@ export function sanitizarUsuario(valor) {
 }
 
 export function sanitizarTelefono(valor) {
-  return limitar(String(valor ?? '').replace(/[^0-9+\-\s()]/g, ''), LIMITES.telefono)
+  const digitos = String(valor ?? '').replace(/\D/g, '')
+  const digitosLocales = digitos.startsWith('312') ? digitos.slice(3) : digitos
+
+  return `${PREFIJO_TELEFONO}${digitosLocales.slice(0, DIGITOS_TELEFONO_LOCAL)}`
+}
+
+export function normalizarTelefonoCaptura(valor) {
+  const telefono = sanitizarTelefono(valor)
+  return telefono === PREFIJO_TELEFONO ? '' : telefono
 }
 
 export function sanitizarProveedor(valor) {
@@ -68,8 +79,9 @@ export function sanitizarDecimal(valor) {
   const limpio = String(valor ?? '')
     .replace(',', '.')
     .replace(/[^0-9.]/g, '')
-  const [enteros = '', decimales = ''] = limpio.split('.')
-  return decimales.length > 0
+  const [enteros = '', ...partesDecimales] = limpio.split('.')
+  const decimales = partesDecimales.join('')
+  return limpio.includes('.')
     ? `${enteros.slice(0, 8)}.${decimales.slice(0, 2)}`
     : enteros.slice(0, 8)
 }
@@ -226,14 +238,20 @@ export function validarProveedor(nombre) {
 export function validarTelefono(telefono, obligatorio = true) {
   const valor = telefono.trim()
 
-  if (!valor) {
+  if (!valor || valor === PREFIJO_TELEFONO) {
     return obligatorio ? 'El telefono es obligatorio.' : ''
   }
 
-  const digitos = valor.replace(/\D/g, '').length
+  const digitos = valor.replace(/\D/g, '')
+  const digitosLocales = digitos.startsWith('312') ? digitos.slice(3) : digitos
 
-  if (!patronTelefono.test(valor) || digitos < 7 || digitos > 15 || valor.length > LIMITES.telefono) {
-    return 'Ingresa un telefono valido de 7 a 15 digitos.'
+  if (
+    !valor.startsWith(PREFIJO_TELEFONO) ||
+    !patronTelefono.test(valor) ||
+    digitosLocales.length !== DIGITOS_TELEFONO_LOCAL ||
+    valor.length > LIMITES.telefono
+  ) {
+    return `Completa los ${DIGITOS_TELEFONO_LOCAL} digitos despues de ${PREFIJO_TELEFONO}.`
   }
 
   return ''
@@ -356,8 +374,31 @@ export function validarPrecio(precio, campo = 'El precio') {
     return `${campo} es demasiado alto.`
   }
 
-  if (!/^\d+(\.\d{1,2})?$/.test(String(precio))) {
+  if (!/^\d+(\.\d{0,2})?$/.test(String(precio))) {
     return `${campo} solo admite hasta 2 decimales.`
+  }
+
+  return ''
+}
+
+export function validarFechaISO(fecha, campo = 'La fecha') {
+  if (!fecha) {
+    return ''
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+    return `${campo} debe tener un formato valido.`
+  }
+
+  const [anio, mes, dia] = fecha.split('-').map(Number)
+  const fechaNormalizada = new Date(Date.UTC(anio, mes - 1, dia))
+
+  if (
+    fechaNormalizada.getUTCFullYear() !== anio ||
+    fechaNormalizada.getUTCMonth() !== mes - 1 ||
+    fechaNormalizada.getUTCDate() !== dia
+  ) {
+    return `${campo} no es valida.`
   }
 
   return ''

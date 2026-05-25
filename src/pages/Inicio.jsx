@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import GraficoMetodosPago from '../components/graficos/GraficoMetodosPago'
+import GraficoClientesNuevos from '../components/graficos/GraficoClientesNuevos'
 import GraficoTendenciaSemanal from '../components/graficos/GraficoTendenciaSemanal'
 import GraficoVentasDelDia from '../components/graficos/GraficoVentasDelDia'
 import TarjetaMetrica from '../components/graficos/TarjetaMetrica'
@@ -82,13 +83,14 @@ function Inicio() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
           gap: '20px',
           marginBottom: '32px',
         }}
       >
         <GraficoVentasDelDia datos={estadisticas.datosGraficoHoras} />
         <GraficoMetodosPago datos={estadisticas.datosMetodosPago} />
+        <GraficoClientesNuevos datos={estadisticas.clientesNuevos} />
       </div>
 
       {/* Gráfico de tendencia */}
