@@ -103,7 +103,8 @@ ALTER TABLE lote
 -- -------------------------------------------------------------
 CREATE TABLE codigos_qr (
     id_qr               SERIAL          NOT NULL,
-    id_medicamento      INTEGER         NOT NULL,
+    id_medicamento      INTEGER         DEFAULT NULL,
+    id_lote             INTEGER         DEFAULT NULL,
     token               VARCHAR(64)     NOT NULL UNIQUE,
     url_qr              VARCHAR(255)    NOT NULL,
     fecha_generacion    DATE            DEFAULT NULL,
@@ -111,7 +112,8 @@ CREATE TABLE codigos_qr (
     contador_escaneos   INTEGER         DEFAULT 0,
     activo              BOOLEAN         DEFAULT TRUE,
     PRIMARY KEY (id_qr),
-    CONSTRAINT fk_qr_med FOREIGN KEY (id_medicamento) REFERENCES medicamento(id_med)
+    CONSTRAINT fk_qr_med FOREIGN KEY (id_medicamento) REFERENCES medicamento(id_med),
+    CONSTRAINT fk_qr_lote FOREIGN KEY (id_lote) REFERENCES lote(id_lote)
 );
 
 -- -------------------------------------------------------------

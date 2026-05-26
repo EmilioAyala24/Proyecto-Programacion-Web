@@ -1,4 +1,4 @@
-function VentasTable({ ventas, cargando, error, onVer }) {
+function VentasTable({ ventas, cargando, error, onVer, onTicket }) {
   const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   if (cargando) {
@@ -58,6 +58,13 @@ function VentasTable({ ventas, cargando, error, onVer }) {
                 <div className="acciones-tabla">
                   <button className="boton-accion" type="button" onClick={() => onVer(venta)}>
                     Ver
+                  </button>
+                  <button
+                    className="boton-accion boton-accion--ticket"
+                    type="button"
+                    onClick={() => onTicket(venta)}
+                  >
+                    Ticket
                   </button>
                 </div>
               </td>

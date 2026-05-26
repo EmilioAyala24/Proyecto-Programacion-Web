@@ -5,6 +5,7 @@ import clientesRoutes from './clientesRoutes.js'
 import lotesRoutes from './lotesRoutes.js'
 import medicamentosRoutes from './medicamentosRoutes.js'
 import proveedoresRoutes from './proveedoresRoutes.js'
+import qrsRoutes from './qrsRoutes.js'
 import usuariosRoutes from './usuariosRoutes.js'
 import ventasRoutes from './ventasRoutes.js'
 
@@ -31,5 +32,6 @@ router.use('/proveedores', proveedoresRoutes)
 router.use('/medicamentos', medicamentosRoutes)
 router.use('/lotes', lotesRoutes)
 router.use('/ventas', ventasRoutes)
+router.use('/qrs', qrsRoutes)
 
 export default router

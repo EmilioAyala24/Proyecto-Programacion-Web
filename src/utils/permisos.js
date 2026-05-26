@@ -6,6 +6,7 @@ export const MODULOS = [
   { ruta: '/clientes', etiqueta: 'Clientes', roles: ['admin', 'cajero'] },
   { ruta: '/usuarios', etiqueta: 'Usuarios', roles: ['admin'] },
   { ruta: '/ventas', etiqueta: 'Ventas', roles: ['admin', 'cajero'] },
+  { ruta: '/reportes', etiqueta: 'Reportes', roles: ['admin'] },
 ]
 
 const ALIAS_ROLES = {
@@ -28,6 +29,10 @@ export function puedeAcceder(rol, ruta) {
 
   if (ruta === '/dashboard') {
     return rolNormalizado === 'admin'
+  }
+
+  if (ruta.startsWith('/qr/')) {
+    return true
   }
 
   const modulo = MODULOS.find((item) => ruta === item.ruta || ruta.startsWith(`${item.ruta}/`))

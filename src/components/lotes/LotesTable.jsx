@@ -16,7 +16,7 @@ function formatearFecha(fecha) {
   }).format(new Date(`${fecha}T00:00:00`))
 }
 
-function LotesTable({ lotes, onEditar, onEliminar, onVer, mostrarAcciones = true }) {
+function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones = true }) {
   return (
     <div className="tabla-contenedor">
       <table className="tabla-datos">
@@ -60,6 +60,13 @@ function LotesTable({ lotes, onEditar, onEliminar, onVer, mostrarAcciones = true
                     </button>
                     <button className="boton-accion" type="button" onClick={() => onEditar(lote)}>
                       Editar
+                    </button>
+                    <button
+                      className="boton-accion boton-accion--ticket"
+                      type="button"
+                      onClick={() => onQR(lote)}
+                    >
+                      QR
                     </button>
                     <button
                       className="boton-accion boton-accion--eliminar"

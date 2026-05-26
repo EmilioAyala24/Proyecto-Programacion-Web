@@ -34,6 +34,16 @@ export async function prepararBaseDatos() {
   `)
 
   await pool.query(`
+    ALTER TABLE codigos_qr
+    ADD COLUMN IF NOT EXISTS id_lote INTEGER
+  `)
+
+  await pool.query(`
+    ALTER TABLE codigos_qr
+    ALTER COLUMN id_medicamento DROP NOT NULL
+  `)
+
+  await pool.query(`
     ALTER TABLE medicamento
     ALTER COLUMN id_lote DROP NOT NULL
   `)
@@ -78,6 +88,20 @@ export async function prepararBaseDatos() {
       ) THEN
         ALTER TABLE lote
           ADD CONSTRAINT fk_lote_med FOREIGN KEY (id_med) REFERENCES medicamento(id_med);
+      END IF;
+    END $$
+  `)
+
+  await pool.query(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'fk_qr_lote'
+      ) THEN
+        ALTER TABLE codigos_qr
+          ADD CONSTRAINT fk_qr_lote FOREIGN KEY (id_lote) REFERENCES lote(id_lote);
       END IF;
     END $$
   `)

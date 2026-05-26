@@ -1,0 +1,914 @@
+﻿<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='utf-8'>
+<title>Guia del proyecto Farmacia Inclusiva</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.35; color: #1f2933; }
+h1 { font-size: 22pt; color: #0f5132; }
+h2 { font-size: 16pt; color: #14532d; border-bottom: 1px solid #d9ead3; padding-bottom: 4px; }
+h3 { font-size: 13pt; color: #1f2933; }
+pre { font-family: Consolas, monospace; background: #f3f4f6; padding: 8px; border: 1px solid #d1d5db; }
+code { font-family: Consolas, monospace; }
+li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<h1>Guia del proyecto Farmacia Inclusiva</h1>
+<p>&nbsp;</p>
+<p>Este documento explica como esta organizado y como funciona el proyecto carpeta por carpeta y archivo por archivo. El sistema es una aplicacion web para administrar una farmacia: usuarios, login, clientes, proveedores, medicamentos, lotes, ventas y estadisticas.</p>
+<p>&nbsp;</p>
+<h2>Vision general</h2>
+<p>&nbsp;</p>
+<p>El proyecto esta dividido en tres partes principales:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Frontend: vive en `src/` y esta hecho con React, Vite y React Router.</li>
+<li>Backend: vive en `backend/src/` y esta hecho con Express.</li>
+<li>Base de datos: vive en `BaseDeDatos/` y usa PostgreSQL.</li>
+</ul>
+<p>&nbsp;</p>
+<p>Flujo basico:</p>
+<p>&nbsp;</p>
+<p>1. El usuario entra al frontend.</p>
+<p>2. `src/main.jsx` monta React y `src/App.jsx` define las rutas.</p>
+<p>3. El login llama a `POST /api/auth/login`.</p>
+<p>4. El backend recibe las peticiones en `backend/src/app.js`, las manda a `backend/src/routes/index.js` y de ahi a cada modulo.</p>
+<p>5. Cada ruta llama a un controlador.</p>
+<p>6. Cada controlador valida datos y llama a un modelo.</p>
+<p>7. Cada modelo ejecuta SQL en PostgreSQL mediante `backend/src/config/database.js`.</p>
+<p>8. El frontend recibe la respuesta, normaliza los datos en `src/services/` y los muestra en paginas y componentes.</p>
+<p>&nbsp;</p>
+<h2>Archivos de raiz</h2>
+<p>&nbsp;</p>
+<h3>`.env.example`</h3>
+<p>&nbsp;</p>
+<p>Plantilla de variables de entorno. Sirve para saber que valores debe tener el proyecto localmente, como `PORT`, `VITE_API_URL` y datos de PostgreSQL.</p>
+<p>&nbsp;</p>
+<h3>`.env.local`</h3>
+<p>&nbsp;</p>
+<p>Archivo local real con variables de entorno. El frontend lee `VITE_API_URL` para saber a que API llamar. El backend lee las variables de conexion a la base de datos.</p>
+<p>&nbsp;</p>
+<h3>`.gitignore`</h3>
+<p>&nbsp;</p>
+<p>Indica que archivos o carpetas no se suben al repositorio, por ejemplo `node_modules`, archivos generados o variables locales.</p>
+<p>&nbsp;</p>
+<h3>`docker-compose.yml`</h3>
+<p>&nbsp;</p>
+<p>Levanta PostgreSQL 16 en Docker. Crea el contenedor `farmacia_inclusiva_postgres`, expone la base en el puerto local `5433` y carga automaticamente:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`BaseDeDatos/farmacia_inclusiva.sql`</li>
+<li>`BaseDeDatos/seeds/proveedores.sql`</li>
+<li>`BaseDeDatos/seeds/catalogo_inicial.sql`</li>
+</ul>
+<p>&nbsp;</p>
+<p>Tambien define un volumen para conservar datos entre reinicios.</p>
+<p>&nbsp;</p>
+<h3>`eslint.config.js`</h3>
+<p>&nbsp;</p>
+<p>Configuracion de ESLint. Sirve para revisar reglas de calidad y estilo en JavaScript y React.</p>
+<p>&nbsp;</p>
+<h3>`index.html`</h3>
+<p>&nbsp;</p>
+<p>HTML base de Vite. Contiene el nodo `root` donde React monta toda la aplicacion.</p>
+<p>&nbsp;</p>
+<h3>`package.json`</h3>
+<p>&nbsp;</p>
+<p>Define dependencias y comandos del proyecto.</p>
+<p>&nbsp;</p>
+<p>Comandos importantes:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`npm run dev`: inicia el frontend con Vite.</li>
+<li>`npm run dev:api`: inicia el backend Express.</li>
+<li>`npm run db:up`: levanta PostgreSQL con Docker.</li>
+<li>`npm run db:down`: apaga los servicios Docker.</li>
+<li>`npm run db:reset`: reinicia la base de datos desde cero.</li>
+<li>`npm run build`: genera la version de produccion del frontend.</li>
+<li>`npm run lint`: ejecuta ESLint.</li>
+</ul>
+<p>&nbsp;</p>
+<p>Dependencias principales:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`react`, `react-dom`: interfaz.</li>
+<li>`react-router-dom`: navegacion.</li>
+<li>`recharts`: graficas.</li>
+<li>`express`, `cors`: API.</li>
+<li>`pg`: conexion a PostgreSQL.</li>
+<li>`dotenv`: variables de entorno.</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`package-lock.json`</h3>
+<p>&nbsp;</p>
+<p>Archivo generado por npm que fija versiones exactas de dependencias.</p>
+<p>&nbsp;</p>
+<h3>`README.md`</h3>
+<p>&nbsp;</p>
+<p>Documento inicial de Vite/React. Actualmente contiene informacion generica de la plantilla.</p>
+<p>&nbsp;</p>
+<h3>`vite.config.js`</h3>
+<p>&nbsp;</p>
+<p>Configura Vite con el plugin de React.</p>
+<p>&nbsp;</p>
+<h3>`prueba.txt`</h3>
+<p>&nbsp;</p>
+<p>Archivo de prueba sin participacion directa en la aplicacion.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/`</h2>
+<p>&nbsp;</p>
+<p>Contiene la API del proyecto.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/app.js`</h3>
+<p>&nbsp;</p>
+<p>Crea la app de Express. Activa CORS, permite recibir JSON, registra un middleware simple de logs, monta todas las rutas bajo `/api` y usa el manejador global de errores.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/server.js`</h3>
+<p>&nbsp;</p>
+<p>Punto de entrada del backend. Carga variables de entorno, prepara la base de datos con `prepararBaseDatos()` y luego escucha en el puerto configurado, por defecto `3001`.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/src/config/`</h2>
+<p>&nbsp;</p>
+<p>Configuracion del backend.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/config/env.js`</h3>
+<p>&nbsp;</p>
+<p>Carga variables de entorno con `dotenv`. Por defecto usa `.env.local`, aunque se puede cambiar con `ENV_FILE`.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/config/database.js`</h3>
+<p>&nbsp;</p>
+<p>Crea el `Pool` de PostgreSQL usando `pg`.</p>
+<p>&nbsp;</p>
+<p>Funciones principales:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`verificarConexion()`: ejecuta `SELECT NOW()` para comprobar conexion.</li>
+<li>`prepararBaseDatos()`: aplica ajustes al esquema al iniciar, como agregar `password_hash`, `contenido`, `id_med`, normalizar roles, ajustar fechas y asegurar un usuario `admin`.</li>
+</ul>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/src/routes/`</h2>
+<p>&nbsp;</p>
+<p>Define endpoints de la API. Las rutas son delgadas: solo conectan URLs con controladores.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/routes/index.js`</h3>
+<p>&nbsp;</p>
+<p>Ruta central de la API.</p>
+<p>&nbsp;</p>
+<ul>
+<li>`GET /api/salud`: revisa que la API y la base funcionen.</li>
+<li>Monta `/clientes`, `/auth`, `/usuarios`, `/proveedores`, `/medicamentos`, `/lotes` y `/ventas`.</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`backend/src/routes/authRoutes.js`</h3>
+<p>&nbsp;</p>
+<p>Endpoints de autenticacion:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`POST /api/auth/login`</li>
+<li>`POST /api/auth/logout`</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`backend/src/routes/clientesRoutes.js`</h3>
+<p>&nbsp;</p>
+<p>CRUD de clientes:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`GET /api/clientes`</li>
+<li>`GET /api/clientes/:id`</li>
+<li>`POST /api/clientes`</li>
+<li>`PUT /api/clientes/:id`</li>
+<li>`DELETE /api/clientes/:id`</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`backend/src/routes/usuariosRoutes.js`</h3>
+<p>&nbsp;</p>
+<p>CRUD de usuarios:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`GET /api/usuarios`</li>
+<li>`GET /api/usuarios/:id`</li>
+<li>`POST /api/usuarios`</li>
+<li>`PUT /api/usuarios/:id`</li>
+<li>`DELETE /api/usuarios/:id`</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`backend/src/routes/proveedoresRoutes.js`</h3>
+<p>&nbsp;</p>
+<p>CRUD de proveedores:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`GET /api/proveedores`</li>
+<li>`POST /api/proveedores`</li>
+<li>`PUT /api/proveedores/:id`</li>
+<li>`DELETE /api/proveedores/:id`</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`backend/src/routes/medicamentosRoutes.js`</h3>
+<p>&nbsp;</p>
+<p>CRUD de medicamentos:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`GET /api/medicamentos`</li>
+<li>`POST /api/medicamentos`</li>
+<li>`PUT /api/medicamentos/:id`</li>
+<li>`DELETE /api/medicamentos/:id`</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`backend/src/routes/lotesRoutes.js`</h3>
+<p>&nbsp;</p>
+<p>CRUD de lotes:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`GET /api/lotes`</li>
+<li>`POST /api/lotes`</li>
+<li>`PUT /api/lotes/:id`</li>
+<li>`DELETE /api/lotes/:id`</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`backend/src/routes/ventasRoutes.js`</h3>
+<p>&nbsp;</p>
+<p>Rutas de ventas:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`GET /api/ventas/opciones/metodos-pago`</li>
+<li>`GET /api/ventas/opciones/clientes`</li>
+<li>`GET /api/ventas/opciones/medicamentos`</li>
+<li>`GET /api/ventas`</li>
+<li>`GET /api/ventas/:id`</li>
+<li>`POST /api/ventas`</li>
+</ul>
+<p>&nbsp;</p>
+<p>Las rutas de opciones van antes de `/:id` para evitar que Express interprete `opciones` como un ID.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/src/controllers/`</h2>
+<p>&nbsp;</p>
+<p>Contiene la logica HTTP: recibe `req`, valida, llama modelos y responde JSON.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/controllers/authController.js`</h3>
+<p>&nbsp;</p>
+<p>Gestiona login y logout. Valida usuario/contrasena, busca el usuario por username, verifica el hash de contrasena y devuelve los datos de sesion. En logout registra la ultima conexion del usuario.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/controllers/clientesController.js`</h3>
+<p>&nbsp;</p>
+<p>Controla listar, obtener, crear, actualizar y eliminar clientes. Usa `validarCliente()` antes de guardar datos.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/controllers/usuariosController.js`</h3>
+<p>&nbsp;</p>
+<p>Controla listar, obtener, crear, actualizar y eliminar usuarios. Genera hash de contrasena al crear o cuando se actualiza una nueva contrasena.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/controllers/proveedoresController.js`</h3>
+<p>&nbsp;</p>
+<p>Controla proveedores. Valida datos con `validarProveedor()` y responde con mensajes de error si el proveedor no existe o los datos son invalidos.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/controllers/medicamentosController.js`</h3>
+<p>&nbsp;</p>
+<p>Controla medicamentos. Valida nombre, presentacion, concentracion, contenido y si requiere receta. Luego llama al modelo para crear, actualizar, listar o eliminar.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/controllers/lotesController.js`</h3>
+<p>&nbsp;</p>
+<p>Controla lotes. Limpia datos recibidos desde el frontend, valida proveedor, medicamento, numero de lote, fechas, stock y precios. Tambien decide si una fecha de caducidad es valida comparandola con fabricacion e ingreso.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/controllers/ventasController.js`</h3>
+<p>&nbsp;</p>
+<p>Controla ventas. Permite listar ventas, ver detalle, crear una venta y obtener opciones para formularios: metodos de pago, clientes y medicamentos disponibles.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/src/models/`</h2>
+<p>&nbsp;</p>
+<p>Contiene consultas SQL. Aqui esta la comunicacion directa con PostgreSQL.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/models/clientesModel.js`</h3>
+<p>&nbsp;</p>
+<p>Consulta, crea, actualiza y elimina clientes. Formatea fechas como `DD-MM-YYYY | HH24:MI:SS` y crea fechas ajustadas a horario Mexico centro.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/models/usuariosModel.js`</h3>
+<p>&nbsp;</p>
+<p>Consulta, crea, actualiza y elimina usuarios. Tambien busca usuario por username para login y actualiza `ultima_conexion` en logout.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/models/proveedoresModel.js`</h3>
+<p>&nbsp;</p>
+<p>Consulta, crea, actualiza y elimina proveedores en la tabla `proveedor`.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/models/medicamentosModel.js`</h3>
+<p>&nbsp;</p>
+<p>Consulta medicamentos junto con informacion agregada de sus lotes: stock total, precio, total de lotes, lotes vigentes, proximos y caducados. Tambien crea, actualiza y elimina medicamentos.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/models/lotesModel.js`</h3>
+<p>&nbsp;</p>
+<p>Consulta lotes junto con proveedor y medicamento. Calcula estado del lote:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`Caducado`: fecha menor a hoy.</li>
+<li>`Proximo`: caduca dentro de 60 dias.</li>
+<li>`Vigente`: no esta caducado ni proximo.</li>
+</ul>
+<p>&nbsp;</p>
+<p>Tambien crea, actualiza y elimina lotes, y marca `activo` segun stock.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/models/ventasModel.js`</h3>
+<p>&nbsp;</p>
+<p>Maneja ventas con transacciones SQL. Al crear una venta:</p>
+<p>&nbsp;</p>
+<p>1. Inicia `BEGIN`.</p>
+<p>2. Inserta la venta con total temporal en cero.</p>
+<p>3. Revisa y bloquea cada lote con `FOR UPDATE`.</p>
+<p>4. Valida stock y caducidad.</p>
+<p>5. Inserta cada detalle.</p>
+<p>6. Descuenta stock del lote.</p>
+<p>7. Actualiza el total de la venta.</p>
+<p>8. Hace `COMMIT` o `ROLLBACK` si hay error.</p>
+<p>&nbsp;</p>
+<p>Tambien obtiene historial, detalle, metodos de pago, clientes y medicamentos disponibles.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/src/validators/`</h2>
+<p>&nbsp;</p>
+<p>Valida datos antes de guardar.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/validators/authValidator.js`</h3>
+<p>&nbsp;</p>
+<p>Valida que login reciba usuario y password.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/validators/clientesValidator.js`</h3>
+<p>&nbsp;</p>
+<p>Valida campos de cliente como nombre, apellidos, telefono y correo.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/validators/usuariosValidator.js`</h3>
+<p>&nbsp;</p>
+<p>Valida usuario, rol, nombre, telefono y contrasena. Distingue cuando la contrasena es obligatoria al crear y opcional al editar.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/validators/proveedoresValidator.js`</h3>
+<p>&nbsp;</p>
+<p>Valida nombre, telefono, correo y direccion del proveedor.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/validators/medicamentosValidator.js`</h3>
+<p>&nbsp;</p>
+<p>Valida datos de medicamento y normaliza nombres de campos recibidos desde el frontend.</p>
+<p>&nbsp;</p>
+<h3>`backend/src/validators/ventasValidator.js`</h3>
+<p>&nbsp;</p>
+<p>Valida que una venta tenga usuario, metodo de pago y detalles validos.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/src/middleware/`</h2>
+<p>&nbsp;</p>
+<h3>`backend/src/middleware/errorHandler.js`</h3>
+<p>&nbsp;</p>
+<p>Manejador global de errores. Registra el error en consola y responde `500` con un mensaje generico.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/src/utils/`</h2>
+<p>&nbsp;</p>
+<h3>`backend/src/utils/password.js`</h3>
+<p>&nbsp;</p>
+<p>Gestiona contrasenas con `crypto.pbkdf2Sync`.</p>
+<p>&nbsp;</p>
+<ul>
+<li>`generarPasswordHash(password)`: crea salt y hash.</li>
+<li>`verificarPassword(password, passwordHash)`: compara hashes con `timingSafeEqual`.</li>
+</ul>
+<p>&nbsp;</p>
+<h2>Carpeta `backend/src/services/`</h2>
+<p>&nbsp;</p>
+<p>Actualmente solo contiene `.gitkeep`. Esta preparada para agregar servicios de backend si despues se separa logica que no pertenece directamente al controlador ni al modelo.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `BaseDeDatos/`</h2>
+<p>&nbsp;</p>
+<p>Contiene el esquema, migraciones y datos iniciales.</p>
+<p>&nbsp;</p>
+<h3>`BaseDeDatos/farmacia_inclusiva.sql`</h3>
+<p>&nbsp;</p>
+<p>Script principal de la base de datos. Crea tablas como:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`metodo_pago`</li>
+<li>`usuario`</li>
+<li>`cliente`</li>
+<li>`proveedor`</li>
+<li>`lote`</li>
+<li>`medicamento`</li>
+<li>`codigos_qr`</li>
+<li>`ventas`</li>
+<li>`detalle_ventas_medicamento`</li>
+</ul>
+<p>&nbsp;</p>
+<p>Tambien define relaciones entre ventas, usuarios, clientes, metodos de pago, medicamentos y lotes.</p>
+<p>&nbsp;</p>
+<h3>`BaseDeDatos/migrations/20260524_medicamento_catalogo_lotes.sql`</h3>
+<p>&nbsp;</p>
+<p>Migracion que separa mejor catalogo de medicamentos y lotes. Agrega `id_med` a `lote`, permite que `medicamento.id_lote` no sea obligatorio y crea la llave foranea `fk_lote_med`.</p>
+<p>&nbsp;</p>
+<h3>`BaseDeDatos/seeds/proveedores.sql`</h3>
+<p>&nbsp;</p>
+<p>Datos iniciales de proveedores.</p>
+<p>&nbsp;</p>
+<h3>`BaseDeDatos/seeds/catalogo_inicial.sql`</h3>
+<p>&nbsp;</p>
+<p>Datos iniciales de catalogo, lotes y registros base necesarios para probar el sistema.</p>
+<p>&nbsp;</p>
+<h3>`.gitkeep` en subcarpetas</h3>
+<p>&nbsp;</p>
+<p>Archivos vacios para mantener carpetas en Git aunque no tengan mas contenido.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `docs/`</h2>
+<p>&nbsp;</p>
+<p>Documentacion del proyecto.</p>
+<p>&nbsp;</p>
+<h3>`docs/api/proveedores.md`</h3>
+<p>&nbsp;</p>
+<p>Documenta endpoints del modulo proveedores.</p>
+<p>&nbsp;</p>
+<h3>`docs/api/ventas.md`</h3>
+<p>&nbsp;</p>
+<p>Documenta el modulo de ventas, rutas, estructura de archivos, validaciones y tablas relacionadas.</p>
+<p>&nbsp;</p>
+<h3>`docs/database/conexion-postgresql.md`</h3>
+<p>&nbsp;</p>
+<p>Explica como levantar PostgreSQL con Docker, configurar `.env.local`, iniciar backend/frontend y revisar `/api/salud`.</p>
+<p>&nbsp;</p>
+<h3>`docs/manuales/guia-proyecto.md`</h3>
+<p>&nbsp;</p>
+<p>Este documento.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `public/`</h2>
+<p>&nbsp;</p>
+<p>Archivos publicos servidos directamente por Vite.</p>
+<p>&nbsp;</p>
+<h3>`public/favicon.svg`</h3>
+<p>&nbsp;</p>
+<p>Icono del sitio.</p>
+<p>&nbsp;</p>
+<h3>`public/icons.svg`</h3>
+<p>&nbsp;</p>
+<p>Archivo SVG con iconos reutilizables.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/`</h2>
+<p>&nbsp;</p>
+<p>Contiene el frontend React.</p>
+<p>&nbsp;</p>
+<h3>`src/main.jsx`</h3>
+<p>&nbsp;</p>
+<p>Entrada del frontend. Monta React en `#root`, envuelve la aplicacion en `BrowserRouter` y activa `StrictMode`.</p>
+<p>&nbsp;</p>
+<h3>`src/App.jsx`</h3>
+<p>&nbsp;</p>
+<p>Define rutas principales:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`/login`</li>
+<li>`/inicio`</li>
+<li>`/dashboard`</li>
+<li>`/medicamentos`</li>
+<li>`/medicamentos/:id`</li>
+<li>`/lotes`</li>
+<li>`/proveedores`</li>
+<li>`/ventas`</li>
+<li>`/clientes`</li>
+<li>`/usuarios`</li>
+</ul>
+<p>&nbsp;</p>
+<p>Tambien envuelve la app con `AuthProvider` y protege rutas internas con `ProtectedRoute`.</p>
+<p>&nbsp;</p>
+<h3>`src/App.css`</h3>
+<p>&nbsp;</p>
+<p>Estilos principales de la aplicacion: layout, sidebar, encabezados, tablas, modales, botones, tarjetas, estados visuales y paginas.</p>
+<p>&nbsp;</p>
+<h3>`src/index.css`</h3>
+<p>&nbsp;</p>
+<p>Estilos globales base aplicados por Vite/React.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/context/`</h2>
+<p>&nbsp;</p>
+<p>Maneja contexto global de autenticacion.</p>
+<p>&nbsp;</p>
+<h3>`src/context/auth-context.js`</h3>
+<p>&nbsp;</p>
+<p>Crea el contexto React `AuthContext`.</p>
+<p>&nbsp;</p>
+<h3>`src/context/AuthContext.jsx`</h3>
+<p>&nbsp;</p>
+<p>Proveedor del contexto. Guarda el usuario actual, expone `estaAutenticado`, `iniciarSesion` y `cerrarSesion`. Usa `authService` para persistir la sesion en `localStorage`.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/hooks/`</h2>
+<p>&nbsp;</p>
+<p>Hooks reutilizables.</p>
+<p>&nbsp;</p>
+<h3>`src/hooks/useAuth.js`</h3>
+<p>&nbsp;</p>
+<p>Hook para consumir `AuthContext`. Lanza error si se usa fuera de `AuthProvider`.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/utils/`</h2>
+<p>&nbsp;</p>
+<p>Funciones auxiliares del frontend.</p>
+<p>&nbsp;</p>
+<h3>`src/utils/permisos.js`</h3>
+<p>&nbsp;</p>
+<p>Define modulos disponibles y roles permitidos. Roles usados:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`admin`: acceso completo.</li>
+<li>`cajero`: acceso a inicio, medicamentos, clientes y ventas.</li>
+</ul>
+<p>&nbsp;</p>
+<p>Tambien normaliza alias como `administrador` y `vendedor`.</p>
+<p>&nbsp;</p>
+<h3>`src/utils/validaciones.js`</h3>
+<p>&nbsp;</p>
+<p>Contiene reglas de sanitizacion y validacion para formularios: usuarios, contrasenas, nombres, telefonos, correos, direcciones, medicamentos, lotes, stock, precios y fechas.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/services/`</h2>
+<p>&nbsp;</p>
+<p>Servicios que conectan el frontend con la API. Tambien normalizan datos para que los componentes usen nombres consistentes.</p>
+<p>&nbsp;</p>
+<h3>`src/services/authService.js`</h3>
+<p>&nbsp;</p>
+<p>Llama a login/logout, guarda sesion en `localStorage`, recupera sesion al recargar y normaliza el rol.</p>
+<p>&nbsp;</p>
+<h3>`src/services/clientesService.js`</h3>
+<p>&nbsp;</p>
+<p>Consume `/clientes`. Normaliza nombres de campos de base de datos (`ap_pat`, `fecha_registro`) a campos del frontend (`apPat`, `fechaRegistro`).</p>
+<p>&nbsp;</p>
+<h3>`src/services/usuariosService.js`</h3>
+<p>&nbsp;</p>
+<p>Consume `/usuarios`. Crea, actualiza, obtiene y elimina usuarios. Formatea fechas de creacion y ultima conexion.</p>
+<p>&nbsp;</p>
+<h3>`src/services/proveedoresService.js`</h3>
+<p>&nbsp;</p>
+<p>Consume `/proveedores`. Si no existe `VITE_API_URL`, usa datos iniciales de `src/data/proveedores.js`.</p>
+<p>&nbsp;</p>
+<h3>`src/services/medicamentosService.js`</h3>
+<p>&nbsp;</p>
+<p>Consume `/medicamentos`. Normaliza stock, precios, conteo de lotes y estado de caducidad. Tiene fallback a `src/data/medicamentos.js`.</p>
+<p>&nbsp;</p>
+<h3>`src/services/lotesService.js`</h3>
+<p>&nbsp;</p>
+<p>Consume `/lotes`. Normaliza fechas, proveedor, medicamento, stock y estado del lote. Serializa los datos antes de enviarlos al backend.</p>
+<p>&nbsp;</p>
+<h3>`src/services/ventasService.js`</h3>
+<p>&nbsp;</p>
+<p>Consume `/ventas`. Normaliza fechas a horario Mexico, obtiene historial, detalle de venta, metodos de pago, clientes, medicamentos disponibles y crea ventas.</p>
+<p>&nbsp;</p>
+<h3>`src/services/estadisticasService.js`</h3>
+<p>&nbsp;</p>
+<p>Calcula metricas del dia a partir de ventas y clientes:</p>
+<p>&nbsp;</p>
+<ul>
+<li>ingresos totales</li>
+<li>numero de ventas</li>
+<li>venta promedio</li>
+<li>clientes totales</li>
+<li>ventas por hora</li>
+<li>metodos de pago</li>
+<li>tendencia semanal</li>
+<li>clientes nuevos</li>
+</ul>
+<p>&nbsp;</p>
+<h2>Carpeta `src/pages/`</h2>
+<p>&nbsp;</p>
+<p>Paginas completas de la aplicacion. Cada pagina une estado, filtros, servicios y componentes visuales.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Login.jsx`</h3>
+<p>&nbsp;</p>
+<p>Pantalla de acceso. Si el usuario ya esta autenticado, redirige a la ruta inicial segun su rol.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Inicio.jsx`</h3>
+<p>&nbsp;</p>
+<p>Panel de estadisticas. Carga datos con `obtenerEstadisticasDelDia()` y muestra tarjetas metricas y graficas.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Dashboard.jsx`</h3>
+<p>&nbsp;</p>
+<p>Panel sencillo de avance funcional con accesos a modulos. Parece una pantalla inicial de demostracion.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Medicamentos.jsx`</h3>
+<p>&nbsp;</p>
+<p>Modulo de medicamentos. Lista, filtra, pagina, crea, edita, elimina y abre detalle de medicamento.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/MedicamentoDetalle.jsx`</h3>
+<p>&nbsp;</p>
+<p>Detalle de un medicamento. Muestra informacion del catalogo y los lotes asociados, con resumen de vigentes, proximos y caducados.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Lotes.jsx`</h3>
+<p>&nbsp;</p>
+<p>Modulo de lotes. Carga lotes, proveedores y medicamentos. Permite filtrar, crear, editar, eliminar y ver detalle.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Proveedores.jsx`</h3>
+<p>&nbsp;</p>
+<p>Modulo de proveedores. Permite listar, filtrar, crear, editar, eliminar y ver detalle.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Ventas.jsx`</h3>
+<p>&nbsp;</p>
+<p>Modulo de ventas. Muestra historial, indicadores, formulario para registrar venta y modal de detalle. Al crear venta recarga el historial.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Clientes.jsx`</h3>
+<p>&nbsp;</p>
+<p>Modulo de clientes. Permite listar, filtrar, crear, editar, eliminar y ver detalle. Calcula clientes nuevos de los ultimos 7 dias.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/Usuarios.jsx`</h3>
+<p>&nbsp;</p>
+<p>Modulo de usuarios. Permite listar, filtrar por usuario/rol, crear, editar, eliminar y ver detalle.</p>
+<p>&nbsp;</p>
+<h3>`src/pages/ModuloPendiente.jsx`</h3>
+<p>&nbsp;</p>
+<p>Componente de pagina para modulos aun no implementados. Actualmente no se usa en `App.jsx`.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/layouts/`</h2>
+<p>&nbsp;</p>
+<h3>`src/layouts/AppLayout.jsx`</h3>
+<p>&nbsp;</p>
+<p>Layout principal despues del login. Muestra barra lateral con modulos permitidos por rol, barra superior con usuario activo y boton de cerrar sesion. Usa `Outlet` para renderizar la pagina actual.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/components/`</h2>
+<p>&nbsp;</p>
+<p>Componentes reutilizables o propios de cada modulo.</p>
+<p>&nbsp;</p>
+<h3>Componentes generales</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/BannerEstado.jsx`</p>
+<p>&nbsp;</p>
+<p>Componente visual para mostrar estados o mensajes destacados.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/Encabezado.jsx`</p>
+<p>&nbsp;</p>
+<p>Encabezado reutilizable.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/SeccionAudio.jsx`</p>
+<p>&nbsp;</p>
+<p>Seccion relacionada con audio o lectura, posiblemente pensada para accesibilidad.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/TarjetaFechas.jsx`</p>
+<p>&nbsp;</p>
+<p>Tarjeta para mostrar fechas relevantes.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/TarjetaMedicamento.jsx`</p>
+<p>&nbsp;</p>
+<p>Tarjeta visual para informacion de medicamento.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/TarjetaVenta.jsx`</p>
+<p>&nbsp;</p>
+<p>Tarjeta visual para informacion de venta.</p>
+<p>&nbsp;</p>
+<h3>`src/components/auth/`</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/auth/LoginForm.jsx`</p>
+<p>&nbsp;</p>
+<p>Formulario de login. Captura usuario y contrasena, llama a `iniciarSesion` desde `useAuth` y maneja errores visuales.</p>
+<p>&nbsp;</p>
+<h3>`src/components/common/`</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/common/AddButton.jsx`</p>
+<p>&nbsp;</p>
+<p>Boton reutilizable para agregar registros.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/common/AddButton.css`</p>
+<p>&nbsp;</p>
+<p>Estilos del boton de agregar.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/common/DetalleRegistro.jsx`</p>
+<p>&nbsp;</p>
+<p>Componente para mostrar campos de detalle en modales.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/common/Modal.jsx`</p>
+<p>&nbsp;</p>
+<p>Modal reutilizable para formularios y detalles.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/common/Modal.css`</p>
+<p>&nbsp;</p>
+<p>Estilos de modal.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/common/Paginacion.jsx`</p>
+<p>&nbsp;</p>
+<p>Controles de paginacion usados en tablas.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/common/ProtectedRoute.jsx`</p>
+<p>&nbsp;</p>
+<p>Protege rutas internas. Si no hay sesion redirige a `/login`; si el rol no tiene permiso, redirige a la ruta inicial del rol.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/common/SearchBar.jsx`</p>
+<p>&nbsp;</p>
+<p>Barra de busqueda reutilizable.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/common/SearchBar.css`</p>
+<p>&nbsp;</p>
+<p>Estilos de barra de busqueda.</p>
+<p>&nbsp;</p>
+<h3>`src/components/clientes/`</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/clientes/ClienteForm.jsx`</p>
+<p>&nbsp;</p>
+<p>Formulario para crear o editar cliente. Usa validaciones y sanitizacion del frontend.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/clientes/ClientesTable.jsx`</p>
+<p>&nbsp;</p>
+<p>Tabla de clientes con acciones de ver, editar y eliminar.</p>
+<p>&nbsp;</p>
+<h3>`src/components/usuarios/`</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/usuarios/UsuarioForm.jsx`</p>
+<p>&nbsp;</p>
+<p>Formulario para crear o editar usuarios, incluyendo rol y contrasena.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/usuarios/UsuariosTable.jsx`</p>
+<p>&nbsp;</p>
+<p>Tabla de usuarios con acciones.</p>
+<p>&nbsp;</p>
+<h3>`src/components/proveedores/`</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/proveedores/ProveedorForm.jsx`</p>
+<p>&nbsp;</p>
+<p>Formulario de proveedores.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/proveedores/ProveedoresTable.jsx`</p>
+<p>&nbsp;</p>
+<p>Tabla de proveedores con acciones.</p>
+<p>&nbsp;</p>
+<h3>`src/components/medicamentos/`</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/medicamentos/MedicamentoForm.jsx`</p>
+<p>&nbsp;</p>
+<p>Formulario para registrar o editar medicamento.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/medicamentos/MedicamentosTable.jsx`</p>
+<p>&nbsp;</p>
+<p>Tabla de medicamentos con stock, receta, lotes y acciones.</p>
+<p>&nbsp;</p>
+<h3>`src/components/lotes/`</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/lotes/LoteForm.jsx`</p>
+<p>&nbsp;</p>
+<p>Formulario para registrar o editar lotes. Usa listas de medicamentos y proveedores.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/lotes/LotesTable.jsx`</p>
+<p>&nbsp;</p>
+<p>Tabla de lotes con estado de caducidad, stock, precios y acciones.</p>
+<p>&nbsp;</p>
+<h3>`src/components/ventas/`</h3>
+<p>&nbsp;</p>
+<p>#### `src/components/ventas/VentaForm.jsx`</p>
+<p>&nbsp;</p>
+<p>Formulario para registrar ventas. Carga metodos de pago, clientes y medicamentos disponibles. Permite agregar detalles y calcula total.</p>
+<p>&nbsp;</p>
+<p>#### `src/components/ventas/VentasTable.jsx`</p>
+<p>&nbsp;</p>
+<p>Tabla del historial de ventas.</p>
+<p>&nbsp;</p>
+<h3>`src/components/filtros/`</h3>
+<p>&nbsp;</p>
+<p>Componentes de filtros por modulo:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`FiltrosClientes.jsx`: filtra clientes.</li>
+<li>`FiltrosLotes.jsx`: filtra lotes.</li>
+<li>`FiltrosMedicamentos.jsx`: filtra medicamentos.</li>
+<li>`FiltrosProveedores.jsx`: filtra proveedores.</li>
+<li>`FiltrosUsuarios.jsx`: filtra usuarios.</li>
+<li>`FiltrosVentas.jsx`: filtra ventas.</li>
+<li>`FiltrosModulo.css`: estilos comunes para filtros.</li>
+</ul>
+<p>&nbsp;</p>
+<h3>`src/components/graficos/`</h3>
+<p>&nbsp;</p>
+<p>Componentes de graficas y metricas del inicio:</p>
+<p>&nbsp;</p>
+<ul>
+<li>`GraficoClientesNuevos.jsx`</li>
+<li>`GraficoMetodosPago.jsx`</li>
+<li>`GraficoTendenciaSemanal.jsx`</li>
+<li>`GraficoVentasDelDia.jsx`</li>
+<li>`TarjetaMetrica.jsx`</li>
+<li>`Graficos.css`</li>
+</ul>
+<p>&nbsp;</p>
+<p>Usan `recharts` para visualizar datos calculados en `estadisticasService`.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/data/`</h2>
+<p>&nbsp;</p>
+<p>Datos iniciales o fallback para desarrollo cuando no hay API configurada.</p>
+<p>&nbsp;</p>
+<h3>`src/data/medicamentos.js`</h3>
+<p>&nbsp;</p>
+<p>Medicamentos iniciales.</p>
+<p>&nbsp;</p>
+<h3>`src/data/lotes.js`</h3>
+<p>&nbsp;</p>
+<p>Lotes iniciales.</p>
+<p>&nbsp;</p>
+<h3>`src/data/proveedores.js`</h3>
+<p>&nbsp;</p>
+<p>Proveedores iniciales.</p>
+<p>&nbsp;</p>
+<h3>`src/data/ventas.js`</h3>
+<p>&nbsp;</p>
+<p>Ventas iniciales o datos de apoyo.</p>
+<p>&nbsp;</p>
+<h2>Carpeta `src/assets/`</h2>
+<p>&nbsp;</p>
+<p>Recursos del frontend.</p>
+<p>&nbsp;</p>
+<h3>`src/assets/hero.png`</h3>
+<p>&nbsp;</p>
+<p>Imagen principal usada por la interfaz.</p>
+<p>&nbsp;</p>
+<h3>`src/assets/react.svg`</h3>
+<p>&nbsp;</p>
+<p>Logo de React incluido por la plantilla.</p>
+<p>&nbsp;</p>
+<h3>`src/assets/vite.svg`</h3>
+<p>&nbsp;</p>
+<p>Logo de Vite incluido por la plantilla.</p>
+<p>&nbsp;</p>
+<h2>Carpetas generadas</h2>
+<p>&nbsp;</p>
+<h3>`node_modules/`</h3>
+<p>&nbsp;</p>
+<p>Dependencias instaladas por npm. No se edita manualmente.</p>
+<p>&nbsp;</p>
+<h3>`dist/`</h3>
+<p>&nbsp;</p>
+<p>Salida generada por `npm run build`. Contiene archivos listos para produccion. No es fuente principal.</p>
+<p>&nbsp;</p>
+<h2>Flujo de autenticacion</h2>
+<p>&nbsp;</p>
+<p>1. `Login.jsx` muestra `LoginForm`.</p>
+<p>2. `LoginForm` llama a `iniciarSesion`.</p>
+<p>3. `AuthContext.jsx` llama a `authService.login`.</p>
+<p>4. `authService.js` manda `POST /api/auth/login`.</p>
+<p>5. `authController.js` valida datos y revisa contrasena con `password.js`.</p>
+<p>6. Si es correcto, devuelve datos del usuario.</p>
+<p>7. El frontend guarda la sesion en `localStorage`.</p>
+<p>8. `ProtectedRoute.jsx` permite o bloquea rutas segun rol.</p>
+<p>&nbsp;</p>
+<h2>Flujo de una venta</h2>
+<p>&nbsp;</p>
+<p>1. `Ventas.jsx` abre `VentaForm`.</p>
+<p>2. `VentaForm` carga clientes, metodos de pago y medicamentos disponibles.</p>
+<p>3. El usuario arma detalles de venta.</p>
+<p>4. `ventasService.crearVenta()` manda `POST /api/ventas`.</p>
+<p>5. `ventasController.crearVenta()` valida la venta.</p>
+<p>6. `ventasModel.crearVenta()` usa una transaccion:</p>
+<ul>
+<li>inserta venta,</li>
+<li>valida lote,</li>
+<li>inserta detalles,</li>
+<li>descuenta stock,</li>
+<li>actualiza total.</li>
+</ul>
+<p>7. El frontend recarga el historial.</p>
+<p>&nbsp;</p>
+<h2>Flujo de inventario</h2>
+<p>&nbsp;</p>
+<p>Medicamentos y lotes estan relacionados, pero cumplen funciones distintas:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Medicamento: catalogo general del producto.</li>
+<li>Lote: existencia real, proveedor, fechas, stock y precios.</li>
+</ul>
+<p>&nbsp;</p>
+<p>Por eso el stock mostrado en medicamentos se calcula sumando lotes asociados.</p>
+<p>&nbsp;</p>
+<h2>Roles y permisos</h2>
+<p>&nbsp;</p>
+<p>Los permisos estan en `src/utils/permisos.js`.</p>
+<p>&nbsp;</p>
+<ul>
+<li>Administrador: puede entrar a inicio, medicamentos, lotes, proveedores, clientes, usuarios y ventas.</li>
+<li>Cajero: puede entrar a inicio, medicamentos, clientes y ventas.</li>
+</ul>
+<p>&nbsp;</p>
+<p>El backend actualmente no aplica middleware de autorizacion por rol; la restriccion esta principalmente en el frontend.</p>
+<p>&nbsp;</p>
+<h2>Como ejecutar el proyecto localmente</h2>
+<p>&nbsp;</p>
+<p>1. Instalar dependencias:</p>
+<p>&nbsp;</p>
+<pre>
+npm install
+</pre>
+<p>&nbsp;</p>
+<p>2. Levantar PostgreSQL:</p>
+<p>&nbsp;</p>
+<pre>
+npm run db:up
+</pre>
+<p>&nbsp;</p>
+<p>3. Iniciar backend:</p>
+<p>&nbsp;</p>
+<pre>
+npm run dev:api
+</pre>
+<p>&nbsp;</p>
+<p>4. Iniciar frontend:</p>
+<p>&nbsp;</p>
+<pre>
+npm run dev
+</pre>
+<p>&nbsp;</p>
+<p>5. Abrir:</p>
+<p>&nbsp;</p>
+<pre>
+http://localhost:5173
+</pre>
+<p>&nbsp;</p>
+<p>6. Revisar API:</p>
+<p>&nbsp;</p>
+<pre>
+http://localhost:3001/api/salud
+</pre>
+<p>&nbsp;</p>
+</body>
+</html>

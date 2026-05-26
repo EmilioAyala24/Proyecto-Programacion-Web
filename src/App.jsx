@@ -11,6 +11,8 @@ import Lotes from './pages/Lotes'
 import MedicamentoDetalle from './pages/MedicamentoDetalle'
 import Medicamentos from './pages/Medicamentos'
 import Proveedores from './pages/Proveedores'
+import QRMedicamento from './pages/QRMedicamento'
+import Reportes from './pages/Reportes'
 import Usuarios from './pages/Usuarios'
 import Ventas from './pages/Ventas'
 
@@ -19,6 +21,7 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/qr/:token" element={<QRMedicamento />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/inicio" element={<Inicio />} />
@@ -30,6 +33,7 @@ function App() {
             <Route path="/ventas" element={<Ventas />} />
             <Route path="/clientes" element={<Clientes />} />
             <Route path="/usuarios" element={<Usuarios />} />
+            <Route path="/reportes" element={<Reportes />} />
           </Route>
         </Route>
         <Route path="*" element={<Navigate to="/inicio" replace />} />

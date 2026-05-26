@@ -14,6 +14,7 @@ import {
 } from '../services/lotesService'
 import { obtenerMedicamentos } from '../services/medicamentosService'
 import { obtenerProveedores } from '../services/proveedoresService'
+import { obtenerQRLote } from '../services/qrsService'
 
 function Lotes() {
   const [lotes, setLotes] = useState([])
@@ -30,6 +31,9 @@ function Lotes() {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [loteEditando, setLoteEditando] = useState(null)
   const [loteViendo, setLoteViendo] = useState(null)
+  const [loteQR, setLoteQR] = useState(null)
+  const [qrActual, setQrActual] = useState(null)
+  const [errorQR, setErrorQR] = useState('')
   const [paginaActual, setPaginaActual] = useState(1)
   const registrosPorPagina = 8
   const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
@@ -127,6 +131,19 @@ function Lotes() {
     }
   }
 
+  const manejarVerQR = async (lote) => {
+    try {
+      setLoteQR(lote)
+      setQrActual(null)
+      setErrorQR('')
+      setQrActual(await obtenerQRLote(lote.id))
+      setError('')
+    } catch (err) {
+      setErrorQR(err.message)
+      setError(err.message)
+    }
+  }
+
   return (
     <section className="lotes-pagina">
       <div className="encabezado-pagina">
@@ -185,6 +202,7 @@ function Lotes() {
             onEditar={setLoteEditando}
             onEliminar={manejarEliminarLote}
             onVer={setLoteViendo}
+            onQR={manejarVerQR}
           />
         )}
         <Paginacion
@@ -239,6 +257,39 @@ function Lotes() {
               { etiqueta: 'Estado', valor: loteViendo.estado },
             ]}
           />
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(loteQR)}
+        onClose={() => {
+          setLoteQR(null)
+          setQrActual(null)
+          setErrorQR('')
+        }}
+        title="QR del lote"
+      >
+        {loteQR && (
+          <div className="qr-lote">
+            <div>
+              <span className="qr-lote__etiqueta">Lote</span>
+              <h3>{loteQR.codigo}</h3>
+              <p>{loteQR.medicamento}</p>
+            </div>
+            {qrActual ? (
+              <>
+                <img src={qrActual.qr_image_url} alt={`QR del lote ${loteQR.codigo}`} />
+                <a className="boton boton--primario" href={qrActual.url_qr} target="_blank" rel="noreferrer">
+                  Abrir vista del QR
+                </a>
+                <p className="texto-secundario">{qrActual.url_qr}</p>
+              </>
+            ) : errorQR ? (
+              <div className="alerta-error">{errorQR}</div>
+            ) : (
+              <p className="texto-secundario">Generando QR...</p>
+            )}
+          </div>
         )}
       </Modal>
     </section>

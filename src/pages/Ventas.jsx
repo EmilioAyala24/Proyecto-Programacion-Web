@@ -8,6 +8,234 @@ import VentaForm from '../components/ventas/VentaForm'
 import VentasTable from '../components/ventas/VentasTable'
 import { crearVenta, obtenerDetalleVenta, obtenerVentas } from '../services/ventasService'
 
+function escaparHtml(valor) {
+  return String(valor ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;')
+}
+
+function crearHtmlTicket(venta, detalles) {
+  const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
+  const filas = detalles.map((detalle) => `
+    <tr>
+      <td>
+        <strong>${escaparHtml(detalle.medicamento)}</strong>
+        <span>${escaparHtml([detalle.presentacion, detalle.concentracion].filter(Boolean).join(' '))}</span>
+      </td>
+      <td>${escaparHtml(detalle.cantidad)}</td>
+      <td>$${formatoPrecio(detalle.precio_unitario)}</td>
+      <td>$${formatoPrecio(detalle.subtotal)}</td>
+    </tr>
+  `).join('')
+
+  return `
+    <!doctype html>
+    <html lang="es">
+      <head>
+        <meta charset="utf-8" />
+        <title>Ticket venta #${escaparHtml(venta.id)}</title>
+        <style>
+          @page {
+            size: 80mm auto;
+            margin: 4mm;
+          }
+          * { box-sizing: border-box; }
+          body {
+            color: #0f172a;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 12px;
+          }
+          .ticket {
+            margin: 0 auto;
+            max-width: 302px;
+            text-align: center;
+          }
+          .ticket__encabezado {
+            border-bottom: 1px dashed #94a3b8;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            text-align: center;
+          }
+          .ticket__encabezado h1 {
+            font-size: 18px;
+            margin: 0 0 4px;
+          }
+          .ticket__encabezado p,
+          .ticket__datos p,
+          .ticket__pie p {
+            margin: 3px 0;
+          }
+          .ticket__datos {
+            border-bottom: 1px dashed #94a3b8;
+            font-size: 12px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            text-align: center;
+          }
+          .ticket__datos strong {
+            display: inline-block;
+            min-width: 88px;
+            text-align: right;
+          }
+          table {
+            border-collapse: collapse;
+            font-size: 11px;
+            margin: 0 auto;
+            width: 100%;
+          }
+          th {
+            border-bottom: 1px solid #cbd5e1;
+            text-align: center;
+          }
+          th,
+          td {
+            padding: 6px 3px;
+            vertical-align: top;
+          }
+          td:nth-child(2),
+          td:nth-child(3),
+          td:nth-child(4),
+          th:nth-child(2),
+          th:nth-child(3),
+          th:nth-child(4) {
+            text-align: center;
+          }
+          td:first-child,
+          th:first-child {
+            text-align: left;
+          }
+          td span {
+            color: #475569;
+            display: block;
+            font-size: 10px;
+            margin-top: 2px;
+          }
+          .ticket__total {
+            align-items: center;
+            border-top: 1px dashed #94a3b8;
+            display: flex;
+            font-size: 18px;
+            font-weight: 800;
+            gap: 24px;
+            justify-content: center;
+            margin-top: 12px;
+            padding-top: 12px;
+          }
+          .ticket__pie {
+            color: #475569;
+            font-size: 11px;
+            margin-top: 14px;
+            text-align: center;
+          }
+          .acciones {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 18px auto 0;
+            max-width: 360px;
+          }
+          button {
+            background: #0f3d6e;
+            border: 0;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 700;
+            padding: 10px 14px;
+          }
+          @media print {
+            html,
+            body {
+              background: #ffffff;
+              height: auto;
+              margin: 0;
+              padding: 0;
+              width: 80mm;
+            }
+            .ticket {
+              margin: 0;
+              max-width: none;
+              padding: 0;
+              width: 72mm;
+            }
+            .ticket__encabezado h1 {
+              font-size: 15pt;
+            }
+            .ticket__encabezado p {
+              font-size: 11pt;
+            }
+            .ticket__datos {
+              font-size: 9pt;
+            }
+            table {
+              font-size: 8.5pt;
+            }
+            td span {
+              font-size: 7.5pt;
+            }
+            .ticket__total {
+              font-size: 14pt;
+            }
+            .ticket__pie {
+              font-size: 8pt;
+            }
+            .acciones { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <main class="ticket">
+          <section class="ticket__encabezado">
+            <h1>Farmacia Inclusiva</h1>
+            <p>Ticket de venta</p>
+            <p>Folio #${escaparHtml(venta.id)}</p>
+          </section>
+
+          <section class="ticket__datos">
+            <p><strong>Fecha:</strong> ${escaparHtml(venta.fecha)}</p>
+            <p><strong>Cajero:</strong> ${escaparHtml(venta.usuario)}</p>
+            <p><strong>Cliente:</strong> ${escaparHtml(venta.cliente)}</p>
+            <p><strong>Metodo de pago:</strong> ${escaparHtml(venta.metodoPago)}</p>
+          </section>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cant.</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filas || '<tr><td colspan="4">Sin productos registrados.</td></tr>'}
+            </tbody>
+          </table>
+
+          <div class="ticket__total">
+            <span>Total</span>
+            <span>$${formatoPrecio(venta.total)}</span>
+          </div>
+
+          <section class="ticket__pie">
+            <p>Gracias por su compra.</p>
+            <p>Conserve este ticket para cualquier aclaracion.</p>
+          </section>
+        </main>
+
+        <div class="acciones">
+          <button type="button" onclick="window.print()">Imprimir ticket</button>
+          <button type="button" onclick="window.close()">Cerrar</button>
+        </div>
+      </body>
+    </html>
+  `
+}
+
 function Ventas() {
   const [ventas, setVentas] = useState([])
   const [filtros, setFiltros] = useState({
@@ -91,6 +319,30 @@ function Ventas() {
     }
   }
 
+  const manejarGenerarTicket = async (venta) => {
+    const ventanaTicket = window.open('', '_blank', 'width=420,height=720')
+
+    if (!ventanaTicket) {
+      setError('No se pudo abrir el ticket. Permite ventanas emergentes en el navegador.')
+      return
+    }
+
+    try {
+      ventanaTicket.document.write('<p style="font-family: Arial; padding: 20px;">Generando ticket...</p>')
+      const detalles = ventaViendo?.id === venta.id && detalleVenta.length > 0
+        ? detalleVenta
+        : await obtenerDetalleVenta(venta.id)
+
+      ventanaTicket.document.open()
+      ventanaTicket.document.write(crearHtmlTicket(venta, detalles))
+      ventanaTicket.document.close()
+      ventanaTicket.focus()
+    } catch (err) {
+      ventanaTicket.close()
+      setError(err.message)
+    }
+  }
+
   return (
     <section className="ventas-pagina">
       <div className="encabezado-pagina">
@@ -157,6 +409,7 @@ function Ventas() {
           cargando={cargando}
           error={error}
           onVer={manejarVerVenta}
+          onTicket={manejarGenerarTicket}
         />
         <Paginacion
           paginaActual={paginaActual}
@@ -185,6 +438,15 @@ function Ventas() {
       >
         {ventaViendo && (
           <>
+            <div className="detalle-venta__acciones">
+              <button
+                className="boton boton--primario"
+                type="button"
+                onClick={() => manejarGenerarTicket(ventaViendo)}
+              >
+                Generar ticket
+              </button>
+            </div>
             <DetalleRegistro
               campos={[
                 { etiqueta: 'Venta', valor: `#${ventaViendo.id}` },
