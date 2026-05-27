@@ -60,7 +60,7 @@ function FiltrosLotes({ filtros, medicamentos = [], onChange }) {
         >
           <option value="">-- Todos --</option>
           <option value="Vigente">Vigente</option>
-          <option value="Proximo">Proximo</option>
+          <option value="Proximo">Próximo</option>
           <option value="Caducado">Caducado</option>
         </select>
       </div>

@@ -11,10 +11,16 @@ router.get('/opciones/medicamentos', ventasController.obtenerMedicamentosDisponi
 // Obtener todas las ventas
 router.get('/', ventasController.listarVentas)
 
+// Vista publica para QR del ticket
+router.get('/public/:id', ventasController.obtenerTicketPublico)
+
 // Obtener detalles de una venta (DEBE IR AL FINAL)
 router.get('/:id', ventasController.obtenerVenta)
 
 // Crear nueva venta
 router.post('/', ventasController.crearVenta)
+
+// Eliminar venta con autorización de administrador
+router.delete('/:id', ventasController.eliminarVenta)
 
 export default router

@@ -102,7 +102,7 @@ export function validarUsuario(usuario) {
   }
 
   if (!patronUsuario.test(valor)) {
-    return 'Usa solo letras, numeros, punto, guion o guion bajo.'
+    return 'Usa solo letras, números, punto, guion o guion bajo.'
   }
 
   return ''
@@ -112,27 +112,27 @@ export function obtenerReglasPassword(password) {
   return [
     {
       id: 'longitud',
-      texto: 'Minimo 8 caracteres',
+      texto: 'Mínimo 8 caracteres',
       valida: password.length >= 8,
     },
     {
       id: 'mayuscula',
-      texto: 'Una letra mayuscula',
+      texto: 'Una letra mayúscula',
       valida: /[A-Z]/.test(password),
     },
     {
       id: 'minuscula',
-      texto: 'Una letra minuscula',
+      texto: 'Una letra minúscula',
       valida: /[a-z]/.test(password),
     },
     {
       id: 'numero',
-      texto: 'Un numero',
+      texto: 'Un número',
       valida: /\d/.test(password),
     },
     {
       id: 'simbolo',
-      texto: 'Un simbolo',
+      texto: 'Un símbolo',
       valida: /[^a-zA-Z0-9]/.test(password),
     },
   ]
@@ -144,7 +144,7 @@ export function obtenerSeguridadPassword(password) {
 
   if (!password) {
     return {
-      nivel: 'Sin contrasena',
+      nivel: 'Sin contraseña',
       clase: 'vacia',
       puntaje: 0,
       reglas,
@@ -179,13 +179,13 @@ export function obtenerSeguridadPassword(password) {
 
 export function validarPassword(password) {
   if (!password) {
-    return 'La contrasena es obligatoria.'
+    return 'La contraseña es obligatoria.'
   }
 
   const seguridad = obtenerSeguridadPassword(password)
 
   if (seguridad.puntaje < 3) {
-    return 'La contrasena es demasiado debil.'
+    return 'La contraseña es demasiado débil.'
   }
 
   return ''
@@ -207,7 +207,7 @@ export function validarNombrePersona(nombre, campo = 'El nombre', maximo = LIMIT
   }
 
   if (!patronNombrePersona.test(valor)) {
-    return `${campo} solo acepta letras, espacios, apostrofe o guion.`
+    return `${campo} solo acepta letras, espacios, apóstrofe o guion.`
   }
 
   return ''
@@ -229,7 +229,7 @@ export function validarProveedor(nombre) {
   }
 
   if (!patronNombreProveedor.test(valor)) {
-    return 'Usa solo letras, numeros, espacios, punto, coma, &, apostrofe o guion.'
+    return 'Usa solo letras, números, espacios, punto, coma, apóstrofe o guion.'
   }
 
   return ''
@@ -239,7 +239,7 @@ export function validarTelefono(telefono, obligatorio = true) {
   const valor = telefono.trim()
 
   if (!valor || valor === PREFIJO_TELEFONO) {
-    return obligatorio ? 'El telefono es obligatorio.' : ''
+    return obligatorio ? 'El teléfono es obligatorio.' : ''
   }
 
   const digitos = valor.replace(/\D/g, '')
@@ -251,7 +251,7 @@ export function validarTelefono(telefono, obligatorio = true) {
     digitosLocales.length !== DIGITOS_TELEFONO_LOCAL ||
     valor.length > LIMITES.telefono
   ) {
-    return `Completa los ${DIGITOS_TELEFONO_LOCAL} digitos despues de ${PREFIJO_TELEFONO}.`
+    return `Completa los ${DIGITOS_TELEFONO_LOCAL} dígitos después de ${PREFIJO_TELEFONO}.`
   }
 
   return ''
@@ -269,7 +269,7 @@ export function validarCorreo(correo) {
   }
 
   if (!patronCorreo.test(valor)) {
-    return 'Ingresa un correo valido.'
+    return 'Ingresa un correo válido.'
   }
 
   return ''
@@ -279,15 +279,15 @@ export function validarDireccion(direccion) {
   const valor = direccion.trim()
 
   if (!valor) {
-    return 'La direccion es obligatoria.'
+    return 'La dirección es obligatoria.'
   }
 
   if (valor.length > LIMITES.direccion) {
-    return `La direccion no puede exceder ${LIMITES.direccion} caracteres.`
+    return `La dirección no puede exceder ${LIMITES.direccion} caracteres.`
   }
 
   if (!patronDireccion.test(valor)) {
-    return 'La direccion contiene caracteres no permitidos.'
+    return 'La dirección contiene caracteres no permitidos.'
   }
 
   return ''
@@ -309,7 +309,7 @@ export function validarTextoFarmacia(valor, campo, maximo = LIMITES.medicamentoN
   }
 
   if (!patronTextoFarmacia.test(texto)) {
-    return `Usa solo letras, numeros, espacios y signos basicos en ${campo.toLowerCase()}.`
+    return `Usa solo letras, números, espacios y signos básicos en ${campo.toLowerCase()}.`
   }
 
   return ''
@@ -319,19 +319,19 @@ export function validarCodigoLote(codigo) {
   const valor = codigo.trim()
 
   if (!valor) {
-    return 'El numero de lote es obligatorio.'
+    return 'El número de lote es obligatorio.'
   }
 
   if (valor.length < 2) {
-    return 'El numero de lote debe tener al menos 2 caracteres.'
+    return 'El número de lote debe tener al menos 2 caracteres.'
   }
 
   if (valor.length > LIMITES.lote) {
-    return `El numero de lote no puede exceder ${LIMITES.lote} caracteres.`
+    return `El número de lote no puede exceder ${LIMITES.lote} caracteres.`
   }
 
   if (!patronCodigoLote.test(valor)) {
-    return 'Usa solo letras, numeros, punto, guion o guion bajo.'
+    return 'Usa solo letras, números, punto, guion o guion bajo.'
   }
 
   return ''
@@ -345,7 +345,7 @@ export function validarStock(stock) {
   }
 
   if (!Number.isInteger(numero)) {
-    return 'El stock debe ser un numero entero.'
+    return 'El stock debe ser un número entero.'
   }
 
   if (numero < 0) {
@@ -387,7 +387,7 @@ export function validarFechaISO(fecha, campo = 'La fecha') {
   }
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
-    return `${campo} debe tener un formato valido.`
+    return `${campo} debe tener un formato válido.`
   }
 
   const [anio, mes, dia] = fecha.split('-').map(Number)

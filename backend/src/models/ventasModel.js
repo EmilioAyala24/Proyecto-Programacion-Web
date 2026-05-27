@@ -30,18 +30,49 @@ export async function obtenerVentas() {
   return resultado.rows
 }
 
+export async function obtenerVentaPorId(idVentas) {
+  const resultado = await pool.query(
+    `SELECT
+       v.id_ventas,
+       TO_CHAR(v.fecha_venta, '${FORMATO_FECHA_HORA}') AS fecha_venta,
+       TO_CHAR(v.fecha_venta, 'YYYY-MM-DD HH24:MI:SS') AS fecha_venta_iso,
+       v.total_venta,
+       u.nombre AS usuario_nombre,
+       mp.nombre_metodo,
+       CASE
+         WHEN c.id_cliente IS NULL THEN 'Publico general'
+         ELSE CONCAT_WS(' ', c.nombre, c.ap_pat, c.ap_mat)
+       END AS cliente_nombre
+     FROM ventas v
+     JOIN usuario u ON v.id_usuario = u.id_usuario
+     JOIN metodo_pago mp ON v.id_metPag = mp.id_metPag
+     LEFT JOIN cliente c ON v.id_cliente = c.id_cliente
+     WHERE v.id_ventas = $1`,
+    [idVentas],
+  )
+
+  return resultado.rows[0] ?? null
+}
+
 export async function obtenerDetalleVenta(idVentas) {
   const resultado = await pool.query(
     `SELECT
        dvm.id_detalle,
+       m.id_med,
+       l.id_lote,
+       l.numero_lote,
+       l.fecha_caducidad,
        m.nombre AS medicamento_nombre,
        m.presentacion,
        m.concentracion,
+       m.contenido,
+       m.requiere_receta,
        dvm.cantidad,
        dvm.precio_unitario,
        dvm.subtotal
      FROM detalle_ventas_medicamento dvm
      JOIN medicamento m ON dvm.id_medicamento = m.id_med
+     LEFT JOIN lote l ON l.id_lote = COALESCE(dvm.id_lote, m.id_lote)
      WHERE dvm.id_ventas = $1
      ORDER BY dvm.id_detalle`,
     [idVentas],
@@ -100,14 +131,16 @@ export async function crearVenta(idUsuario, idMetPag, idCliente, detalles) {
         `INSERT INTO detalle_ventas_medicamento (
            id_ventas,
            id_medicamento,
+           id_lote,
            cantidad,
            precio_unitario,
            subtotal
          )
-         VALUES ($1, $2, $3, $4, $5)`,
+         VALUES ($1, $2, $3, $4, $5, $6)`,
         [
           idVentas,
           detalle.id_medicamento,
+          medicamento.id_lote,
           detalle.cantidad,
           precioUnitario,
           subtotal,
@@ -145,9 +178,7 @@ export async function obtenerMetodosPago() {
      FROM (VALUES
        ('Efectivo', 'Pago en efectivo en mostrador'),
        ('Tarjeta de debito', 'Pago con tarjeta de debito'),
-       ('Tarjeta de credito', 'Pago con tarjeta de credito'),
-       ('Transferencia', 'Pago por transferencia bancaria'),
-       ('CoDi', 'Pago digital CoDi')
+       ('Tarjeta de credito', 'Pago con tarjeta de credito')
      ) AS metodo(nombre_metodo, descripcion)
      WHERE NOT EXISTS (
        SELECT 1
@@ -159,6 +190,7 @@ export async function obtenerMetodosPago() {
   const resultado = await pool.query(
     `SELECT id_metPag AS "id_metPag", nombre_metodo
      FROM metodo_pago
+     WHERE LOWER(nombre_metodo) IN ('efectivo', 'tarjeta de debito', 'tarjeta de credito')
      ORDER BY nombre_metodo`,
   )
 
@@ -192,9 +224,59 @@ export async function obtenerMedicamentosDisponibles() {
      JOIN lote l ON l.id_med = m.id_med
      WHERE l.stock_actual > 0
        AND l.activo = TRUE
+       AND l.oculto = FALSE
        AND (l.fecha_caducidad IS NULL OR l.fecha_caducidad >= CURRENT_DATE)
      ORDER BY m.nombre, l.fecha_caducidad ASC NULLS LAST, l.numero_lote`,
   )
 
   return resultado.rows
+}
+
+export async function eliminarVenta(idVentas) {
+  const cliente = await pool.connect()
+
+  try {
+    await cliente.query('BEGIN')
+
+    const ventaResultado = await cliente.query(
+      'SELECT id_ventas FROM ventas WHERE id_ventas = $1 FOR UPDATE',
+      [idVentas],
+    )
+
+    if (!ventaResultado.rows[0]) {
+      await cliente.query('ROLLBACK')
+      return null
+    }
+
+    const detalles = await cliente.query(
+      `SELECT id_lote, cantidad
+       FROM detalle_ventas_medicamento
+       WHERE id_ventas = $1
+       FOR UPDATE`,
+      [idVentas],
+    )
+
+    for (const detalle of detalles.rows) {
+      if (detalle.id_lote) {
+        await cliente.query(
+          `UPDATE lote
+           SET stock_actual = stock_actual + $1,
+               activo = TRUE
+           WHERE id_lote = $2`,
+          [detalle.cantidad, detalle.id_lote],
+        )
+      }
+    }
+
+    await cliente.query('DELETE FROM detalle_ventas_medicamento WHERE id_ventas = $1', [idVentas])
+    await cliente.query('DELETE FROM ventas WHERE id_ventas = $1', [idVentas])
+    await cliente.query('COMMIT')
+
+    return ventaResultado.rows[0]
+  } catch (error) {
+    await cliente.query('ROLLBACK')
+    throw error
+  } finally {
+    cliente.release()
+  }
 }

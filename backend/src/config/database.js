@@ -34,7 +34,27 @@ export async function prepararBaseDatos() {
   `)
 
   await pool.query(`
+    ALTER TABLE lote
+    ADD COLUMN IF NOT EXISTS oculto BOOLEAN DEFAULT FALSE
+  `)
+
+  await pool.query(`
+    ALTER TABLE lote
+    ADD COLUMN IF NOT EXISTS motivo_oculto VARCHAR(120)
+  `)
+
+  await pool.query(`
+    ALTER TABLE lote
+    ADD COLUMN IF NOT EXISTS fecha_oculto TIMESTAMP
+  `)
+
+  await pool.query(`
     ALTER TABLE codigos_qr
+    ADD COLUMN IF NOT EXISTS id_lote INTEGER
+  `)
+
+  await pool.query(`
+    ALTER TABLE detalle_ventas_medicamento
     ADD COLUMN IF NOT EXISTS id_lote INTEGER
   `)
 
@@ -79,6 +99,15 @@ export async function prepararBaseDatos() {
   `)
 
   await pool.query(`
+    UPDATE detalle_ventas_medicamento dvm
+    SET id_lote = m.id_lote
+    FROM medicamento m
+    WHERE m.id_med = dvm.id_medicamento
+      AND dvm.id_lote IS NULL
+      AND m.id_lote IS NOT NULL
+  `)
+
+  await pool.query(`
     DO $$
     BEGIN
       IF NOT EXISTS (
@@ -88,6 +117,20 @@ export async function prepararBaseDatos() {
       ) THEN
         ALTER TABLE lote
           ADD CONSTRAINT fk_lote_med FOREIGN KEY (id_med) REFERENCES medicamento(id_med);
+      END IF;
+    END $$
+  `)
+
+  await pool.query(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'fk_det_lote'
+      ) THEN
+        ALTER TABLE detalle_ventas_medicamento
+          ADD CONSTRAINT fk_det_lote FOREIGN KEY (id_lote) REFERENCES lote(id_lote);
       END IF;
     END $$
   `)
@@ -147,10 +190,7 @@ export async function prepararBaseDatos() {
   await pool.query(`
     UPDATE usuario
     SET
-      password_hash = COALESCE(
-        password_hash,
-        '8d3f85760f7f1bbdb83cb3d1d52f1b7f:205459b3c63dbaab2a0f83608c9456d71e42c693ee3b44d536a328e4af68294d97fcbd49867b68bf05a31bfa9d8856a42bace8197004c4c0029b2cf22473de79'
-      )
+      password_hash = '8d3f85760f7f1bbdb83cb3d1d52f1b7f:b182624311558a7bded7aa09962365f2f318281fa8603a55b5a46c5f92dc1bb25c1a67ce9af5c4f0e9b19577c689567c2fb62a8997ee612a2758472ba6ca7f52'
     WHERE usuario = 'admin'
   `)
 
@@ -167,7 +207,7 @@ export async function prepararBaseDatos() {
     VALUES (
       'admin',
       'admin',
-      '8d3f85760f7f1bbdb83cb3d1d52f1b7f:205459b3c63dbaab2a0f83608c9456d71e42c693ee3b44d536a328e4af68294d97fcbd49867b68bf05a31bfa9d8856a42bace8197004c4c0029b2cf22473de79',
+      '8d3f85760f7f1bbdb83cb3d1d52f1b7f:b182624311558a7bded7aa09962365f2f318281fa8603a55b5a46c5f92dc1bb25c1a67ce9af5c4f0e9b19577c689567c2fb62a8997ee612a2758472ba6ca7f52',
       (NOW() AT TIME ZONE 'UTC') - INTERVAL '6 hours',
       'Administrador',
       'General',
@@ -182,9 +222,7 @@ export async function prepararBaseDatos() {
     FROM (VALUES
       ('Efectivo', 'Pago en efectivo en mostrador'),
       ('Tarjeta de debito', 'Pago con tarjeta de debito'),
-      ('Tarjeta de credito', 'Pago con tarjeta de credito'),
-      ('Transferencia', 'Pago por transferencia bancaria'),
-      ('CoDi', 'Pago digital CoDi')
+      ('Tarjeta de credito', 'Pago con tarjeta de credito')
     ) AS metodo(nombre_metodo, descripcion)
     WHERE NOT EXISTS (
       SELECT 1

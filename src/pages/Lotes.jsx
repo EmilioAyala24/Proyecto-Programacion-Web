@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import AddButton from '../components/common/AddButton'
 import DetalleRegistro from '../components/common/DetalleRegistro'
 import Modal from '../components/common/Modal'
 import Paginacion from '../components/common/Paginacion'
@@ -9,7 +8,8 @@ import LotesTable from '../components/lotes/LotesTable'
 import {
   actualizarLote,
   crearLote,
-  eliminarLote,
+  obtenerLotesOcultos,
+  ocultarLote,
   obtenerLotes,
 } from '../services/lotesService'
 import { obtenerMedicamentos } from '../services/medicamentosService'
@@ -18,6 +18,7 @@ import { obtenerQRLote } from '../services/qrsService'
 
 function Lotes() {
   const [lotes, setLotes] = useState([])
+  const [lotesOcultos, setLotesOcultos] = useState([])
   const [filtros, setFiltros] = useState({
     busqueda: '',
     stock: '',
@@ -31,6 +32,9 @@ function Lotes() {
   const [modalAbierto, setModalAbierto] = useState(false)
   const [loteEditando, setLoteEditando] = useState(null)
   const [loteViendo, setLoteViendo] = useState(null)
+  const [loteOcultando, setLoteOcultando] = useState(null)
+  const [motivoOculto, setMotivoOculto] = useState('Defectuoso o dañado')
+  const [modalOcultosAbierto, setModalOcultosAbierto] = useState(false)
   const [loteQR, setLoteQR] = useState(null)
   const [qrActual, setQrActual] = useState(null)
   const [errorQR, setErrorQR] = useState('')
@@ -39,9 +43,10 @@ function Lotes() {
   const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   useEffect(() => {
-    Promise.all([obtenerLotes(), obtenerProveedores(), obtenerMedicamentos()])
-      .then(([lotesDatos, proveedoresDatos, medicamentosDatos]) => {
+    Promise.all([obtenerLotes(), obtenerLotesOcultos(), obtenerProveedores(), obtenerMedicamentos()])
+      .then(([lotesDatos, ocultosDatos, proveedoresDatos, medicamentosDatos]) => {
         setLotes(lotesDatos)
+        setLotesOcultos(ocultosDatos)
         setProveedores(proveedoresDatos)
         setMedicamentos(medicamentosDatos)
       })
@@ -117,14 +122,20 @@ function Lotes() {
     }
   }
 
-  const manejarEliminarLote = async (id) => {
-    if (!window.confirm('Estas seguro de que deseas eliminar este lote?')) {
+  const manejarOcultarLote = async (event) => {
+    event.preventDefault()
+
+    if (!loteOcultando) {
       return
     }
 
     try {
-      await eliminarLote(id)
-      setLotes((actuales) => actuales.filter((lote) => lote.id !== id))
+      await ocultarLote(loteOcultando.id, motivoOculto)
+      const [visibles, ocultos] = await Promise.all([obtenerLotes(), obtenerLotesOcultos()])
+      setLotes(visibles)
+      setLotesOcultos(ocultos)
+      setLoteOcultando(null)
+      setMotivoOculto('Defectuoso o dañado')
       setError('')
     } catch (err) {
       setError(err.message)
@@ -176,12 +187,11 @@ function Lotes() {
         <div className="modulo-panel__encabezado">
           <div>
             <h2>Listado de lotes</h2>
-            <p>Los colores indican si el lote esta vigente, proximo a caducar o caducado.</p>
+            <p>Los colores indican si el lote está vigente, próximo a caducar o caducado.</p>
           </div>
-          <AddButton
-            onClick={() => setModalAbierto(true)}
-            title="Agregar nuevo lote"
-          />
+          <button className="boton boton--secundario" type="button" onClick={() => setModalOcultosAbierto(true)}>
+            Lotes ocultos ({lotesOcultos.length})
+          </button>
         </div>
 
         <FiltrosLotes
@@ -200,7 +210,7 @@ function Lotes() {
           <LotesTable
             lotes={lotesPaginados}
             onEditar={setLoteEditando}
-            onEliminar={manejarEliminarLote}
+            onEliminar={setLoteOcultando}
             onVer={setLoteViendo}
             onQR={manejarVerQR}
           />
@@ -256,6 +266,71 @@ function Lotes() {
               { etiqueta: 'Precio venta', valor: `$${formatoPrecio(loteViendo.precioVenta)}` },
               { etiqueta: 'Estado', valor: loteViendo.estado },
             ]}
+          />
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(loteOcultando)}
+        onClose={() => setLoteOcultando(null)}
+        title="Ocultar lote"
+      >
+        {loteOcultando && (
+          <form className="autorizacion-formulario" onSubmit={manejarOcultarLote}>
+            <p className="texto-secundario">
+              El lote saldrá del listado y ya no estará disponible para venta. Si tiene stock, usa
+              Trazabilidad para localizar a los clientes que compraron este medicamento.
+            </p>
+            <DetalleRegistro
+              campos={[
+                { etiqueta: 'Lote', valor: loteOcultando.codigo },
+                { etiqueta: 'Medicamento', valor: loteOcultando.medicamento },
+                { etiqueta: 'Stock', valor: loteOcultando.stockDisponible },
+                { etiqueta: 'Caducidad', valor: loteOcultando.fechaCaducidad },
+              ]}
+            />
+            <div className="campo-formulario">
+              <label htmlFor="motivo-oculto">Motivo</label>
+              <select
+                id="motivo-oculto"
+                value={motivoOculto}
+                onChange={(event) => setMotivoOculto(event.target.value)}
+              >
+                <option value="Defectuoso o dañado">Defectuoso o dañado</option>
+                <option value="Retiro preventivo">Retiro preventivo</option>
+                <option value="Caducado">Caducado</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div className="acciones-formulario">
+              <button className="boton boton--secundario" type="button" onClick={() => setLoteOcultando(null)}>
+                Cancelar
+              </button>
+              <button className="boton boton--peligro" type="submit">
+                Ocultar lote
+              </button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={modalOcultosAbierto}
+        onClose={() => setModalOcultosAbierto(false)}
+        title="Lotes ocultos"
+        size="grande"
+      >
+        {lotesOcultos.length === 0 ? (
+          <p className="texto-secundario">No hay lotes ocultos.</p>
+        ) : (
+          <LotesTable
+            lotes={lotesOcultos}
+            onEditar={setLoteEditando}
+            onEliminar={setLoteOcultando}
+            onVer={setLoteViendo}
+            onQR={manejarVerQR}
+            mostrarAcciones={false}
+            mostrarOculto
           />
         )}
       </Modal>

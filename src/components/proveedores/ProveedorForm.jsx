@@ -89,7 +89,7 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="telefono">Telefono</label>
+        <label htmlFor="telefono">Teléfono</label>
         <input
           id="telefono"
           name="telefono"
@@ -117,11 +117,11 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
       </div>
 
       <div className="campo-formulario proveedor-formulario__direccion">
-        <label htmlFor="direccion">Direccion</label>
+        <label htmlFor="direccion">Dirección</label>
         <input
           id="direccion"
           name="direccion"
-          placeholder="Calle, numero, ciudad y estado"
+          placeholder="Calle, número, ciudad y estado"
           value={formulario.direccion}
           onChange={manejarCambio}
           maxLength={LIMITES.direccion}

@@ -8,13 +8,13 @@ export function validarLogin(datos) {
   if (!usuario) {
     errores.usuario = 'El usuario es obligatorio.'
   } else if (usuario.length > 60 || !patronUsuario.test(usuario)) {
-    errores.usuario = 'El usuario no tiene un formato valido.'
+    errores.usuario = 'El usuario no tiene un formato válido.'
   }
 
   if (!password) {
-    errores.password = 'La contrasena es obligatoria.'
+    errores.password = 'La contraseña es obligatoria.'
   } else if (password.length > 100) {
-    errores.password = 'La contrasena no puede exceder 100 caracteres.'
+    errores.password = 'La contraseña no puede exceder 100 caracteres.'
   }
 
   return {

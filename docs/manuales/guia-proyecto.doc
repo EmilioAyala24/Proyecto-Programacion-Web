@@ -34,9 +34,9 @@ li { margin-bottom: 4px; }
 <p>3. El login llama a `POST /api/auth/login`.</p>
 <p>4. El backend recibe las peticiones en `backend/src/app.js`, las manda a `backend/src/routes/index.js` y de ahi a cada modulo.</p>
 <p>5. Cada ruta llama a un controlador.</p>
-<p>6. Cada controlador valida datos y llama a un modelo.</p>
+<p>6. Cada controlador válida datos y llama a un modelo.</p>
 <p>7. Cada modelo ejecuta SQL en PostgreSQL mediante `backend/src/config/database.js`.</p>
-<p>8. El frontend recibe la respuesta, normaliza los datos en `src/services/` y los muestra en paginas y componentes.</p>
+<p>8. El frontend recibe la respuesta, normaliza los datos en `src/services/` y los muestra en páginas y componentes.</p>
 <p>&nbsp;</p>
 <h2>Archivos de raiz</h2>
 <p>&nbsp;</p>
@@ -59,10 +59,10 @@ li { margin-bottom: 4px; }
 <ul>
 <li>`BaseDeDatos/farmacia_inclusiva.sql`</li>
 <li>`BaseDeDatos/seeds/proveedores.sql`</li>
-<li>`BaseDeDatos/seeds/catalogo_inicial.sql`</li>
+<li>`BaseDeDatos/seeds/catálogo_inicial.sql`</li>
 </ul>
 <p>&nbsp;</p>
-<p>Tambien define un volumen para conservar datos entre reinicios.</p>
+<p>También define un volumen para conservar datos entre reinicios.</p>
 <p>&nbsp;</p>
 <h3>`eslint.config.js`</h3>
 <p>&nbsp;</p>
@@ -105,15 +105,11 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`README.md`</h3>
 <p>&nbsp;</p>
-<p>Documento inicial de Vite/React. Actualmente contiene informacion generica de la plantilla.</p>
+<p>Documento inicial de Vite/React. Actualmente contiene información genérica de la plantilla.</p>
 <p>&nbsp;</p>
 <h3>`vite.config.js`</h3>
 <p>&nbsp;</p>
 <p>Configura Vite con el plugin de React.</p>
-<p>&nbsp;</p>
-<h3>`prueba.txt`</h3>
-<p>&nbsp;</p>
-<p>Archivo de prueba sin participacion directa en la aplicacion.</p>
 <p>&nbsp;</p>
 <h2>Carpeta `backend/`</h2>
 <p>&nbsp;</p>
@@ -242,23 +238,23 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h2>Carpeta `backend/src/controllers/`</h2>
 <p>&nbsp;</p>
-<p>Contiene la logica HTTP: recibe `req`, valida, llama modelos y responde JSON.</p>
+<p>Contiene la lógica HTTP: recibe `req`, válida, llama modelos y responde JSON.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/controllers/authController.js`</h3>
 <p>&nbsp;</p>
-<p>Gestiona login y logout. Valida usuario/contrasena, busca el usuario por username, verifica el hash de contrasena y devuelve los datos de sesion. En logout registra la ultima conexion del usuario.</p>
+<p>Gestiona login y logout. Valida usuario/contraseña, busca el usuario por username, verifica el hash de contraseña y devuelve los datos de sesión. En logout registra la ultima conexion del usuario.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/controllers/clientesController.js`</h3>
 <p>&nbsp;</p>
-<p>Controla listar, obtener, crear, actualizar y eliminar clientes. Usa `validarCliente()` antes de guardar datos.</p>
+<p>Controla listar, obtener, crear, actualizar y eliminar clientes. Usa `válidarCliente()` antes de guardar datos.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/controllers/usuariosController.js`</h3>
 <p>&nbsp;</p>
-<p>Controla listar, obtener, crear, actualizar y eliminar usuarios. Genera hash de contrasena al crear o cuando se actualiza una nueva contrasena.</p>
+<p>Controla listar, obtener, crear, actualizar y eliminar usuarios. Genera hash de contraseña al crear o cuando se actualiza una nueva contraseña.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/controllers/proveedoresController.js`</h3>
 <p>&nbsp;</p>
-<p>Controla proveedores. Valida datos con `validarProveedor()` y responde con mensajes de error si el proveedor no existe o los datos son invalidos.</p>
+<p>Controla proveedores. Valida datos con `válidarProveedor()` y responde con mensajes de error si el proveedor no existe o los datos son invalidos.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/controllers/medicamentosController.js`</h3>
 <p>&nbsp;</p>
@@ -266,7 +262,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`backend/src/controllers/lotesController.js`</h3>
 <p>&nbsp;</p>
-<p>Controla lotes. Limpia datos recibidos desde el frontend, valida proveedor, medicamento, numero de lote, fechas, stock y precios. Tambien decide si una fecha de caducidad es valida comparandola con fabricacion e ingreso.</p>
+<p>Controla lotes. Limpia datos recibidos desde el frontend, válida proveedor, medicamento, número de lote, fechas, stock y precios. También decide si una fecha de caducidad es válida comparandola con fabricación e ingreso.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/controllers/ventasController.js`</h3>
 <p>&nbsp;</p>
@@ -282,7 +278,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`backend/src/models/usuariosModel.js`</h3>
 <p>&nbsp;</p>
-<p>Consulta, crea, actualiza y elimina usuarios. Tambien busca usuario por username para login y actualiza `ultima_conexion` en logout.</p>
+<p>Consulta, crea, actualiza y elimina usuarios. También busca usuario por username para login y actualiza `ultima_conexion` en logout.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/models/proveedoresModel.js`</h3>
 <p>&nbsp;</p>
@@ -290,7 +286,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`backend/src/models/medicamentosModel.js`</h3>
 <p>&nbsp;</p>
-<p>Consulta medicamentos junto con informacion agregada de sus lotes: stock total, precio, total de lotes, lotes vigentes, proximos y caducados. Tambien crea, actualiza y elimina medicamentos.</p>
+<p>Consulta medicamentos junto con información agregada de sus lotes: stock total, precio, total de lotes, lotes vigentes, próximos y caducados. También crea, actualiza y elimina medicamentos.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/models/lotesModel.js`</h3>
 <p>&nbsp;</p>
@@ -298,11 +294,11 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <ul>
 <li>`Caducado`: fecha menor a hoy.</li>
-<li>`Proximo`: caduca dentro de 60 dias.</li>
-<li>`Vigente`: no esta caducado ni proximo.</li>
+<li>`Próximo`: caduca dentro de 60 días.</li>
+<li>`Vigente`: no está caducado ni próximo.</li>
 </ul>
 <p>&nbsp;</p>
-<p>Tambien crea, actualiza y elimina lotes, y marca `activo` segun stock.</p>
+<p>También crea, actualiza y elimina lotes, y marca `activo` segun stock.</p>
 <p>&nbsp;</p>
 <h3>`backend/src/models/ventasModel.js`</h3>
 <p>&nbsp;</p>
@@ -317,33 +313,33 @@ li { margin-bottom: 4px; }
 <p>7. Actualiza el total de la venta.</p>
 <p>8. Hace `COMMIT` o `ROLLBACK` si hay error.</p>
 <p>&nbsp;</p>
-<p>Tambien obtiene historial, detalle, metodos de pago, clientes y medicamentos disponibles.</p>
+<p>También obtiene historial, detalle, metodos de pago, clientes y medicamentos disponibles.</p>
 <p>&nbsp;</p>
-<h2>Carpeta `backend/src/validators/`</h2>
+<h2>Carpeta `backend/src/válidators/`</h2>
 <p>&nbsp;</p>
 <p>Valida datos antes de guardar.</p>
 <p>&nbsp;</p>
-<h3>`backend/src/validators/authValidator.js`</h3>
+<h3>`backend/src/válidators/authValidator.js`</h3>
 <p>&nbsp;</p>
 <p>Valida que login reciba usuario y password.</p>
 <p>&nbsp;</p>
-<h3>`backend/src/validators/clientesValidator.js`</h3>
+<h3>`backend/src/válidators/clientesValidator.js`</h3>
 <p>&nbsp;</p>
-<p>Valida campos de cliente como nombre, apellidos, telefono y correo.</p>
+<p>Valida campos de cliente como nombre, apellidos, teléfono y correo.</p>
 <p>&nbsp;</p>
-<h3>`backend/src/validators/usuariosValidator.js`</h3>
+<h3>`backend/src/válidators/usuariosValidator.js`</h3>
 <p>&nbsp;</p>
-<p>Valida usuario, rol, nombre, telefono y contrasena. Distingue cuando la contrasena es obligatoria al crear y opcional al editar.</p>
+<p>Valida usuario, rol, nombre, teléfono y contraseña. Distingue cuando la contraseña es obligatoria al crear y opcional al editar.</p>
 <p>&nbsp;</p>
-<h3>`backend/src/validators/proveedoresValidator.js`</h3>
+<h3>`backend/src/válidators/proveedoresValidator.js`</h3>
 <p>&nbsp;</p>
-<p>Valida nombre, telefono, correo y direccion del proveedor.</p>
+<p>Valida nombre, teléfono, correo y dirección del proveedor.</p>
 <p>&nbsp;</p>
-<h3>`backend/src/validators/medicamentosValidator.js`</h3>
+<h3>`backend/src/válidators/medicamentosValidator.js`</h3>
 <p>&nbsp;</p>
 <p>Valida datos de medicamento y normaliza nombres de campos recibidos desde el frontend.</p>
 <p>&nbsp;</p>
-<h3>`backend/src/validators/ventasValidator.js`</h3>
+<h3>`backend/src/válidators/ventasValidator.js`</h3>
 <p>&nbsp;</p>
 <p>Valida que una venta tenga usuario, metodo de pago y detalles validos.</p>
 <p>&nbsp;</p>
@@ -357,7 +353,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`backend/src/utils/password.js`</h3>
 <p>&nbsp;</p>
-<p>Gestiona contrasenas con `crypto.pbkdf2Sync`.</p>
+<p>Gestiona contraseñas con `crypto.pbkdf2Sync`.</p>
 <p>&nbsp;</p>
 <ul>
 <li>`generarPasswordHash(password)`: crea salt y hash.</li>
@@ -366,7 +362,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h2>Carpeta `backend/src/services/`</h2>
 <p>&nbsp;</p>
-<p>Actualmente solo contiene `.gitkeep`. Esta preparada para agregar servicios de backend si despues se separa logica que no pertenece directamente al controlador ni al modelo.</p>
+<p>Actualmente solo contiene `.gitkeep`. Está preparada para agregar servicios de backend si después se separa lógica que no pertenece directamente al controlador ni al modelo.</p>
 <p>&nbsp;</p>
 <h2>Carpeta `BaseDeDatos/`</h2>
 <p>&nbsp;</p>
@@ -388,19 +384,19 @@ li { margin-bottom: 4px; }
 <li>`detalle_ventas_medicamento`</li>
 </ul>
 <p>&nbsp;</p>
-<p>Tambien define relaciones entre ventas, usuarios, clientes, metodos de pago, medicamentos y lotes.</p>
+<p>También define relaciones entre ventas, usuarios, clientes, metodos de pago, medicamentos y lotes.</p>
 <p>&nbsp;</p>
-<h3>`BaseDeDatos/migrations/20260524_medicamento_catalogo_lotes.sql`</h3>
+<h3>`BaseDeDatos/migrations/20260524_medicamento_catálogo_lotes.sql`</h3>
 <p>&nbsp;</p>
-<p>Migracion que separa mejor catalogo de medicamentos y lotes. Agrega `id_med` a `lote`, permite que `medicamento.id_lote` no sea obligatorio y crea la llave foranea `fk_lote_med`.</p>
+<p>Migracion que separa mejor catálogo de medicamentos y lotes. Agrega `id_med` a `lote`, permite que `medicamento.id_lote` no sea obligatorio y crea la llave foranea `fk_lote_med`.</p>
 <p>&nbsp;</p>
 <h3>`BaseDeDatos/seeds/proveedores.sql`</h3>
 <p>&nbsp;</p>
 <p>Datos iniciales de proveedores.</p>
 <p>&nbsp;</p>
-<h3>`BaseDeDatos/seeds/catalogo_inicial.sql`</h3>
+<h3>`BaseDeDatos/seeds/catálogo_inicial.sql`</h3>
 <p>&nbsp;</p>
-<p>Datos iniciales de catalogo, lotes y registros base necesarios para probar el sistema.</p>
+<p>Datos iniciales de catálogo, lotes y registros base necesarios para probar el sistema.</p>
 <p>&nbsp;</p>
 <h3>`.gitkeep` en subcarpetas</h3>
 <p>&nbsp;</p>
@@ -416,7 +412,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`docs/api/ventas.md`</h3>
 <p>&nbsp;</p>
-<p>Documenta el modulo de ventas, rutas, estructura de archivos, validaciones y tablas relacionadas.</p>
+<p>Documenta el modulo de ventas, rutas, estructura de archivos, válidaciones y tablas relacionadas.</p>
 <p>&nbsp;</p>
 <h3>`docs/database/conexion-postgresql.md`</h3>
 <p>&nbsp;</p>
@@ -463,11 +459,11 @@ li { margin-bottom: 4px; }
 <li>`/usuarios`</li>
 </ul>
 <p>&nbsp;</p>
-<p>Tambien envuelve la app con `AuthProvider` y protege rutas internas con `ProtectedRoute`.</p>
+<p>También envuelve la app con `AuthProvider` y protege rutas internas con `ProtectedRoute`.</p>
 <p>&nbsp;</p>
 <h3>`src/App.css`</h3>
 <p>&nbsp;</p>
-<p>Estilos principales de la aplicacion: layout, sidebar, encabezados, tablas, modales, botones, tarjetas, estados visuales y paginas.</p>
+<p>Estilos principales de la aplicacion: layout, sidebar, encabezados, tablas, modales, botónes, tarjetas, estados visuales y páginas.</p>
 <p>&nbsp;</p>
 <h3>`src/index.css`</h3>
 <p>&nbsp;</p>
@@ -483,7 +479,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`src/context/AuthContext.jsx`</h3>
 <p>&nbsp;</p>
-<p>Proveedor del contexto. Guarda el usuario actual, expone `estaAutenticado`, `iniciarSesion` y `cerrarSesion`. Usa `authService` para persistir la sesion en `localStorage`.</p>
+<p>Proveedor del contexto. Guarda el usuario actual, expone `estaAutenticado`, `iniciarSesión` y `cerrarSesión`. Usa `authService` para persistir la sesión en `localStorage`.</p>
 <p>&nbsp;</p>
 <h2>Carpeta `src/hooks/`</h2>
 <p>&nbsp;</p>
@@ -499,26 +495,26 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`src/utils/permisos.js`</h3>
 <p>&nbsp;</p>
-<p>Define modulos disponibles y roles permitidos. Roles usados:</p>
+<p>Define módulos disponibles y roles permitidos. Roles usados:</p>
 <p>&nbsp;</p>
 <ul>
 <li>`admin`: acceso completo.</li>
 <li>`cajero`: acceso a inicio, medicamentos, clientes y ventas.</li>
 </ul>
 <p>&nbsp;</p>
-<p>Tambien normaliza alias como `administrador` y `vendedor`.</p>
+<p>También normaliza alias como `administrador` y `vendedor`.</p>
 <p>&nbsp;</p>
-<h3>`src/utils/validaciones.js`</h3>
+<h3>`src/utils/válidaciones.js`</h3>
 <p>&nbsp;</p>
-<p>Contiene reglas de sanitizacion y validacion para formularios: usuarios, contrasenas, nombres, telefonos, correos, direcciones, medicamentos, lotes, stock, precios y fechas.</p>
+<p>Contiene reglas de sanitización y válidacion para formularios: usuarios, contraseñas, nombres, teléfonos, correos, direcciónes, medicamentos, lotes, stock, precios y fechas.</p>
 <p>&nbsp;</p>
 <h2>Carpeta `src/services/`</h2>
 <p>&nbsp;</p>
-<p>Servicios que conectan el frontend con la API. Tambien normalizan datos para que los componentes usen nombres consistentes.</p>
+<p>Servicios que conectan el frontend con la API. También normalizan datos para que los componentes usen nombres consistentes.</p>
 <p>&nbsp;</p>
 <h3>`src/services/authService.js`</h3>
 <p>&nbsp;</p>
-<p>Llama a login/logout, guarda sesion en `localStorage`, recupera sesion al recargar y normaliza el rol.</p>
+<p>Llama a login/logout, guarda sesión en `localStorage`, recupera sesión al recargar y normaliza el rol.</p>
 <p>&nbsp;</p>
 <h3>`src/services/clientesService.js`</h3>
 <p>&nbsp;</p>
@@ -550,7 +546,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <ul>
 <li>ingresos totales</li>
-<li>numero de ventas</li>
+<li>número de ventas</li>
 <li>venta promedio</li>
 <li>clientes totales</li>
 <li>ventas por hora</li>
@@ -561,7 +557,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h2>Carpeta `src/pages/`</h2>
 <p>&nbsp;</p>
-<p>Paginas completas de la aplicacion. Cada pagina une estado, filtros, servicios y componentes visuales.</p>
+<p>Paginas completas de la aplicacion. Cada página une estado, filtros, servicios y componentes visuales.</p>
 <p>&nbsp;</p>
 <h3>`src/pages/Login.jsx`</h3>
 <p>&nbsp;</p>
@@ -573,15 +569,15 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`src/pages/Dashboard.jsx`</h3>
 <p>&nbsp;</p>
-<p>Panel sencillo de avance funcional con accesos a modulos. Parece una pantalla inicial de demostracion.</p>
+<p>Panel sencillo de avance funcional con accesos a módulos. Parece una pantalla inicial de demostracion.</p>
 <p>&nbsp;</p>
 <h3>`src/pages/Medicamentos.jsx`</h3>
 <p>&nbsp;</p>
-<p>Modulo de medicamentos. Lista, filtra, pagina, crea, edita, elimina y abre detalle de medicamento.</p>
+<p>Modulo de medicamentos. Lista, filtra, página, crea, edita, elimina y abre detalle de medicamento.</p>
 <p>&nbsp;</p>
 <h3>`src/pages/MedicamentoDetalle.jsx`</h3>
 <p>&nbsp;</p>
-<p>Detalle de un medicamento. Muestra informacion del catalogo y los lotes asociados, con resumen de vigentes, proximos y caducados.</p>
+<p>Detalle de un medicamento. Muestra información del catálogo y los lotes asociados, con resumen de vigentes, próximos y caducados.</p>
 <p>&nbsp;</p>
 <h3>`src/pages/Lotes.jsx`</h3>
 <p>&nbsp;</p>
@@ -597,7 +593,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`src/pages/Clientes.jsx`</h3>
 <p>&nbsp;</p>
-<p>Modulo de clientes. Permite listar, filtrar, crear, editar, eliminar y ver detalle. Calcula clientes nuevos de los ultimos 7 dias.</p>
+<p>Modulo de clientes. Permite listar, filtrar, crear, editar, eliminar y ver detalle. Calcula clientes nuevos de los ultimos 7 días.</p>
 <p>&nbsp;</p>
 <h3>`src/pages/Usuarios.jsx`</h3>
 <p>&nbsp;</p>
@@ -605,13 +601,13 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <h3>`src/pages/ModuloPendiente.jsx`</h3>
 <p>&nbsp;</p>
-<p>Componente de pagina para modulos aun no implementados. Actualmente no se usa en `App.jsx`.</p>
+<p>Componente de página para módulos aun no implementados. Actualmente no se usa en `App.jsx`.</p>
 <p>&nbsp;</p>
 <h2>Carpeta `src/layouts/`</h2>
 <p>&nbsp;</p>
 <h3>`src/layouts/AppLayout.jsx`</h3>
 <p>&nbsp;</p>
-<p>Layout principal despues del login. Muestra barra lateral con modulos permitidos por rol, barra superior con usuario activo y boton de cerrar sesion. Usa `Outlet` para renderizar la pagina actual.</p>
+<p>Layout principal después del login. Muestra barra lateral con módulos permitidos por rol, barra superior con usuario activo y botón de cerrar sesión. Usa `Outlet` para renderizar la página actual.</p>
 <p>&nbsp;</p>
 <h2>Carpeta `src/components/`</h2>
 <p>&nbsp;</p>
@@ -637,17 +633,17 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <p>#### `src/components/TarjetaMedicamento.jsx`</p>
 <p>&nbsp;</p>
-<p>Tarjeta visual para informacion de medicamento.</p>
+<p>Tarjeta visual para información de medicamento.</p>
 <p>&nbsp;</p>
 <p>#### `src/components/TarjetaVenta.jsx`</p>
 <p>&nbsp;</p>
-<p>Tarjeta visual para informacion de venta.</p>
+<p>Tarjeta visual para información de venta.</p>
 <p>&nbsp;</p>
 <h3>`src/components/auth/`</h3>
 <p>&nbsp;</p>
 <p>#### `src/components/auth/LoginForm.jsx`</p>
 <p>&nbsp;</p>
-<p>Formulario de login. Captura usuario y contrasena, llama a `iniciarSesion` desde `useAuth` y maneja errores visuales.</p>
+<p>Formulario de login. Captura usuario y contraseña, llama a `iniciarSesión` desde `useAuth` y maneja errores visuales.</p>
 <p>&nbsp;</p>
 <h3>`src/components/common/`</h3>
 <p>&nbsp;</p>
@@ -657,7 +653,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <p>#### `src/components/common/AddButton.css`</p>
 <p>&nbsp;</p>
-<p>Estilos del boton de agregar.</p>
+<p>Estilos del botón de agregar.</p>
 <p>&nbsp;</p>
 <p>#### `src/components/common/DetalleRegistro.jsx`</p>
 <p>&nbsp;</p>
@@ -673,11 +669,11 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <p>#### `src/components/common/Paginacion.jsx`</p>
 <p>&nbsp;</p>
-<p>Controles de paginacion usados en tablas.</p>
+<p>Controles de páginacion usados en tablas.</p>
 <p>&nbsp;</p>
 <p>#### `src/components/common/ProtectedRoute.jsx`</p>
 <p>&nbsp;</p>
-<p>Protege rutas internas. Si no hay sesion redirige a `/login`; si el rol no tiene permiso, redirige a la ruta inicial del rol.</p>
+<p>Protege rutas internas. Si no hay sesión redirige a `/login`; si el rol no tiene permiso, redirige a la ruta inicial del rol.</p>
 <p>&nbsp;</p>
 <p>#### `src/components/common/SearchBar.jsx`</p>
 <p>&nbsp;</p>
@@ -691,7 +687,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <p>#### `src/components/clientes/ClienteForm.jsx`</p>
 <p>&nbsp;</p>
-<p>Formulario para crear o editar cliente. Usa validaciones y sanitizacion del frontend.</p>
+<p>Formulario para crear o editar cliente. Usa válidaciones y sanitización del frontend.</p>
 <p>&nbsp;</p>
 <p>#### `src/components/clientes/ClientesTable.jsx`</p>
 <p>&nbsp;</p>
@@ -701,7 +697,7 @@ li { margin-bottom: 4px; }
 <p>&nbsp;</p>
 <p>#### `src/components/usuarios/UsuarioForm.jsx`</p>
 <p>&nbsp;</p>
-<p>Formulario para crear o editar usuarios, incluyendo rol y contrasena.</p>
+<p>Formulario para crear o editar usuarios, incluyendo rol y contraseña.</p>
 <p>&nbsp;</p>
 <p>#### `src/components/usuarios/UsuariosTable.jsx`</p>
 <p>&nbsp;</p>
@@ -825,12 +821,12 @@ li { margin-bottom: 4px; }
 <h2>Flujo de autenticacion</h2>
 <p>&nbsp;</p>
 <p>1. `Login.jsx` muestra `LoginForm`.</p>
-<p>2. `LoginForm` llama a `iniciarSesion`.</p>
+<p>2. `LoginForm` llama a `iniciarSesión`.</p>
 <p>3. `AuthContext.jsx` llama a `authService.login`.</p>
 <p>4. `authService.js` manda `POST /api/auth/login`.</p>
-<p>5. `authController.js` valida datos y revisa contrasena con `password.js`.</p>
+<p>5. `authController.js` válida datos y revisa contraseña con `password.js`.</p>
 <p>6. Si es correcto, devuelve datos del usuario.</p>
-<p>7. El frontend guarda la sesion en `localStorage`.</p>
+<p>7. El frontend guarda la sesión en `localStorage`.</p>
 <p>8. `ProtectedRoute.jsx` permite o bloquea rutas segun rol.</p>
 <p>&nbsp;</p>
 <h2>Flujo de una venta</h2>
@@ -839,11 +835,11 @@ li { margin-bottom: 4px; }
 <p>2. `VentaForm` carga clientes, metodos de pago y medicamentos disponibles.</p>
 <p>3. El usuario arma detalles de venta.</p>
 <p>4. `ventasService.crearVenta()` manda `POST /api/ventas`.</p>
-<p>5. `ventasController.crearVenta()` valida la venta.</p>
+<p>5. `ventasController.crearVenta()` válida la venta.</p>
 <p>6. `ventasModel.crearVenta()` usa una transaccion:</p>
 <ul>
 <li>inserta venta,</li>
-<li>valida lote,</li>
+<li>válida lote,</li>
 <li>inserta detalles,</li>
 <li>descuenta stock,</li>
 <li>actualiza total.</li>
@@ -855,7 +851,7 @@ li { margin-bottom: 4px; }
 <p>Medicamentos y lotes estan relacionados, pero cumplen funciones distintas:</p>
 <p>&nbsp;</p>
 <ul>
-<li>Medicamento: catalogo general del producto.</li>
+<li>Medicamento: catálogo general del producto.</li>
 <li>Lote: existencia real, proveedor, fechas, stock y precios.</li>
 </ul>
 <p>&nbsp;</p>

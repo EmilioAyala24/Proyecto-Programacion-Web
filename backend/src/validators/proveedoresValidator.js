@@ -34,14 +34,14 @@ export function validarProveedor(datos) {
   }
 
   if (!telefono) {
-    errores.telefono = 'El telefono es obligatorio.'
+    errores.telefono = 'El teléfono es obligatorio.'
   } else if (
     telefono.length > LIMITES.telefono ||
     !telefono.startsWith(PREFIJO_TELEFONO) ||
     digitosLocalesTelefono.length !== DIGITOS_TELEFONO_LOCAL ||
     !patronTelefono.test(telefono)
   ) {
-    errores.telefono = `El telefono debe completar ${DIGITOS_TELEFONO_LOCAL} digitos despues de ${PREFIJO_TELEFONO}.`
+    errores.telefono = `El teléfono debe completar ${DIGITOS_TELEFONO_LOCAL} dígitos después de ${PREFIJO_TELEFONO}.`
   }
 
   if (!correo) {
@@ -53,11 +53,11 @@ export function validarProveedor(datos) {
   }
 
   if (!direccion) {
-    errores.direccion = 'La direccion es obligatoria.'
+    errores.direccion = 'La dirección es obligatoria.'
   } else if (direccion.length > LIMITES.direccion) {
-    errores.direccion = `La direccion no puede exceder ${LIMITES.direccion} caracteres.`
+    errores.direccion = `La dirección no puede exceder ${LIMITES.direccion} caracteres.`
   } else if (!patronDireccion.test(direccion)) {
-    errores.direccion = 'La direccion contiene caracteres no permitidos.'
+    errores.direccion = 'La dirección contiene caracteres no permitidos.'
   }
 
   return {

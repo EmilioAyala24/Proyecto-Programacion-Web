@@ -22,11 +22,15 @@ const valoresIniciales = {
   precioVenta: '',
 }
 
-function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar }) {
+function LoteForm({ loteInicial, medicamentoFijo, medicamentos = [], proveedores = [], onGuardar }) {
   const [formulario, setFormulario] = useState({
     ...valoresIniciales,
     ...loteInicial,
-    idMedicamento: loteInicial?.idMedicamento ? String(loteInicial.idMedicamento) : '',
+    idMedicamento: medicamentoFijo?.id
+      ? String(medicamentoFijo.id)
+      : loteInicial?.idMedicamento
+        ? String(loteInicial.idMedicamento)
+        : '',
     idProveedor: loteInicial?.idProveedor ? String(loteInicial.idProveedor) : '',
     stockDisponible: loteInicial?.stockDisponible ?? '',
     precioCompra: loteInicial?.precioCompra ?? '',
@@ -113,11 +117,11 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
     }
 
     const proveedor = proveedores.find((item) => String(item.id) === String(formulario.idProveedor))
-    const medicamento = medicamentos.find((item) => String(item.id) === String(formulario.idMedicamento))
+    const medicamento = medicamentoFijo || medicamentos.find((item) => String(item.id) === String(formulario.idMedicamento))
 
     onGuardar({
       codigo: formulario.codigo.trim(),
-      idMedicamento: formulario.idMedicamento ? Number(formulario.idMedicamento) : null,
+      idMedicamento: medicamentoFijo?.id ? Number(medicamentoFijo.id) : formulario.idMedicamento ? Number(formulario.idMedicamento) : null,
       medicamento: medicamento?.nombre ?? '',
       idProveedor: Number(formulario.idProveedor),
       proveedor: proveedor?.nombre ?? '',
@@ -133,7 +137,7 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
   return (
     <form className="lote-formulario" onSubmit={manejarEnvio} noValidate>
       <div className="campo-formulario">
-        <label htmlFor="lote-codigo">Numero de lote</label>
+        <label htmlFor="lote-codigo">Número de lote</label>
         <input
           id="lote-codigo"
           name="codigo"
@@ -145,23 +149,34 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
         {errores.codigo && <span className="mensaje-error">{errores.codigo}</span>}
       </div>
 
-      <div className="campo-formulario">
-        <label htmlFor="lote-medicamento">Medicamento</label>
-        <select
-          id="lote-medicamento"
-          name="idMedicamento"
-          value={formulario.idMedicamento}
-          onChange={manejarCambio}
-        >
-          <option value="">Sin medicamento</option>
-          {medicamentos.map((medicamento) => (
-            <option key={medicamento.id} value={medicamento.id}>
-              {medicamento.nombre} {medicamento.concentracion}
-            </option>
-          ))}
-        </select>
-        {errores.idMedicamento && <span className="mensaje-error">{errores.idMedicamento}</span>}
-      </div>
+      {medicamentoFijo ? (
+        <div className="campo-formulario">
+          <label htmlFor="lote-medicamento-fijo">Medicamento</label>
+          <input
+            id="lote-medicamento-fijo"
+            value={`${medicamentoFijo.nombre} ${medicamentoFijo.concentracion || ''}`.trim()}
+            readOnly
+          />
+        </div>
+      ) : (
+        <div className="campo-formulario">
+          <label htmlFor="lote-medicamento">Medicamento</label>
+          <select
+            id="lote-medicamento"
+            name="idMedicamento"
+            value={formulario.idMedicamento}
+            onChange={manejarCambio}
+          >
+            <option value="">Sin medicamento</option>
+            {medicamentos.map((medicamento) => (
+              <option key={medicamento.id} value={medicamento.id}>
+                {medicamento.nombre} {medicamento.concentracion}
+              </option>
+            ))}
+          </select>
+          {errores.idMedicamento && <span className="mensaje-error">{errores.idMedicamento}</span>}
+        </div>
+      )}
 
       <div className="campo-formulario">
         <label htmlFor="lote-proveedor">Proveedor</label>
@@ -196,7 +211,7 @@ function LoteForm({ loteInicial, medicamentos = [], proveedores = [], onGuardar 
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="lote-fabricacion">Fabricacion</label>
+        <label htmlFor="lote-fabricacion">Fabricación</label>
         <input
           id="lote-fabricacion"
           name="fechaFabricacion"

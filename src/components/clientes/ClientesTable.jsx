@@ -7,7 +7,7 @@ function ClientesTable({ clientes, onEditar, onEliminar, onVer }) {
             <th>Nombre</th>
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
-            <th>Telefono</th>
+            <th>Teléfono</th>
             <th>Correo</th>
             <th>Fecha de Registro</th>
             <th>Acciones</th>

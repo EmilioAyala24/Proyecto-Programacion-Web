@@ -22,7 +22,7 @@ function normalizarSesion(sesion) {
 
 export async function login({ usuario, password }) {
   if (!API_URL) {
-    throw new Error('No hay URL de API configurada para iniciar sesion.')
+    throw new Error('No hay URL de API configurada para iniciar sesión.')
   }
 
   const response = await fetch(`${API_URL}/auth/login`, {
@@ -33,14 +33,14 @@ export async function login({ usuario, password }) {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}))
-    throw new Error(error.mensaje || 'Usuario o contrasena incorrectos.')
+    throw new Error(error.mensaje || 'Usuario o contraseña incorrectos.')
   }
 
   const json = await response.json()
   const sesion = normalizarSesion(json.data)
 
   if (!sesion) {
-    throw new Error('La cuenta no tiene un rol valido para acceder al sistema.')
+    throw new Error('La cuenta no tiene un rol válido para acceder al sistema.')
   }
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sesion))

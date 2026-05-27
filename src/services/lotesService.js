@@ -37,6 +37,9 @@ function normalizarLote(lote) {
     codigo: lote.codigo ?? lote.codigo_lote,
     medicamento: lote.medicamento ?? lote.nombre_medicamento ?? '',
     proveedor: lote.proveedor ?? lote.nombre_proveedor ?? '',
+    oculto: Boolean(lote.oculto),
+    motivoOculto: lote.motivoOculto ?? lote.motivo_oculto ?? '',
+    fechaOculto: normalizarFecha(lote.fechaOculto ?? lote.fecha_oculto),
     stockDisponible: Number(lote.stockDisponible ?? lote.stock_disponible ?? 0),
     precioCompra: Number(lote.precioCompra ?? lote.precio_compra ?? 0),
     precioVenta: Number(lote.precioVenta ?? lote.precio_venta ?? 0),
@@ -56,6 +59,21 @@ export async function obtenerLotes() {
 
   if (!respuesta.ok) {
     throw new Error('No fue posible obtener los lotes.')
+  }
+
+  const datos = await respuesta.json()
+  return datos.map(normalizarLote)
+}
+
+export async function obtenerLotesOcultos() {
+  if (!API_URL) {
+    return lotesIniciales.map(normalizarLote).filter((lote) => lote.oculto)
+  }
+
+  const respuesta = await fetch(`${API_URL}/lotes/ocultos`)
+
+  if (!respuesta.ok) {
+    throw new Error('No fue posible obtener los lotes ocultos.')
   }
 
   const datos = await respuesta.json()
@@ -129,7 +147,27 @@ export async function eliminarLote(id) {
   })
 
   if (!respuesta.ok) {
-    throw new Error('No fue posible eliminar el lote. Revisa si tiene medicamentos asociados.')
+    const error = await respuesta.json().catch(() => ({}))
+    throw new Error(error.mensaje || 'No fue posible eliminar el lote.')
+  }
+
+  return true
+}
+
+export async function ocultarLote(id, motivo) {
+  if (!API_URL) {
+    return true
+  }
+
+  const respuesta = await fetch(`${API_URL}/lotes/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ motivo }),
+  })
+
+  if (!respuesta.ok) {
+    const error = await respuesta.json().catch(() => ({}))
+    throw new Error(error.mensaje || 'No fue posible ocultar el lote.')
   }
 
   return true

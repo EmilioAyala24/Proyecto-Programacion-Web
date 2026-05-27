@@ -132,7 +132,7 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="cliente-telefono">Telefono</label>
+        <label htmlFor="cliente-telefono">Teléfono</label>
         <input
           id="cliente-telefono"
           name="telefono"

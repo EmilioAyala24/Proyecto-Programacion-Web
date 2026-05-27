@@ -21,6 +21,14 @@ export async function registrarMedicamento(req, res, next) {
       })
     }
 
+    const duplicado = await medicamentosModel.buscarMedicamentoDuplicado(validacion.datosLimpios)
+
+    if (duplicado) {
+      return res.status(409).json({
+        mensaje: 'Ya existe un medicamento con el mismo nombre, presentacion, concentracion, contenido y requisito de receta.',
+      })
+    }
+
     const medicamento = await medicamentosModel.crearMedicamento(validacion.datosLimpios)
     return res.status(201).json(medicamento)
   } catch (error) {
@@ -39,8 +47,20 @@ export async function actualizarMedicamento(req, res, next) {
       })
     }
 
+    const idMedicamento = Number(req.params.id)
+    const duplicado = await medicamentosModel.buscarMedicamentoDuplicado(
+      validacion.datosLimpios,
+      idMedicamento,
+    )
+
+    if (duplicado) {
+      return res.status(409).json({
+        mensaje: 'Ya existe otro medicamento con el mismo nombre, presentacion, concentracion, contenido y requisito de receta.',
+      })
+    }
+
     const medicamento = await medicamentosModel.actualizarMedicamento(
-      Number(req.params.id),
+      idMedicamento,
       validacion.datosLimpios,
     )
 

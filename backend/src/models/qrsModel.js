@@ -44,6 +44,25 @@ function crearUrlImagenQR(urlQR) {
   return `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(urlQR)}`
 }
 
+async function sincronizarUrlPublicaQR(qr) {
+  const urlQR = crearUrlQR(qr.token)
+
+  if (qr.url_qr === urlQR) {
+    return qr
+  }
+
+  const resultado = await pool.query(
+    `UPDATE codigos_qr
+     SET url_qr = $1,
+         fecha_regeneracion = CURRENT_DATE
+     WHERE id_qr = $2
+     RETURNING id_qr, token, url_qr, fecha_generacion, fecha_regeneracion, contador_escaneos, activo`,
+    [urlQR, qr.id_qr],
+  )
+
+  return resultado.rows[0] ?? { ...qr, url_qr: urlQR }
+}
+
 export async function obtenerQRPorLote(idLote) {
   const loteResultado = await pool.query(
     `SELECT id_lote, id_med
@@ -86,7 +105,7 @@ export async function obtenerQRPorLote(idLote) {
     )
   }
 
-  const qr = qrResultado.rows[0]
+  const qr = await sincronizarUrlPublicaQR(qrResultado.rows[0])
 
   return {
     ...qr,

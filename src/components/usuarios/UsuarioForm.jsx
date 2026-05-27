@@ -55,15 +55,15 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
 
     if (!usuarioInicial || formulario.password) {
       if (!formulario.password) {
-        nuevosErrores.password = 'La contrasena es requerida'
+        nuevosErrores.password = 'La contraseña es requerida'
       } else if (formulario.password.length < 8) {
-        nuevosErrores.password = 'La contrasena debe tener al menos 8 caracteres'
+        nuevosErrores.password = 'La contraseña debe tener al menos 8 caracteres'
       } else if (
         !/[A-Z]/.test(formulario.password) ||
         !/[a-z]/.test(formulario.password) ||
         !/\d/.test(formulario.password)
       ) {
-        nuevosErrores.password = 'Incluye mayuscula, minuscula y numero'
+        nuevosErrores.password = 'Incluye mayúscula, minúscula y número'
       }
     }
 
@@ -146,7 +146,7 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
 
       <div className="campo-formulario">
         <label htmlFor="usuario-password">
-          {usuarioInicial ? 'Nueva contrasena' : 'Contrasena *'}
+          {usuarioInicial ? 'Nueva contraseña' : 'Contraseña *'}
         </label>
         <input
           id="usuario-password"
@@ -202,7 +202,7 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="usuario-telefono">Telefono</label>
+        <label htmlFor="usuario-telefono">Teléfono</label>
         <input
           id="usuario-telefono"
           name="telefono"

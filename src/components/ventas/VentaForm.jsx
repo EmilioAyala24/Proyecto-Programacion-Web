@@ -144,7 +144,7 @@ function VentaForm({ onCrearVenta, cargando }) {
     }
 
     if (!cantidad || Number.isNaN(cantidad) || cantidad <= 0 || !Number.isInteger(cantidad)) {
-      setErrorDetalle('La cantidad debe ser un numero positivo.')
+      setErrorDetalle('La cantidad debe ser un número positivo.')
       return
     }
 
@@ -315,7 +315,7 @@ function VentaForm({ onCrearVenta, cargando }) {
           </div>
 
           <div className="campo-formulario">
-            <label htmlFor="venta-metodo-pago">Metodo de pago *</label>
+            <label htmlFor="venta-metodo-pago">Método de pago *</label>
             <select
               id="venta-metodo-pago"
               name="id_metPag"

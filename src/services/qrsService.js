@@ -36,7 +36,7 @@ export async function obtenerQRLote(idLote) {
 
   if (!respuesta.ok) {
     const error = await respuesta.json().catch(() => ({}))
-    throw new Error(error.mensaje || `No fue posible generar el QR del lote. Codigo ${respuesta.status}.`)
+    throw new Error(error.mensaje || `No fue posible generar el QR del lote. Código ${respuesta.status}.`)
   }
 
   const json = await respuesta.json()
@@ -52,7 +52,7 @@ export async function obtenerDetalleQR(token) {
 
   if (!respuesta.ok) {
     const error = await respuesta.json().catch(() => ({}))
-    throw new Error(error.mensaje || `No fue posible obtener la informacion del QR. Codigo ${respuesta.status}.`)
+    throw new Error(error.mensaje || `No fue posible obtener la información del QR. Código ${respuesta.status}.`)
   }
 
   const json = await respuesta.json()

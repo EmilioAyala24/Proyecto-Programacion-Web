@@ -1,4 +1,4 @@
-# Guia del proyecto Farmacia Inclusiva
+﻿# Guia del proyecto Farmacia Inclusiva
 
 Este documento explica como esta organizado y como funciona el proyecto carpeta por carpeta y archivo por archivo. El sistema es una aplicacion web para administrar una farmacia: usuarios, login, clientes, proveedores, medicamentos, lotes, ventas y estadisticas.
 
@@ -17,9 +17,9 @@ Flujo basico:
 3. El login llama a `POST /api/auth/login`.
 4. El backend recibe las peticiones en `backend/src/app.js`, las manda a `backend/src/routes/index.js` y de ahi a cada modulo.
 5. Cada ruta llama a un controlador.
-6. Cada controlador valida datos y llama a un modelo.
+6. Cada controlador válida datos y llama a un modelo.
 7. Cada modelo ejecuta SQL en PostgreSQL mediante `backend/src/config/database.js`.
-8. El frontend recibe la respuesta, normaliza los datos en `src/services/` y los muestra en paginas y componentes.
+8. El frontend recibe la respuesta, normaliza los datos en `src/services/` y los muestra en páginas y componentes.
 
 ## Archivos de raiz
 
@@ -41,9 +41,9 @@ Levanta PostgreSQL 16 en Docker. Crea el contenedor `farmacia_inclusiva_postgres
 
 - `BaseDeDatos/farmacia_inclusiva.sql`
 - `BaseDeDatos/seeds/proveedores.sql`
-- `BaseDeDatos/seeds/catalogo_inicial.sql`
+- `BaseDeDatos/seeds/catálogo_inicial.sql`
 
-Tambien define un volumen para conservar datos entre reinicios.
+También define un volumen para conservar datos entre reinicios.
 
 ### `eslint.config.js`
 
@@ -82,15 +82,11 @@ Archivo generado por npm que fija versiones exactas de dependencias.
 
 ### `README.md`
 
-Documento inicial de Vite/React. Actualmente contiene informacion generica de la plantilla.
+Documento inicial de Vite/React. Actualmente contiene información genérica de la plantilla.
 
 ### `vite.config.js`
 
 Configura Vite con el plugin de React.
-
-### `prueba.txt`
-
-Archivo de prueba sin participacion directa en la aplicacion.
 
 ## Carpeta `backend/`
 
@@ -201,23 +197,23 @@ Las rutas de opciones van antes de `/:id` para evitar que Express interprete `op
 
 ## Carpeta `backend/src/controllers/`
 
-Contiene la logica HTTP: recibe `req`, valida, llama modelos y responde JSON.
+Contiene la lógica HTTP: recibe `req`, válida, llama modelos y responde JSON.
 
 ### `backend/src/controllers/authController.js`
 
-Gestiona login y logout. Valida usuario/contrasena, busca el usuario por username, verifica el hash de contrasena y devuelve los datos de sesion. En logout registra la ultima conexion del usuario.
+Gestiona login y logout. Valida usuario/contraseña, busca el usuario por username, verifica el hash de contraseña y devuelve los datos de sesión. En logout registra la ultima conexion del usuario.
 
 ### `backend/src/controllers/clientesController.js`
 
-Controla listar, obtener, crear, actualizar y eliminar clientes. Usa `validarCliente()` antes de guardar datos.
+Controla listar, obtener, crear, actualizar y eliminar clientes. Usa `válidarCliente()` antes de guardar datos.
 
 ### `backend/src/controllers/usuariosController.js`
 
-Controla listar, obtener, crear, actualizar y eliminar usuarios. Genera hash de contrasena al crear o cuando se actualiza una nueva contrasena.
+Controla listar, obtener, crear, actualizar y eliminar usuarios. Genera hash de contraseña al crear o cuando se actualiza una nueva contraseña.
 
 ### `backend/src/controllers/proveedoresController.js`
 
-Controla proveedores. Valida datos con `validarProveedor()` y responde con mensajes de error si el proveedor no existe o los datos son invalidos.
+Controla proveedores. Valida datos con `válidarProveedor()` y responde con mensajes de error si el proveedor no existe o los datos son invalidos.
 
 ### `backend/src/controllers/medicamentosController.js`
 
@@ -225,7 +221,7 @@ Controla medicamentos. Valida nombre, presentacion, concentracion, contenido y s
 
 ### `backend/src/controllers/lotesController.js`
 
-Controla lotes. Limpia datos recibidos desde el frontend, valida proveedor, medicamento, numero de lote, fechas, stock y precios. Tambien decide si una fecha de caducidad es valida comparandola con fabricacion e ingreso.
+Controla lotes. Limpia datos recibidos desde el frontend, válida proveedor, medicamento, número de lote, fechas, stock y precios. También decide si una fecha de caducidad es válida comparandola con fabricación e ingreso.
 
 ### `backend/src/controllers/ventasController.js`
 
@@ -241,7 +237,7 @@ Consulta, crea, actualiza y elimina clientes. Formatea fechas como `DD-MM-YYYY |
 
 ### `backend/src/models/usuariosModel.js`
 
-Consulta, crea, actualiza y elimina usuarios. Tambien busca usuario por username para login y actualiza `ultima_conexion` en logout.
+Consulta, crea, actualiza y elimina usuarios. También busca usuario por username para login y actualiza `ultima_conexion` en logout.
 
 ### `backend/src/models/proveedoresModel.js`
 
@@ -249,17 +245,17 @@ Consulta, crea, actualiza y elimina proveedores en la tabla `proveedor`.
 
 ### `backend/src/models/medicamentosModel.js`
 
-Consulta medicamentos junto con informacion agregada de sus lotes: stock total, precio, total de lotes, lotes vigentes, proximos y caducados. Tambien crea, actualiza y elimina medicamentos.
+Consulta medicamentos junto con información agregada de sus lotes: stock total, precio, total de lotes, lotes vigentes, próximos y caducados. También crea, actualiza y elimina medicamentos.
 
 ### `backend/src/models/lotesModel.js`
 
 Consulta lotes junto con proveedor y medicamento. Calcula estado del lote:
 
 - `Caducado`: fecha menor a hoy.
-- `Proximo`: caduca dentro de 60 dias.
-- `Vigente`: no esta caducado ni proximo.
+- `Próximo`: caduca dentro de 60 días.
+- `Vigente`: no está caducado ni próximo.
 
-Tambien crea, actualiza y elimina lotes, y marca `activo` segun stock.
+También crea, actualiza y elimina lotes, y marca `activo` segun stock.
 
 ### `backend/src/models/ventasModel.js`
 
@@ -274,33 +270,33 @@ Maneja ventas con transacciones SQL. Al crear una venta:
 7. Actualiza el total de la venta.
 8. Hace `COMMIT` o `ROLLBACK` si hay error.
 
-Tambien obtiene historial, detalle, metodos de pago, clientes y medicamentos disponibles.
+También obtiene historial, detalle, metodos de pago, clientes y medicamentos disponibles.
 
-## Carpeta `backend/src/validators/`
+## Carpeta `backend/src/válidators/`
 
 Valida datos antes de guardar.
 
-### `backend/src/validators/authValidator.js`
+### `backend/src/válidators/authValidator.js`
 
 Valida que login reciba usuario y password.
 
-### `backend/src/validators/clientesValidator.js`
+### `backend/src/válidators/clientesValidator.js`
 
-Valida campos de cliente como nombre, apellidos, telefono y correo.
+Valida campos de cliente como nombre, apellidos, teléfono y correo.
 
-### `backend/src/validators/usuariosValidator.js`
+### `backend/src/válidators/usuariosValidator.js`
 
-Valida usuario, rol, nombre, telefono y contrasena. Distingue cuando la contrasena es obligatoria al crear y opcional al editar.
+Valida usuario, rol, nombre, teléfono y contraseña. Distingue cuando la contraseña es obligatoria al crear y opcional al editar.
 
-### `backend/src/validators/proveedoresValidator.js`
+### `backend/src/válidators/proveedoresValidator.js`
 
-Valida nombre, telefono, correo y direccion del proveedor.
+Valida nombre, teléfono, correo y dirección del proveedor.
 
-### `backend/src/validators/medicamentosValidator.js`
+### `backend/src/válidators/medicamentosValidator.js`
 
 Valida datos de medicamento y normaliza nombres de campos recibidos desde el frontend.
 
-### `backend/src/validators/ventasValidator.js`
+### `backend/src/válidators/ventasValidator.js`
 
 Valida que una venta tenga usuario, metodo de pago y detalles validos.
 
@@ -314,14 +310,14 @@ Manejador global de errores. Registra el error en consola y responde `500` con u
 
 ### `backend/src/utils/password.js`
 
-Gestiona contrasenas con `crypto.pbkdf2Sync`.
+Gestiona contraseñas con `crypto.pbkdf2Sync`.
 
 - `generarPasswordHash(password)`: crea salt y hash.
 - `verificarPassword(password, passwordHash)`: compara hashes con `timingSafeEqual`.
 
 ## Carpeta `backend/src/services/`
 
-Actualmente solo contiene `.gitkeep`. Esta preparada para agregar servicios de backend si despues se separa logica que no pertenece directamente al controlador ni al modelo.
+Actualmente solo contiene `.gitkeep`. Está preparada para agregar servicios de backend si después se separa lógica que no pertenece directamente al controlador ni al modelo.
 
 ## Carpeta `BaseDeDatos/`
 
@@ -341,19 +337,19 @@ Script principal de la base de datos. Crea tablas como:
 - `ventas`
 - `detalle_ventas_medicamento`
 
-Tambien define relaciones entre ventas, usuarios, clientes, metodos de pago, medicamentos y lotes.
+También define relaciones entre ventas, usuarios, clientes, metodos de pago, medicamentos y lotes.
 
-### `BaseDeDatos/migrations/20260524_medicamento_catalogo_lotes.sql`
+### `BaseDeDatos/migrations/20260524_medicamento_catálogo_lotes.sql`
 
-Migracion que separa mejor catalogo de medicamentos y lotes. Agrega `id_med` a `lote`, permite que `medicamento.id_lote` no sea obligatorio y crea la llave foranea `fk_lote_med`.
+Migracion que separa mejor catálogo de medicamentos y lotes. Agrega `id_med` a `lote`, permite que `medicamento.id_lote` no sea obligatorio y crea la llave foranea `fk_lote_med`.
 
 ### `BaseDeDatos/seeds/proveedores.sql`
 
 Datos iniciales de proveedores.
 
-### `BaseDeDatos/seeds/catalogo_inicial.sql`
+### `BaseDeDatos/seeds/catálogo_inicial.sql`
 
-Datos iniciales de catalogo, lotes y registros base necesarios para probar el sistema.
+Datos iniciales de catálogo, lotes y registros base necesarios para probar el sistema.
 
 ### `.gitkeep` en subcarpetas
 
@@ -369,7 +365,7 @@ Documenta endpoints del modulo proveedores.
 
 ### `docs/api/ventas.md`
 
-Documenta el modulo de ventas, rutas, estructura de archivos, validaciones y tablas relacionadas.
+Documenta el modulo de ventas, rutas, estructura de archivos, válidaciones y tablas relacionadas.
 
 ### `docs/database/conexion-postgresql.md`
 
@@ -414,11 +410,11 @@ Define rutas principales:
 - `/clientes`
 - `/usuarios`
 
-Tambien envuelve la app con `AuthProvider` y protege rutas internas con `ProtectedRoute`.
+También envuelve la app con `AuthProvider` y protege rutas internas con `ProtectedRoute`.
 
 ### `src/App.css`
 
-Estilos principales de la aplicacion: layout, sidebar, encabezados, tablas, modales, botones, tarjetas, estados visuales y paginas.
+Estilos principales de la aplicacion: layout, sidebar, encabezados, tablas, modales, botónes, tarjetas, estados visuales y páginas.
 
 ### `src/index.css`
 
@@ -434,7 +430,7 @@ Crea el contexto React `AuthContext`.
 
 ### `src/context/AuthContext.jsx`
 
-Proveedor del contexto. Guarda el usuario actual, expone `estaAutenticado`, `iniciarSesion` y `cerrarSesion`. Usa `authService` para persistir la sesion en `localStorage`.
+Proveedor del contexto. Guarda el usuario actual, expone `estaAutenticado`, `iniciarSesión` y `cerrarSesión`. Usa `authService` para persistir la sesión en `localStorage`.
 
 ## Carpeta `src/hooks/`
 
@@ -450,24 +446,24 @@ Funciones auxiliares del frontend.
 
 ### `src/utils/permisos.js`
 
-Define modulos disponibles y roles permitidos. Roles usados:
+Define módulos disponibles y roles permitidos. Roles usados:
 
 - `admin`: acceso completo.
 - `cajero`: acceso a inicio, medicamentos, clientes y ventas.
 
-Tambien normaliza alias como `administrador` y `vendedor`.
+También normaliza alias como `administrador` y `vendedor`.
 
-### `src/utils/validaciones.js`
+### `src/utils/válidaciones.js`
 
-Contiene reglas de sanitizacion y validacion para formularios: usuarios, contrasenas, nombres, telefonos, correos, direcciones, medicamentos, lotes, stock, precios y fechas.
+Contiene reglas de sanitización y válidacion para formularios: usuarios, contraseñas, nombres, teléfonos, correos, direcciónes, medicamentos, lotes, stock, precios y fechas.
 
 ## Carpeta `src/services/`
 
-Servicios que conectan el frontend con la API. Tambien normalizan datos para que los componentes usen nombres consistentes.
+Servicios que conectan el frontend con la API. También normalizan datos para que los componentes usen nombres consistentes.
 
 ### `src/services/authService.js`
 
-Llama a login/logout, guarda sesion en `localStorage`, recupera sesion al recargar y normaliza el rol.
+Llama a login/logout, guarda sesión en `localStorage`, recupera sesión al recargar y normaliza el rol.
 
 ### `src/services/clientesService.js`
 
@@ -498,7 +494,7 @@ Consume `/ventas`. Normaliza fechas a horario Mexico, obtiene historial, detalle
 Calcula metricas del dia a partir de ventas y clientes:
 
 - ingresos totales
-- numero de ventas
+- número de ventas
 - venta promedio
 - clientes totales
 - ventas por hora
@@ -508,7 +504,7 @@ Calcula metricas del dia a partir de ventas y clientes:
 
 ## Carpeta `src/pages/`
 
-Paginas completas de la aplicacion. Cada pagina une estado, filtros, servicios y componentes visuales.
+Paginas completas de la aplicacion. Cada página une estado, filtros, servicios y componentes visuales.
 
 ### `src/pages/Login.jsx`
 
@@ -520,15 +516,15 @@ Panel de estadisticas. Carga datos con `obtenerEstadisticasDelDia()` y muestra t
 
 ### `src/pages/Dashboard.jsx`
 
-Panel sencillo de avance funcional con accesos a modulos. Parece una pantalla inicial de demostracion.
+Panel sencillo de avance funcional con accesos a módulos. Parece una pantalla inicial de demostracion.
 
 ### `src/pages/Medicamentos.jsx`
 
-Modulo de medicamentos. Lista, filtra, pagina, crea, edita, elimina y abre detalle de medicamento.
+Modulo de medicamentos. Lista, filtra, página, crea, edita, elimina y abre detalle de medicamento.
 
 ### `src/pages/MedicamentoDetalle.jsx`
 
-Detalle de un medicamento. Muestra informacion del catalogo y los lotes asociados, con resumen de vigentes, proximos y caducados.
+Detalle de un medicamento. Muestra información del catálogo y los lotes asociados, con resumen de vigentes, próximos y caducados.
 
 ### `src/pages/Lotes.jsx`
 
@@ -544,7 +540,7 @@ Modulo de ventas. Muestra historial, indicadores, formulario para registrar vent
 
 ### `src/pages/Clientes.jsx`
 
-Modulo de clientes. Permite listar, filtrar, crear, editar, eliminar y ver detalle. Calcula clientes nuevos de los ultimos 7 dias.
+Modulo de clientes. Permite listar, filtrar, crear, editar, eliminar y ver detalle. Calcula clientes nuevos de los ultimos 7 días.
 
 ### `src/pages/Usuarios.jsx`
 
@@ -552,13 +548,13 @@ Modulo de usuarios. Permite listar, filtrar por usuario/rol, crear, editar, elim
 
 ### `src/pages/ModuloPendiente.jsx`
 
-Componente de pagina para modulos aun no implementados. Actualmente no se usa en `App.jsx`.
+Componente de página para módulos aun no implementados. Actualmente no se usa en `App.jsx`.
 
 ## Carpeta `src/layouts/`
 
 ### `src/layouts/AppLayout.jsx`
 
-Layout principal despues del login. Muestra barra lateral con modulos permitidos por rol, barra superior con usuario activo y boton de cerrar sesion. Usa `Outlet` para renderizar la pagina actual.
+Layout principal después del login. Muestra barra lateral con módulos permitidos por rol, barra superior con usuario activo y botón de cerrar sesión. Usa `Outlet` para renderizar la página actual.
 
 ## Carpeta `src/components/`
 
@@ -584,17 +580,17 @@ Tarjeta para mostrar fechas relevantes.
 
 #### `src/components/TarjetaMedicamento.jsx`
 
-Tarjeta visual para informacion de medicamento.
+Tarjeta visual para información de medicamento.
 
 #### `src/components/TarjetaVenta.jsx`
 
-Tarjeta visual para informacion de venta.
+Tarjeta visual para información de venta.
 
 ### `src/components/auth/`
 
 #### `src/components/auth/LoginForm.jsx`
 
-Formulario de login. Captura usuario y contrasena, llama a `iniciarSesion` desde `useAuth` y maneja errores visuales.
+Formulario de login. Captura usuario y contraseña, llama a `iniciarSesión` desde `useAuth` y maneja errores visuales.
 
 ### `src/components/common/`
 
@@ -604,7 +600,7 @@ Boton reutilizable para agregar registros.
 
 #### `src/components/common/AddButton.css`
 
-Estilos del boton de agregar.
+Estilos del botón de agregar.
 
 #### `src/components/common/DetalleRegistro.jsx`
 
@@ -620,11 +616,11 @@ Estilos de modal.
 
 #### `src/components/common/Paginacion.jsx`
 
-Controles de paginacion usados en tablas.
+Controles de páginacion usados en tablas.
 
 #### `src/components/common/ProtectedRoute.jsx`
 
-Protege rutas internas. Si no hay sesion redirige a `/login`; si el rol no tiene permiso, redirige a la ruta inicial del rol.
+Protege rutas internas. Si no hay sesión redirige a `/login`; si el rol no tiene permiso, redirige a la ruta inicial del rol.
 
 #### `src/components/common/SearchBar.jsx`
 
@@ -638,7 +634,7 @@ Estilos de barra de busqueda.
 
 #### `src/components/clientes/ClienteForm.jsx`
 
-Formulario para crear o editar cliente. Usa validaciones y sanitizacion del frontend.
+Formulario para crear o editar cliente. Usa válidaciones y sanitización del frontend.
 
 #### `src/components/clientes/ClientesTable.jsx`
 
@@ -648,7 +644,7 @@ Tabla de clientes con acciones de ver, editar y eliminar.
 
 #### `src/components/usuarios/UsuarioForm.jsx`
 
-Formulario para crear o editar usuarios, incluyendo rol y contrasena.
+Formulario para crear o editar usuarios, incluyendo rol y contraseña.
 
 #### `src/components/usuarios/UsuariosTable.jsx`
 
@@ -768,12 +764,12 @@ Salida generada por `npm run build`. Contiene archivos listos para produccion. N
 ## Flujo de autenticacion
 
 1. `Login.jsx` muestra `LoginForm`.
-2. `LoginForm` llama a `iniciarSesion`.
+2. `LoginForm` llama a `iniciarSesión`.
 3. `AuthContext.jsx` llama a `authService.login`.
 4. `authService.js` manda `POST /api/auth/login`.
-5. `authController.js` valida datos y revisa contrasena con `password.js`.
+5. `authController.js` válida datos y revisa contraseña con `password.js`.
 6. Si es correcto, devuelve datos del usuario.
-7. El frontend guarda la sesion en `localStorage`.
+7. El frontend guarda la sesión en `localStorage`.
 8. `ProtectedRoute.jsx` permite o bloquea rutas segun rol.
 
 ## Flujo de una venta
@@ -782,10 +778,10 @@ Salida generada por `npm run build`. Contiene archivos listos para produccion. N
 2. `VentaForm` carga clientes, metodos de pago y medicamentos disponibles.
 3. El usuario arma detalles de venta.
 4. `ventasService.crearVenta()` manda `POST /api/ventas`.
-5. `ventasController.crearVenta()` valida la venta.
+5. `ventasController.crearVenta()` válida la venta.
 6. `ventasModel.crearVenta()` usa una transaccion:
    - inserta venta,
-   - valida lote,
+   - válida lote,
    - inserta detalles,
    - descuenta stock,
    - actualiza total.
@@ -795,7 +791,7 @@ Salida generada por `npm run build`. Contiene archivos listos para produccion. N
 
 Medicamentos y lotes estan relacionados, pero cumplen funciones distintas:
 
-- Medicamento: catalogo general del producto.
+- Medicamento: catálogo general del producto.
 - Lote: existencia real, proveedor, fechas, stock y precios.
 
 Por eso el stock mostrado en medicamentos se calcula sumando lotes asociados.

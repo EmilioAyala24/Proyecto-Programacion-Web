@@ -17,6 +17,22 @@ const valoresIniciales = {
   requiereReceta: false,
 }
 
+const presentaciones = [
+  'Tabletas',
+  'Capsulas',
+  'Comprimidos',
+  'Jarabe',
+  'Suspension',
+  'Solucion',
+  'Gotas',
+  'Crema',
+  'Pomada',
+  'Gel',
+  'Inyectable',
+  'Ampolletas',
+  'Sobres',
+  'Aerosol',
+]
 const unidadesConcentracion = ['mg', 'g', 'mcg', 'mL', 'mg/mL', '%', 'UI']
 const unidadesContenido = ['tabletas', 'capsulas', 'comprimidos', 'mL', 'g', 'sobres', 'ampolletas', 'piezas']
 
@@ -39,6 +55,9 @@ function separarValorUnidad(texto, unidadPredeterminada) {
 function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) {
   const concentracionInicial = separarValorUnidad(medicamentoInicial?.concentracion, 'mg')
   const contenidoInicial = separarValorUnidad(medicamentoInicial?.contenido, 'tabletas')
+  const opcionesPresentacion = presentaciones.includes(medicamentoInicial?.presentacion)
+    ? presentaciones
+    : [medicamentoInicial?.presentacion, ...presentaciones].filter(Boolean)
   const [formulario, setFormulario] = useState({
     ...valoresIniciales,
     ...medicamentoInicial,
@@ -71,12 +90,12 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
       nombre: validarTextoFarmacia(formulario.nombre, 'El nombre', LIMITES.medicamentoNombre),
       presentacion: validarTextoFarmacia(
         formulario.presentacion,
-        'La presentacion',
+        'La presentación',
         LIMITES.presentacion,
       ),
       concentracion: validarTextoFarmacia(
         concentracion,
-        'La concentracion',
+        'La concentración',
         LIMITES.concentracion,
       ),
       contenido: validarTextoFarmacia(contenido, 'El contenido', LIMITES.contenido),
@@ -125,20 +144,25 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="medicamento-presentacion">Presentacion</label>
-        <input
+        <label htmlFor="medicamento-presentacion">Presentación</label>
+        <select
           id="medicamento-presentacion"
           name="presentacion"
-          placeholder="Tabletas"
           value={formulario.presentacion}
           onChange={manejarCambio}
-          maxLength={LIMITES.presentacion}
-        />
+        >
+          <option value="">Selecciona una presentación</option>
+          {opcionesPresentacion.map((presentacion) => (
+            <option key={presentacion} value={presentacion}>
+              {presentacion}
+            </option>
+          ))}
+        </select>
         {errores.presentacion && <span className="mensaje-error">{errores.presentacion}</span>}
       </div>
 
       <div className="campo-formulario">
-        <label htmlFor="medicamento-concentracion">Concentracion</label>
+        <label htmlFor="medicamento-concentracion">Concentración</label>
         <div className="campo-compuesto">
           <input
             id="medicamento-concentracion"
@@ -149,7 +173,7 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
             onChange={manejarCambio}
           />
           <select
-            aria-label="Unidad de concentracion"
+            aria-label="Unidad de concentración"
             name="concentracionUnidad"
             value={formulario.concentracionUnidad}
             onChange={manejarCambio}

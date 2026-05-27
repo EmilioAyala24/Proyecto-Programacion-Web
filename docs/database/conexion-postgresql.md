@@ -1,6 +1,6 @@
-# Conexion local con PostgreSQL usando Docker
+﻿# Conexion local con PostgreSQL usando Docker
 
-Estos pasos conectan la pagina web con PostgreSQL sin instalar PostgreSQL directamente en la laptop.
+Estos pasos conectan la página web con PostgreSQL sin instalar PostgreSQL directamente en la laptop.
 
 ## 1. Requisito
 
@@ -21,10 +21,10 @@ Host: localhost
 Puerto: 5433
 Base de datos: farmacia_inclusiva
 Usuario: postgres
-Contrasena: postgres
+Contraseña: postgres
 ```
 
-La primera vez tambien ejecuta automaticamente:
+La primera vez también ejecuta automaticamente:
 
 ```txt
 BaseDeDatos/farmacia_inclusiva.sql
@@ -59,7 +59,7 @@ En otra terminal:
 npm run dev
 ```
 
-La pagina queda en:
+La página queda en:
 
 ```txt
 http://localhost:5173
@@ -116,6 +116,6 @@ Tipo de red: PostgreSQL
 Host: 127.0.0.1
 Puerto: 5433
 Usuario: postgres
-Contrasena: postgres
+Contraseña: postgres
 Base de datos: farmacia_inclusiva
 ```

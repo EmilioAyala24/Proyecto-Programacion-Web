@@ -205,7 +205,7 @@ function Clientes() {
               { etiqueta: 'Nombre', valor: clienteViendo.nombre },
               { etiqueta: 'Apellido paterno', valor: clienteViendo.apPat },
               { etiqueta: 'Apellido materno', valor: clienteViendo.apMat },
-              { etiqueta: 'Telefono', valor: clienteViendo.telefono },
+              { etiqueta: 'Teléfono', valor: clienteViendo.telefono },
               { etiqueta: 'Correo electronico', valor: clienteViendo.correo },
               { etiqueta: 'Fecha de registro', valor: clienteViendo.fechaRegistro },
             ]}

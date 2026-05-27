@@ -27,7 +27,7 @@ function validarNombrePersona(valor, campo, maximo, obligatorio = true) {
   }
 
   if (!patronNombrePersona.test(texto)) {
-    return `${campo} solo puede contener letras, espacios, apostrofe o guion`
+    return `${campo} solo puede contener letras, espacios, apóstrofe o guion`
   }
 
   return ''
@@ -49,7 +49,7 @@ function validarTelefono(valor) {
     digitosLocales.length !== DIGITOS_TELEFONO_LOCAL ||
     !patronTelefono.test(texto)
   ) {
-    return `El telefono debe completar ${DIGITOS_TELEFONO_LOCAL} digitos despues de ${PREFIJO_TELEFONO}`
+    return `El teléfono debe completar ${DIGITOS_TELEFONO_LOCAL} dígitos después de ${PREFIJO_TELEFONO}`
   }
 
   return ''

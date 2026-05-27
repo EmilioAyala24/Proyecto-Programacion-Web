@@ -22,6 +22,15 @@ export async function listarLotes(_req, res, next) {
   }
 }
 
+export async function listarLotesOcultos(_req, res, next) {
+  try {
+    const lotes = await lotesModel.obtenerLotesOcultos()
+    res.json(lotes)
+  } catch (error) {
+    next(error)
+  }
+}
+
 function limpiarLote(datos) {
   return {
     idMedicamento: normalizarIdOpcional(datos.idMedicamento ?? datos.id_medicamento),
@@ -72,11 +81,11 @@ function validarLote(datos) {
   }
 
   if (!datos.numeroLote || datos.numeroLote.length < 2) {
-    errores.numeroLote = 'El numero de lote es obligatorio.'
+    errores.numeroLote = 'El número de lote es obligatorio.'
   } else if (datos.numeroLote.length > LIMITE_LOTE) {
-    errores.numeroLote = `El numero de lote no puede exceder ${LIMITE_LOTE} caracteres.`
+    errores.numeroLote = `El número de lote no puede exceder ${LIMITE_LOTE} caracteres.`
   } else if (!patronCodigoLote.test(datos.numeroLote)) {
-    errores.numeroLote = 'El numero de lote solo acepta letras, numeros, punto, guion o guion bajo.'
+    errores.numeroLote = 'El número de lote solo acepta letras, números, punto, guion o guion bajo.'
   }
 
   if (!esFechaValida(datos.fechaFabricacion)) {
@@ -192,13 +201,14 @@ export async function actualizarLote(req, res, next) {
 
 export async function eliminarLote(req, res, next) {
   try {
-    const lote = await lotesModel.eliminarLote(Number(req.params.id))
+    const motivo = req.body?.motivo || req.body?.motivoOculto || 'Oculto manualmente'
+    const lote = await lotesModel.ocultarLote(Number(req.params.id), motivo)
 
     if (!lote) {
       return res.status(404).json({ mensaje: 'Lote no encontrado.' })
     }
 
-    return res.json({ mensaje: 'Lote eliminado.' })
+    return res.json({ mensaje: 'Lote ocultado.' })
   } catch (error) {
     return next(error)
   }

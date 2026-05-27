@@ -155,9 +155,9 @@ function crearHTMLPDF({ filtros, resumen, datosFiltrados, ventasPorDia, ventasPo
           <tbody>${filasVentasDia || '<tr><td colspan="3">Sin ventas en el periodo.</td></tr>'}</tbody>
         </table>
 
-        <h2>Metodos de pago</h2>
+        <h2>Métodos de pago</h2>
         <table>
-          <thead><tr><th>Metodo</th><th>Ventas</th><th>Total</th></tr></thead>
+          <thead><tr><th>Método</th><th>Ventas</th><th>Total</th></tr></thead>
           <tbody>${filasMetodos || '<tr><td colspan="3">Sin ventas en el periodo.</td></tr>'}</tbody>
         </table>
 
@@ -446,7 +446,7 @@ function Reportes() {
             <article className="modulo-panel">
               <div className="modulo-panel__encabezado">
                 <div>
-                  <h2>Metodos de pago</h2>
+                  <h2>Métodos de pago</h2>
                   <p>Distribucion de ventas por forma de pago.</p>
                 </div>
               </div>
@@ -546,7 +546,7 @@ function Reportes() {
               <div className="reporte-resumen-compacto">
                 <strong>{resumen.stockTotal}</strong>
                 <span>unidades disponibles</span>
-                <small>{resumen.lotesProximos + resumen.lotesCaducadosTotales} lote(s) requieren revision</small>
+                <small>{resumen.lotesProximos + resumen.lotesCaducadosTotales} lote(s) requieren revisión</small>
               </div>
             </article>
           </div>
@@ -634,8 +634,8 @@ function Reportes() {
                       <thead>
                         <tr>
                           <th>Medicamento</th>
-                          <th>Presentacion</th>
-                          <th>Concentracion</th>
+                          <th>Presentación</th>
+                          <th>Concentración</th>
                           <th>Stock</th>
                           <th>Lotes</th>
                         </tr>
@@ -668,7 +668,7 @@ function Reportes() {
                   </div>
                   <div className="reporte-lista">
                     <span>Stock total: <strong>{resumen.stockTotal}</strong></span>
-                    <span>Proximos a caducar: <strong>{resumen.lotesProximos}</strong></span>
+                    <span>Próximos a caducar: <strong>{resumen.lotesProximos}</strong></span>
                     <span>Caducados totales: <strong>{resumen.lotesCaducadosTotales}</strong></span>
                     <span>
                       Vendedor destacado:{' '}

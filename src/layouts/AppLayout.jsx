@@ -66,13 +66,13 @@ function AppLayout() {
               <span />
             </button>
             <div>
-              <span className="barra-superior__etiqueta">Sesion activa</span>
+              <span className="barra-superior__etiqueta">Sesión activa</span>
               <strong>{usuario?.nombre}</strong>
               <span>{obtenerNombreRol(usuario?.rol)}</span>
             </div>
           </div>
           <button className="boton boton--secundario" onClick={manejarCerrarSesion} type="button">
-            Cerrar sesion
+            Cerrar sesión
           </button>
         </header>
 

@@ -27,7 +27,7 @@ export async function obtenerMedicamentos() {
          ELSE 'Vigente'
        END AS estado_lotes
      FROM medicamento m
-     LEFT JOIN lote l ON l.id_med = m.id_med
+     LEFT JOIN lote l ON l.id_med = m.id_med AND l.oculto = FALSE
      GROUP BY
        m.id_med,
        m.nombre,
@@ -39,6 +39,30 @@ export async function obtenerMedicamentos() {
   )
 
   return resultado.rows
+}
+
+export async function buscarMedicamentoDuplicado(datos, idIgnorado = null) {
+  const resultado = await pool.query(
+    `SELECT id_med
+     FROM medicamento
+     WHERE LOWER(TRIM(nombre)) = LOWER(TRIM($1))
+       AND LOWER(TRIM(presentacion)) = LOWER(TRIM($2))
+       AND LOWER(TRIM(concentracion)) = LOWER(TRIM($3))
+       AND LOWER(TRIM(COALESCE(contenido, ''))) = LOWER(TRIM(COALESCE($4, '')))
+       AND requiere_receta = $5
+       AND ($6::INTEGER IS NULL OR id_med <> $6)
+     LIMIT 1`,
+    [
+      datos.nombre,
+      datos.presentacion,
+      datos.concentracion,
+      datos.contenido,
+      datos.requiereReceta,
+      idIgnorado,
+    ],
+  )
+
+  return resultado.rows[0] ?? null
 }
 
 export async function crearMedicamento(datos) {

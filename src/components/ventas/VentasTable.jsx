@@ -1,4 +1,4 @@
-function VentasTable({ ventas, cargando, error, onVer, onTicket }) {
+function VentasTable({ ventas, cargando, error, onVer, onTicket, onEliminar }) {
   const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   if (cargando) {
@@ -34,7 +34,7 @@ function VentasTable({ ventas, cargando, error, onVer, onTicket }) {
             <th>Fecha</th>
             <th>Usuario</th>
             <th>Cliente</th>
-            <th>Metodo de pago</th>
+            <th>Método de pago</th>
             <th>Cant.</th>
             <th>Total</th>
             <th>Acciones</th>
@@ -65,6 +65,13 @@ function VentasTable({ ventas, cargando, error, onVer, onTicket }) {
                     onClick={() => onTicket(venta)}
                   >
                     Ticket
+                  </button>
+                  <button
+                    className="boton-accion boton-accion--eliminar"
+                    type="button"
+                    onClick={() => onEliminar(venta)}
+                  >
+                    Eliminar
                   </button>
                 </div>
               </td>

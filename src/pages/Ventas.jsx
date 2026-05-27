@@ -6,7 +6,8 @@ import Paginacion from '../components/common/Paginacion'
 import FiltrosVentas from '../components/filtros/FiltrosVentas'
 import VentaForm from '../components/ventas/VentaForm'
 import VentasTable from '../components/ventas/VentasTable'
-import { crearVenta, obtenerDetalleVenta, obtenerVentas } from '../services/ventasService'
+import { useAuth } from '../hooks/useAuth'
+import { crearVenta, eliminarVenta, obtenerDetalleVenta, obtenerVentas } from '../services/ventasService'
 
 function escaparHtml(valor) {
   return String(valor ?? '')
@@ -17,13 +18,38 @@ function escaparHtml(valor) {
     .replaceAll("'", '&#039;')
 }
 
+function crearUrlPublicaTicket(idVenta) {
+  const basePublica = import.meta.env.VITE_PUBLIC_URL || window.location.origin
+  return `${basePublica.replace(/\/$/, '')}/ticket/${idVenta}`
+}
+
+function crearUrlImagenQR(url) {
+  return `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(url)}`
+}
+
+function formatearFechaTicket(fecha) {
+  if (!fecha) {
+    return 'Sin fecha'
+  }
+
+  const [year, month, day] = String(fecha).split('T')[0].split('-')
+  return year && month && day ? `${day}-${month}-${year}` : String(fecha)
+}
+
 function crearHtmlTicket(venta, detalles) {
   const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
+  const tasaIva = 0.16
+  const total = Number(venta.total || 0)
+  const subtotalSinIva = total / (1 + tasaIva)
+  const iva = total - subtotalSinIva
+  const urlTicket = crearUrlPublicaTicket(venta.id)
+  const qrTicket = crearUrlImagenQR(urlTicket)
   const filas = detalles.map((detalle) => `
     <tr>
       <td>
         <strong>${escaparHtml(detalle.medicamento)}</strong>
         <span>${escaparHtml([detalle.presentacion, detalle.concentracion].filter(Boolean).join(' '))}</span>
+        <span>Lote ${escaparHtml(detalle.numeroLote || detalle.numero_lote || 'N/D')} / Cad. ${escaparHtml(formatearFechaTicket(detalle.fechaCaducidad || detalle.fecha_caducidad))}</span>
       </td>
       <td>${escaparHtml(detalle.cantidad)}</td>
       <td>$${formatoPrecio(detalle.precio_unitario)}</td>
@@ -115,15 +141,39 @@ function crearHtmlTicket(venta, detalles) {
             margin-top: 2px;
           }
           .ticket__total {
-            align-items: center;
             border-top: 1px dashed #94a3b8;
-            display: flex;
-            font-size: 18px;
-            font-weight: 800;
-            gap: 24px;
-            justify-content: center;
             margin-top: 12px;
             padding-top: 12px;
+          }
+          .ticket__total p {
+            display: flex;
+            font-size: 12px;
+            justify-content: space-between;
+            margin: 4px 0;
+          }
+          .ticket__total p:last-child {
+            font-size: 18px;
+            font-weight: 800;
+            margin-top: 8px;
+          }
+          .ticket__qr {
+            border-top: 1px dashed #94a3b8;
+            margin-top: 12px;
+            padding-top: 12px;
+            text-align: center;
+          }
+          .ticket__qr img {
+            height: 132px;
+            image-rendering: pixelated;
+            margin: 6px auto;
+            width: 132px;
+          }
+          .ticket__qr a {
+            color: #0f3d6e;
+            display: block;
+            font-size: 10px;
+            overflow-wrap: anywhere;
+            text-decoration: none;
           }
           .ticket__pie {
             color: #475569;
@@ -180,6 +230,10 @@ function crearHtmlTicket(venta, detalles) {
             .ticket__total {
               font-size: 14pt;
             }
+            .ticket__qr img {
+              height: 32mm;
+              width: 32mm;
+            }
             .ticket__pie {
               font-size: 8pt;
             }
@@ -199,7 +253,7 @@ function crearHtmlTicket(venta, detalles) {
             <p><strong>Fecha:</strong> ${escaparHtml(venta.fecha)}</p>
             <p><strong>Cajero:</strong> ${escaparHtml(venta.usuario)}</p>
             <p><strong>Cliente:</strong> ${escaparHtml(venta.cliente)}</p>
-            <p><strong>Metodo de pago:</strong> ${escaparHtml(venta.metodoPago)}</p>
+            <p><strong>Método de pago:</strong> ${escaparHtml(venta.metodoPago)}</p>
           </section>
 
           <table>
@@ -217,9 +271,16 @@ function crearHtmlTicket(venta, detalles) {
           </table>
 
           <div class="ticket__total">
-            <span>Total</span>
-            <span>$${formatoPrecio(venta.total)}</span>
+            <p><span>Subtotal</span><span>$${formatoPrecio(subtotalSinIva)}</span></p>
+            <p><span>IVA 16%</span><span>$${formatoPrecio(iva)}</span></p>
+            <p><span>Total</span><span>$${formatoPrecio(total)}</span></p>
           </div>
+
+          <section class="ticket__qr">
+            <p>Escanea para ver información de los medicamentos.</p>
+            <img src="${escaparHtml(qrTicket)}" alt="QR del ticket" />
+            <a href="${escaparHtml(urlTicket)}">${escaparHtml(urlTicket)}</a>
+          </section>
 
           <section class="ticket__pie">
             <p>Gracias por su compra.</p>
@@ -237,6 +298,7 @@ function crearHtmlTicket(venta, detalles) {
 }
 
 function Ventas() {
+  const { usuario } = useAuth()
   const [ventas, setVentas] = useState([])
   const [filtros, setFiltros] = useState({
     id: '',
@@ -249,6 +311,12 @@ function Ventas() {
   const [exitoMensaje, setExitoMensaje] = useState('')
   const [modalAbierto, setModalAbierto] = useState(false)
   const [ventaViendo, setVentaViendo] = useState(null)
+  const [ventaEliminando, setVentaEliminando] = useState(null)
+  const [autorizacionAdmin, setAutorizacionAdmin] = useState({
+    adminUsuario: usuario?.rol === 'admin' ? usuario.usuario : '',
+    adminPassword: '',
+  })
+  const [cargandoEliminar, setCargandoEliminar] = useState(false)
   const [detalleVenta, setDetalleVenta] = useState([])
   const [paginaActual, setPaginaActual] = useState(1)
   const registrosPorPagina = 8
@@ -343,6 +411,54 @@ function Ventas() {
     }
   }
 
+  const abrirEliminarVenta = (venta) => {
+    setVentaEliminando(venta)
+    setAutorizacionAdmin({
+      adminUsuario: usuario?.rol === 'admin' ? usuario.usuario : '',
+      adminPassword: '',
+    })
+    setError('')
+  }
+
+  const cerrarEliminarVenta = () => {
+    if (cargandoEliminar) {
+      return
+    }
+
+    setVentaEliminando(null)
+    setAutorizacionAdmin({
+      adminUsuario: usuario?.rol === 'admin' ? usuario.usuario : '',
+      adminPassword: '',
+    })
+  }
+
+  const manejarEliminarVenta = async (event) => {
+    event.preventDefault()
+
+    if (!ventaEliminando) {
+      return
+    }
+
+    setCargandoEliminar(true)
+    setError('')
+    setExitoMensaje('')
+
+    try {
+      await eliminarVenta(ventaEliminando.id, autorizacionAdmin)
+      setExitoMensaje(`Venta #${ventaEliminando.id} eliminada. El stock fue restaurado.`)
+      setVentaEliminando(null)
+      setDetalleVenta([])
+      setVentaViendo(null)
+      setVentas(await obtenerVentas())
+      setTimeout(() => setExitoMensaje(''), 3000)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setCargandoEliminar(false)
+      setAutorizacionAdmin((actual) => ({ ...actual, adminPassword: '' }))
+    }
+  }
+
   return (
     <section className="ventas-pagina">
       <div className="encabezado-pagina">
@@ -410,6 +526,7 @@ function Ventas() {
           error={error}
           onVer={manejarVerVenta}
           onTicket={manejarGenerarTicket}
+          onEliminar={abrirEliminarVenta}
         />
         <Paginacion
           paginaActual={paginaActual}
@@ -453,7 +570,7 @@ function Ventas() {
                 { etiqueta: 'Fecha', valor: ventaViendo.fecha },
                 { etiqueta: 'Usuario', valor: ventaViendo.usuario },
                 { etiqueta: 'Cliente', valor: ventaViendo.cliente },
-                { etiqueta: 'Metodo de pago', valor: ventaViendo.metodoPago },
+                { etiqueta: 'Método de pago', valor: ventaViendo.metodoPago },
                 { etiqueta: 'Total', valor: `$${formatoPrecio(ventaViendo.total)}` },
               ]}
             />
@@ -480,6 +597,63 @@ function Ventas() {
               </table>
             </div>
           </>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(ventaEliminando)}
+        onClose={cerrarEliminarVenta}
+        title="Eliminar venta"
+      >
+        {ventaEliminando && (
+          <form className="autorizacion-formulario" onSubmit={manejarEliminarVenta}>
+            <p className="texto-secundario">
+              Para eliminar la venta #{ventaEliminando.id}, captura las credenciales de un administrador.
+              Al confirmar, se borrará la venta y se restaurará el stock de sus lotes.
+            </p>
+
+            <div className="campo-formulario">
+              <label htmlFor="admin-usuario">Usuario administrador</label>
+              <input
+                id="admin-usuario"
+                type="text"
+                value={autorizacionAdmin.adminUsuario}
+                onChange={(event) => setAutorizacionAdmin({
+                  ...autorizacionAdmin,
+                  adminUsuario: event.target.value,
+                })}
+                required
+              />
+            </div>
+
+            <div className="campo-formulario">
+              <label htmlFor="admin-password">Contraseña de administrador</label>
+              <input
+                id="admin-password"
+                type="password"
+                value={autorizacionAdmin.adminPassword}
+                onChange={(event) => setAutorizacionAdmin({
+                  ...autorizacionAdmin,
+                  adminPassword: event.target.value,
+                })}
+                required
+              />
+            </div>
+
+            <div className="acciones-formulario">
+              <button
+                className="boton boton--secundario"
+                type="button"
+                onClick={cerrarEliminarVenta}
+                disabled={cargandoEliminar}
+              >
+                Cancelar
+              </button>
+              <button className="boton boton--peligro" type="submit" disabled={cargandoEliminar}>
+                {cargandoEliminar ? 'Eliminando...' : 'Eliminar venta'}
+              </button>
+            </div>
+          </form>
         )}
       </Modal>
     </section>

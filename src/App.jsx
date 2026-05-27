@@ -13,6 +13,8 @@ import Medicamentos from './pages/Medicamentos'
 import Proveedores from './pages/Proveedores'
 import QRMedicamento from './pages/QRMedicamento'
 import Reportes from './pages/Reportes'
+import TicketPublico from './pages/TicketPublico'
+import Trazabilidad from './pages/Trazabilidad'
 import Usuarios from './pages/Usuarios'
 import Ventas from './pages/Ventas'
 
@@ -22,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/qr/:token" element={<QRMedicamento />} />
+        <Route path="/ticket/:id" element={<TicketPublico />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/inicio" element={<Inicio />} />
@@ -31,6 +34,7 @@ function App() {
             <Route path="/lotes" element={<Lotes />} />
             <Route path="/proveedores" element={<Proveedores />} />
             <Route path="/ventas" element={<Ventas />} />
+            <Route path="/trazabilidad" element={<Trazabilidad />} />
             <Route path="/clientes" element={<Clientes />} />
             <Route path="/usuarios" element={<Usuarios />} />
             <Route path="/reportes" element={<Reportes />} />

@@ -90,11 +90,23 @@ function normalizarVenta(venta) {
 }
 
 function normalizarDetalle(detalle) {
+  const fechaCaducidad = detalle.fecha_caducidad ? String(detalle.fecha_caducidad).split('T')[0] : ''
+
   return {
     id: detalle.id_detalle,
+    idMedicamento: detalle.id_med,
+    id_medicamento: detalle.id_med,
+    idLote: detalle.id_lote,
+    id_lote: detalle.id_lote,
+    numeroLote: detalle.numero_lote || '',
+    numero_lote: detalle.numero_lote || '',
+    fechaCaducidad,
+    fecha_caducidad: fechaCaducidad,
     medicamento: detalle.medicamento_nombre || 'Desconocido',
     presentacion: detalle.presentacion || '',
     concentracion: detalle.concentracion || '',
+    contenido: detalle.contenido || '',
+    requiereReceta: Boolean(detalle.requiere_receta),
     cantidad: detalle.cantidad || 0,
     precio_unitario: Number(detalle.precio_unitario) || 0,
     subtotal: Number(detalle.subtotal) || 0,
@@ -129,6 +141,25 @@ export async function obtenerDetalleVenta(idVenta) {
 
   const datos = await respuesta.json()
   return datos.data ? datos.data.map(normalizarDetalle) : []
+}
+
+export async function obtenerTicketPublico(idVenta) {
+  if (!API_URL) {
+    throw new Error('No hay URL de API configurada.')
+  }
+
+  const respuesta = await fetch(`${API_URL}/ventas/public/${idVenta}`)
+
+  if (!respuesta.ok) {
+    throw new Error('No fue posible obtener la información del ticket.')
+  }
+
+  const datos = await respuesta.json()
+
+  return {
+    venta: normalizarVenta(datos.data.venta),
+    detalles: (datos.data.detalles || []).map(normalizarDetalle),
+  }
 }
 
 export async function obtenerMetodosPago() {
@@ -202,4 +233,25 @@ export async function crearVenta(datosVenta) {
   }
 
   return await respuesta.json()
+}
+
+export async function eliminarVenta(idVenta, autorizacion) {
+  if (!API_URL) {
+    return true
+  }
+
+  const respuesta = await fetch(`${API_URL}/ventas/${idVenta}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(autorizacion),
+  })
+
+  if (!respuesta.ok) {
+    const error = await respuesta.json().catch(() => ({}))
+    throw new Error(error.mensaje || 'No fue posible eliminar la venta.')
+  }
+
+  return true
 }

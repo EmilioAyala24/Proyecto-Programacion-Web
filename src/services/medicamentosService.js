@@ -53,7 +53,8 @@ export async function crearMedicamento(medicamento) {
   })
 
   if (!respuesta.ok) {
-    throw new Error('No fue posible registrar el medicamento.')
+    const error = await respuesta.json().catch(() => ({}))
+    throw new Error(error.mensaje || 'No fue posible registrar el medicamento.')
   }
 
   const datos = await respuesta.json()
@@ -74,7 +75,8 @@ export async function actualizarMedicamento(id, medicamento) {
   })
 
   if (!respuesta.ok) {
-    throw new Error('No fue posible actualizar el medicamento.')
+    const error = await respuesta.json().catch(() => ({}))
+    throw new Error(error.mensaje || 'No fue posible actualizar el medicamento.')
   }
 
   const datos = await respuesta.json()

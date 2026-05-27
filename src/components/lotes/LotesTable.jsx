@@ -16,7 +16,7 @@ function formatearFecha(fecha) {
   }).format(new Date(`${fecha}T00:00:00`))
 }
 
-function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones = true }) {
+function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones = true, mostrarOculto = false }) {
   return (
     <div className="tabla-contenedor">
       <table className="tabla-datos">
@@ -29,6 +29,7 @@ function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones 
             <th>Ingreso</th>
             <th>Caducidad</th>
             <th>Estado</th>
+            {mostrarOculto && <th>Motivo</th>}
             {mostrarAcciones && <th>Acciones</th>}
           </tr>
         </thead>
@@ -49,9 +50,10 @@ function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones 
               <td>{formatearFecha(lote.fechaCaducidad)}</td>
               <td>
                 <span className={`estado estado--${clasesEstado[lote.estado]}`}>
-                  {lote.estado === 'Proximo' ? 'Proximo a caducar' : lote.estado}
+                  {lote.estado === 'Proximo' ? 'Próximo a caducar' : lote.estado}
                 </span>
               </td>
+              {mostrarOculto && <td>{lote.motivoOculto || '-'}</td>}
               {mostrarAcciones && (
                 <td>
                   <div className="acciones-tabla">
@@ -73,7 +75,7 @@ function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones 
                       type="button"
                       onClick={() => onEliminar(lote.id)}
                     >
-                      Eliminar
+                      Ocultar
                     </button>
                   </div>
                 </td>

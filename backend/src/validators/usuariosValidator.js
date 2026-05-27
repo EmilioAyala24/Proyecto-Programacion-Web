@@ -28,7 +28,7 @@ function validarNombrePersona(valor, campo, maximo, obligatorio = true) {
   }
 
   if (!patronNombrePersona.test(texto)) {
-    return `${campo} solo puede contener letras, espacios, apostrofe o guion`
+    return `${campo} solo puede contener letras, espacios, apóstrofe o guion`
   }
 
   return ''
@@ -50,7 +50,7 @@ function validarTelefono(valor) {
     digitosLocales.length !== DIGITOS_TELEFONO_LOCAL ||
     !patronTelefono.test(texto)
   ) {
-    return `El telefono debe completar ${DIGITOS_TELEFONO_LOCAL} digitos despues de ${PREFIJO_TELEFONO}`
+    return `El teléfono debe completar ${DIGITOS_TELEFONO_LOCAL} dígitos después de ${PREFIJO_TELEFONO}`
   }
 
   return ''
@@ -68,7 +68,7 @@ export function validarUsuario(usuario) {
   } else if (username.length > LIMITES.usuario) {
     errores.usuario = `El usuario no puede exceder ${LIMITES.usuario} caracteres`
   } else if (!patronUsuario.test(username)) {
-    errores.usuario = 'El usuario solo puede contener letras, numeros, guion, guion bajo y punto'
+    errores.usuario = 'El usuario solo puede contener letras, números, guion, guion bajo y punto'
   }
 
   if (!rol) {
@@ -94,7 +94,7 @@ export function validarUsuario(usuario) {
 
   if (usuario.requierePassword) {
     if (!usuario.password) {
-      errores.password = 'La contrasena es requerida'
+      errores.password = 'La contraseña es requerida'
     }
   }
 
@@ -102,11 +102,11 @@ export function validarUsuario(usuario) {
     const password = String(usuario.password)
 
     if (password.length < 8) {
-      errores.password = 'La contrasena debe tener al menos 8 caracteres'
+      errores.password = 'La contraseña debe tener al menos 8 caracteres'
     } else if (password.length > LIMITES.password) {
-      errores.password = `La contrasena no puede exceder ${LIMITES.password} caracteres`
+      errores.password = `La contraseña no puede exceder ${LIMITES.password} caracteres`
     } else if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password)) {
-      errores.password = 'La contrasena debe incluir mayuscula, minuscula y numero'
+      errores.password = 'La contraseña debe incluir mayúscula, minúscula y número'
     }
   }
 

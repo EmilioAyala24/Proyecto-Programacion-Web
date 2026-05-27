@@ -184,9 +184,9 @@ function Proveedores() {
           <DetalleRegistro
             campos={[
               { etiqueta: 'Nombre', valor: proveedorViendo.nombre },
-              { etiqueta: 'Telefono', valor: proveedorViendo.telefono },
+              { etiqueta: 'Teléfono', valor: proveedorViendo.telefono },
               { etiqueta: 'Correo', valor: proveedorViendo.correo },
-              { etiqueta: 'Direccion', valor: proveedorViendo.direccion },
+              { etiqueta: 'Dirección', valor: proveedorViendo.direccion },
               { etiqueta: 'Estado', valor: proveedorViendo.estado },
             ]}
           />

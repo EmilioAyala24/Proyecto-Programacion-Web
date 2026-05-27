@@ -27,11 +27,32 @@ function Usuarios() {
   const [paginaActual, setPaginaActual] = useState(1)
   const registrosPorPagina = 8
 
+  const cargarUsuarios = async ({ mostrarCarga = false } = {}) => {
+    if (mostrarCarga) {
+      setCargando(true)
+    }
+
+    try {
+      const usuariosDatos = await obtenerUsuarios()
+      setUsuarios(usuariosDatos)
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      if (mostrarCarga) {
+        setCargando(false)
+      }
+    }
+  }
+
   useEffect(() => {
-    obtenerUsuarios()
-      .then(setUsuarios)
-      .catch((err) => setError(err.message))
-      .finally(() => setCargando(false))
+    cargarUsuarios({ mostrarCarga: true })
+
+    const intervalo = window.setInterval(() => {
+      cargarUsuarios()
+    }, 5000)
+
+    return () => window.clearInterval(intervalo)
   }, [])
 
   const usuariosFiltrados = useMemo(() => {
@@ -184,7 +205,7 @@ function Usuarios() {
               { etiqueta: 'Usuario', valor: usuarioViendo.usuario },
               { etiqueta: 'Nombre', valor: usuarioViendo.nombre },
               { etiqueta: 'Rol', valor: usuarioViendo.rol },
-              { etiqueta: 'Telefono', valor: usuarioViendo.telefono },
+              { etiqueta: 'Teléfono', valor: usuarioViendo.telefono },
               { etiqueta: 'Fecha de creacion', valor: usuarioViendo.fechaCreacion },
               { etiqueta: 'Ultima conexion', valor: usuarioViendo.ultimaConexion },
             ]}

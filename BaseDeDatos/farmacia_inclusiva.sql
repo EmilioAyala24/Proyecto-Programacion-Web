@@ -70,6 +70,9 @@ CREATE TABLE lote (
     fecha_ingreso       DATE            DEFAULT NULL,
     stock_actual        INTEGER         DEFAULT 0,
     activo              BOOLEAN         DEFAULT TRUE,
+    oculto              BOOLEAN         DEFAULT FALSE,
+    motivo_oculto       VARCHAR(120)    DEFAULT NULL,
+    fecha_oculto        TIMESTAMP       DEFAULT NULL,
     fecha_compra        DATE            DEFAULT NULL,
     precio_compra       NUMERIC(10,2)   DEFAULT NULL,
     precio_venta        NUMERIC(10,2)   DEFAULT NULL,
@@ -139,11 +142,13 @@ CREATE TABLE detalle_ventas_medicamento (
     id_detalle      SERIAL          NOT NULL,
     id_ventas       INTEGER         NOT NULL,
     id_medicamento  INTEGER         NOT NULL,
+    id_lote         INTEGER         DEFAULT NULL,
     cantidad        INTEGER         DEFAULT NULL,
     precio_unitario NUMERIC(10,2)   DEFAULT NULL,
     subtotal        NUMERIC(10,2)   DEFAULT NULL,
     PRIMARY KEY (id_detalle),
     CONSTRAINT fk_det_ventas FOREIGN KEY (id_ventas)      REFERENCES ventas(id_ventas),
-    CONSTRAINT fk_det_med    FOREIGN KEY (id_medicamento) REFERENCES medicamento(id_med)
+    CONSTRAINT fk_det_med    FOREIGN KEY (id_medicamento) REFERENCES medicamento(id_med),
+    CONSTRAINT fk_det_lote   FOREIGN KEY (id_lote)        REFERENCES lote(id_lote)
 );
 

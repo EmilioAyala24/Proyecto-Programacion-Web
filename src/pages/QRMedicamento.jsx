@@ -49,8 +49,8 @@ function QRMedicamento() {
 
     return [
       `Medicamento: ${detalle.medicamento.nombre}.`,
-      `Presentacion: ${detalle.medicamento.presentacion}.`,
-      `Concentracion: ${detalle.medicamento.concentracion}.`,
+      `Presentación: ${detalle.medicamento.presentacion}.`,
+      `Concentración: ${detalle.medicamento.concentracion}.`,
       detalle.medicamento.contenido ? `Contenido: ${detalle.medicamento.contenido}.` : '',
       `Lote: ${detalle.lote.numero}.`,
       `Proveedor: ${detalle.lote.proveedor}.`,
@@ -62,7 +62,7 @@ function QRMedicamento() {
 
   const reproducirAudio = () => {
     if (!textoAudio || !('speechSynthesis' in window)) {
-      setError('Tu navegador no tiene reproduccion de voz disponible.')
+      setError('Tu navegador no tiene reproducción de voz disponible.')
       return
     }
 
@@ -86,7 +86,7 @@ function QRMedicamento() {
       <section className="qr-publico__tarjeta">
         <span className="encabezado-pagina__etiqueta">Farmacia Inclusiva</span>
 
-        {cargando && <p className="texto-secundario">Cargando informacion del QR...</p>}
+        {cargando && <p className="texto-secundario">Cargando información del QR...</p>}
         {error && <div className="alerta-error">{error}</div>}
 
         {detalle && (
@@ -131,7 +131,7 @@ function QRMedicamento() {
               </div>
               <div>
                 <span>Receta</span>
-                <strong>{detalle.medicamento.requiereReceta ? 'Si requiere' : 'No requiere'}</strong>
+                <strong>{detalle.medicamento.requiereReceta ? 'Sí requiere' : 'No requiere'}</strong>
               </div>
             </div>
 

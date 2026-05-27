@@ -6,6 +6,7 @@ export const MODULOS = [
   { ruta: '/clientes', etiqueta: 'Clientes', roles: ['admin', 'cajero'] },
   { ruta: '/usuarios', etiqueta: 'Usuarios', roles: ['admin'] },
   { ruta: '/ventas', etiqueta: 'Ventas', roles: ['admin', 'cajero'] },
+  { ruta: '/trazabilidad', etiqueta: 'Trazabilidad', roles: ['admin'] },
   { ruta: '/reportes', etiqueta: 'Reportes', roles: ['admin'] },
 ]
 

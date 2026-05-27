@@ -5,9 +5,9 @@ function ProveedoresTable({ proveedores, onEditar, onEliminar, onVer }) {
         <thead>
           <tr>
             <th>Proveedor</th>
-            <th>Telefono</th>
+            <th>Teléfono</th>
             <th>Correo</th>
-            <th>Direccion</th>
+            <th>Dirección</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>

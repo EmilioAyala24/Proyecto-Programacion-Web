@@ -8,6 +8,9 @@ const consultaLotes = `
     l.id_med,
     l.fecha_fabricacion,
     l.stock_actual AS stock_disponible,
+    l.oculto,
+    l.motivo_oculto,
+    l.fecha_oculto,
     l.fecha_ingreso,
     l.fecha_caducidad,
     l.precio_compra,
@@ -24,10 +27,37 @@ const consultaLotes = `
   LEFT JOIN medicamento m ON m.id_med = l.id_med
 `
 
+async function ocultarLotesCaducados(client = pool) {
+  await client.query(`
+    UPDATE lote
+    SET oculto = TRUE,
+        activo = FALSE,
+        motivo_oculto = COALESCE(motivo_oculto, 'Caducado'),
+        fecha_oculto = COALESCE(fecha_oculto, NOW() AT TIME ZONE 'America/Mexico_City')
+    WHERE fecha_caducidad < CURRENT_DATE
+      AND oculto = FALSE
+  `)
+}
+
 export async function obtenerLotes() {
+  await ocultarLotesCaducados()
+
   const resultado = await pool.query(
     `${consultaLotes}
+     WHERE l.oculto = FALSE
      ORDER BY l.fecha_caducidad ASC, l.numero_lote ASC`,
+  )
+
+  return resultado.rows
+}
+
+export async function obtenerLotesOcultos() {
+  await ocultarLotesCaducados()
+
+  const resultado = await pool.query(
+    `${consultaLotes}
+     WHERE l.oculto = TRUE
+     ORDER BY l.fecha_oculto DESC NULLS LAST, l.fecha_caducidad ASC, l.numero_lote ASC`,
   )
 
   return resultado.rows
@@ -151,7 +181,10 @@ export async function actualizarLote(id, datos) {
          activo = CASE WHEN $7 <= 0 THEN FALSE ELSE TRUE END,
          fecha_compra = $8,
          precio_compra = $9,
-         precio_venta = $10
+         precio_venta = $10,
+         oculto = CASE WHEN $5 < CURRENT_DATE THEN TRUE ELSE oculto END,
+         motivo_oculto = CASE WHEN $5 < CURRENT_DATE THEN COALESCE(motivo_oculto, 'Caducado') ELSE motivo_oculto END,
+         fecha_oculto = CASE WHEN $5 < CURRENT_DATE THEN COALESCE(fecha_oculto, NOW() AT TIME ZONE 'America/Mexico_City') ELSE fecha_oculto END
      WHERE id_lote = $11
      RETURNING id_lote`,
     [
@@ -176,11 +209,52 @@ export async function actualizarLote(id, datos) {
   return obtenerLotePorId(id)
 }
 
-export async function eliminarLote(id) {
+export async function ocultarLote(id, motivo = 'Oculto manualmente') {
   const resultado = await pool.query(
-    'DELETE FROM lote WHERE id_lote = $1 RETURNING id_lote',
-    [id],
+    `UPDATE lote
+     SET oculto = TRUE,
+         activo = FALSE,
+         motivo_oculto = $2,
+         fecha_oculto = NOW() AT TIME ZONE 'America/Mexico_City'
+     WHERE id_lote = $1
+     RETURNING id_lote`,
+    [id, motivo || 'Oculto manualmente'],
   )
 
   return resultado.rows[0]
+}
+
+export async function eliminarLote(id) {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const ventaRelacionada = await client.query(
+      'SELECT 1 FROM detalle_ventas_medicamento WHERE id_lote = $1 LIMIT 1',
+      [id],
+    )
+
+    if (ventaRelacionada.rows[0]) {
+      const error = new Error('No se puede eliminar el lote porque ya fue usado en una venta.')
+      error.statusCode = 409
+      throw error
+    }
+
+    await client.query('DELETE FROM codigos_qr WHERE id_lote = $1', [id])
+    await client.query('UPDATE medicamento SET id_lote = NULL WHERE id_lote = $1', [id])
+
+    const resultado = await client.query(
+      'DELETE FROM lote WHERE id_lote = $1 RETURNING id_lote',
+      [id],
+    )
+
+    await client.query('COMMIT')
+    return resultado.rows[0]
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
 }

@@ -16,7 +16,7 @@ function obtenerResumenLotes(medicamento) {
 
   if (medicamento.lotesProximos > 0) {
     return {
-      texto: `${medicamento.lotesProximos} proximo(s)`,
+      texto: `${medicamento.lotesProximos} próximo(s)`,
       estado: 'Proximo',
     }
   }
@@ -43,8 +43,8 @@ function MedicamentosTable({ medicamentos, onEditar, onEliminar, onVer }) {
         <thead>
           <tr>
             <th>Medicamento</th>
-            <th>Presentacion</th>
-            <th>Concentracion</th>
+            <th>Presentación</th>
+            <th>Concentración</th>
             <th>Contenido</th>
             <th>Receta</th>
             <th>Stock</th>
@@ -92,7 +92,7 @@ function MedicamentosTable({ medicamentos, onEditar, onEliminar, onVer }) {
                       <div className="lotes-resumen__detalle">
                         <span>Total: {medicamento.totalLotes}</span>
                         <span>Bien: {medicamento.lotesVigentes}</span>
-                        <span>Proximos: {medicamento.lotesProximos}</span>
+                        <span>Próximos: {medicamento.lotesProximos}</span>
                         <span>Caducados: {medicamento.lotesCaducados}</span>
                       </div>
                     )}

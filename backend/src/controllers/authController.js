@@ -8,7 +8,7 @@ export async function login(req, res, next) {
 
     if (!validacion.valido) {
       return res.status(400).json({
-        mensaje: 'Datos de acceso invalidos.',
+        mensaje: 'Datos de acceso inválidos.',
         errores: validacion.errores,
       })
     }
@@ -16,8 +16,10 @@ export async function login(req, res, next) {
     const usuario = await usuariosModel.obtenerUsuarioPorUsername(validacion.datosLimpios.usuario)
 
     if (!usuario || !verificarPassword(validacion.datosLimpios.password, usuario.password_hash)) {
-      return res.status(401).json({ mensaje: 'Usuario o contrasena incorrectos.' })
+      return res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos.' })
     }
+
+    const conexion = await usuariosModel.registrarConexion(usuario.id_usuario)
 
     return res.json({
       data: {
@@ -28,6 +30,7 @@ export async function login(req, res, next) {
         apMat: usuario.ap_mat,
         telefono: usuario.telefono,
         rol: usuario.rol,
+        ultimaConexion: conexion?.ultima_conexion ?? null,
       },
     })
   } catch (error) {
@@ -40,14 +43,12 @@ export async function logout(req, res, next) {
     const idUsuario = Number(req.body?.id ?? req.body?.id_usuario)
 
     if (!idUsuario || Number.isNaN(idUsuario)) {
-      return res.status(400).json({ mensaje: 'El usuario es requerido para cerrar sesion.' })
+      return res.status(400).json({ mensaje: 'El usuario es requerido para cerrar sesión.' })
     }
 
-    const conexion = await usuariosModel.registrarConexion(idUsuario)
-
     return res.json({
-      mensaje: 'Sesion cerrada.',
-      data: conexion,
+      mensaje: 'Sesión cerrada.',
+      data: { id_usuario: idUsuario },
     })
   } catch (error) {
     return next(error)
