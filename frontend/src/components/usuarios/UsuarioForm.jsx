@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ContadorCaracteres from '../common/ContadorCaracteres'
 import {
   LIMITES,
   normalizarTelefonoCaptura,
@@ -123,15 +124,18 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
     <form className="usuario-formulario" onSubmit={manejarEnvio} noValidate>
       <div className="campo-formulario">
         <label htmlFor="usuario-username">Nombre de usuario *</label>
-        <input
-          id="usuario-username"
-          name="usuario"
-          placeholder="juan.perez"
-          value={formulario.usuario}
-          onChange={manejarCambio}
-          maxLength={LIMITES.usuario}
-          required
-        />
+        <div className="campo-con-contador">
+          <input
+            id="usuario-username"
+            name="usuario"
+            placeholder="juan.perez"
+            value={formulario.usuario}
+            onChange={manejarCambio}
+            maxLength={LIMITES.usuario}
+            required
+          />
+          <ContadorCaracteres valor={formulario.usuario} maximo={LIMITES.usuario} />
+        </div>
         {errores.usuario && <span className="mensaje-error">{errores.usuario}</span>}
       </div>
 
@@ -148,70 +152,85 @@ function UsuarioForm({ usuarioInicial, onCrearUsuario, onGuardar }) {
         <label htmlFor="usuario-password">
           {usuarioInicial ? 'Nueva contraseña' : 'Contraseña *'}
         </label>
-        <input
-          id="usuario-password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          value={formulario.password}
-          onChange={manejarCambio}
-          maxLength={100}
-          required={!usuarioInicial}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="usuario-password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            value={formulario.password}
+            onChange={manejarCambio}
+            maxLength={100}
+            required={!usuarioInicial}
+          />
+          <ContadorCaracteres valor={formulario.password} maximo={100} />
+        </div>
         {errores.password && <span className="mensaje-error">{errores.password}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="usuario-nombre">Nombre *</label>
-        <input
-          id="usuario-nombre"
-          name="nombre"
-          placeholder="Juan"
-          value={formulario.nombre}
-          onChange={manejarCambio}
-          maxLength={LIMITES.nombrePersona}
-          required
-        />
+        <div className="campo-con-contador">
+          <input
+            id="usuario-nombre"
+            name="nombre"
+            placeholder="Juan"
+            value={formulario.nombre}
+            onChange={manejarCambio}
+            maxLength={LIMITES.nombrePersona}
+            required
+          />
+          <ContadorCaracteres valor={formulario.nombre} maximo={LIMITES.nombrePersona} />
+        </div>
         {errores.nombre && <span className="mensaje-error">{errores.nombre}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="usuario-ap-pat">Apellido Paterno</label>
-        <input
-          id="usuario-ap-pat"
-          name="apPat"
-          placeholder="Perez"
-          value={formulario.apPat}
-          onChange={manejarCambio}
-          maxLength={LIMITES.apellido}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="usuario-ap-pat"
+            name="apPat"
+            placeholder="Perez"
+            value={formulario.apPat}
+            onChange={manejarCambio}
+            maxLength={LIMITES.apellido}
+          />
+          <ContadorCaracteres valor={formulario.apPat} maximo={LIMITES.apellido} />
+        </div>
         {errores.apPat && <span className="mensaje-error">{errores.apPat}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="usuario-ap-mat">Apellido Materno</label>
-        <input
-          id="usuario-ap-mat"
-          name="apMat"
-          placeholder="Garcia"
-          value={formulario.apMat}
-          onChange={manejarCambio}
-          maxLength={LIMITES.apellido}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="usuario-ap-mat"
+            name="apMat"
+            placeholder="Garcia"
+            value={formulario.apMat}
+            onChange={manejarCambio}
+            maxLength={LIMITES.apellido}
+          />
+          <ContadorCaracteres valor={formulario.apMat} maximo={LIMITES.apellido} />
+        </div>
         {errores.apMat && <span className="mensaje-error">{errores.apMat}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="usuario-telefono">Teléfono</label>
-        <input
-          id="usuario-telefono"
-          name="telefono"
-          type="tel"
-          placeholder="(312)1234567"
-          value={formulario.telefono}
-          onChange={manejarCambio}
-          maxLength={LIMITES.telefono}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="usuario-telefono"
+            name="telefono"
+            type="tel"
+            placeholder="(312)1234567"
+            value={formulario.telefono}
+            onChange={manejarCambio}
+            maxLength={LIMITES.telefono}
+          />
+          <ContadorCaracteres valor={formulario.telefono} maximo={LIMITES.telefono} />
+        </div>
         {errores.telefono && <span className="mensaje-error">{errores.telefono}</span>}
       </div>
 

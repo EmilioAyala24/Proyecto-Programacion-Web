@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ContadorCaracteres from '../common/ContadorCaracteres'
 import {
   LIMITES,
   normalizarTelefonoCaptura,
@@ -77,55 +78,67 @@ function ProveedorForm({ proveedorInicial, onCrearProveedor, onGuardar }) {
     <form className="proveedor-formulario" onSubmit={manejarEnvio} noValidate>
       <div className="campo-formulario">
         <label htmlFor="nombre">Nombre del proveedor</label>
-        <input
-          id="nombre"
-          name="nombre"
-          placeholder="Distribuidora Salud Total"
-          value={formulario.nombre}
-          onChange={manejarCambio}
-          maxLength={LIMITES.proveedor}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="nombre"
+            name="nombre"
+            placeholder="Distribuidora Salud Total"
+            value={formulario.nombre}
+            onChange={manejarCambio}
+            maxLength={LIMITES.proveedor}
+          />
+          <ContadorCaracteres valor={formulario.nombre} maximo={LIMITES.proveedor} />
+        </div>
         {errores.nombre && <span className="mensaje-error">{errores.nombre}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="telefono">Teléfono</label>
-        <input
-          id="telefono"
-          name="telefono"
-          inputMode="tel"
-          placeholder="(312)1234567"
-          value={formulario.telefono}
-          onChange={manejarCambio}
-          maxLength={LIMITES.telefono}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="telefono"
+            name="telefono"
+            inputMode="tel"
+            placeholder="(312)1234567"
+            value={formulario.telefono}
+            onChange={manejarCambio}
+            maxLength={LIMITES.telefono}
+          />
+          <ContadorCaracteres valor={formulario.telefono} maximo={LIMITES.telefono} />
+        </div>
         {errores.telefono && <span className="mensaje-error">{errores.telefono}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="correo">Correo</label>
-        <input
-          id="correo"
-          name="correo"
-          type="email"
-          placeholder="contacto@proveedor.mx"
-          value={formulario.correo}
-          onChange={manejarCambio}
-          maxLength={LIMITES.correo}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="correo"
+            name="correo"
+            type="email"
+            placeholder="contacto@proveedor.mx"
+            value={formulario.correo}
+            onChange={manejarCambio}
+            maxLength={LIMITES.correo}
+          />
+          <ContadorCaracteres valor={formulario.correo} maximo={LIMITES.correo} />
+        </div>
         {errores.correo && <span className="mensaje-error">{errores.correo}</span>}
       </div>
 
       <div className="campo-formulario proveedor-formulario__direccion">
         <label htmlFor="direccion">Dirección</label>
-        <input
-          id="direccion"
-          name="direccion"
-          placeholder="Calle, número, ciudad y estado"
-          value={formulario.direccion}
-          onChange={manejarCambio}
-          maxLength={LIMITES.direccion}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="direccion"
+            name="direccion"
+            placeholder="Calle, número, ciudad y estado"
+            value={formulario.direccion}
+            onChange={manejarCambio}
+            maxLength={LIMITES.direccion}
+          />
+          <ContadorCaracteres valor={formulario.direccion} maximo={LIMITES.direccion} />
+        </div>
         {errores.direccion && <span className="mensaje-error">{errores.direccion}</span>}
       </div>
 
