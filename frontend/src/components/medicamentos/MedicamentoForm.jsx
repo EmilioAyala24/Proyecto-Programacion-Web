@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ContadorCaracteres from '../common/ContadorCaracteres'
 import {
   LIMITES,
   sanitizarDecimal,
@@ -132,14 +133,17 @@ function MedicamentoForm({ medicamentoInicial, onCrearMedicamento, onGuardar }) 
     <form className="medicamento-formulario" onSubmit={manejarEnvio} noValidate>
       <div className="campo-formulario">
         <label htmlFor="medicamento-nombre">Nombre del medicamento</label>
-        <input
-          id="medicamento-nombre"
-          name="nombre"
-          placeholder="Paracetamol"
-          value={formulario.nombre}
-          onChange={manejarCambio}
-          maxLength={LIMITES.medicamentoNombre}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="medicamento-nombre"
+            name="nombre"
+            placeholder="Paracetamol"
+            value={formulario.nombre}
+            onChange={manejarCambio}
+            maxLength={LIMITES.medicamentoNombre}
+          />
+          <ContadorCaracteres valor={formulario.nombre} maximo={LIMITES.medicamentoNombre} />
+        </div>
         {errores.nombre && <span className="mensaje-error">{errores.nombre}</span>}
       </div>
 

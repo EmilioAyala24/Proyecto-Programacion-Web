@@ -1,0 +1,1061 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentación del Proyecto - Farmacia Inclusiva</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: #17202a;
+      background: #ffffff;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 11.2pt;
+      line-height: 1.55;
+    }
+
+    .portada {
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-left: 10px solid #138a72;
+      padding: 36px 42px;
+      background: linear-gradient(135deg, #f6fbf9 0%, #ffffff 58%, #eef6f4 100%);
+      page-break-after: always;
+    }
+
+    .portada__marca {
+      width: 72px;
+      height: 72px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 28px;
+      border-radius: 16px;
+      color: #ffffff;
+      background: #138a72;
+      font-size: 44px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      color: #102b3c;
+      font-size: 34pt;
+      line-height: 1.1;
+    }
+
+    .subtitulo {
+      max-width: 720px;
+      margin: 0 0 28px;
+      color: #52636d;
+      font-size: 14pt;
+    }
+
+    .datos-portada {
+      width: 100%;
+      max-width: 720px;
+      margin-top: 24px;
+      border-collapse: collapse;
+      font-size: 10.5pt;
+    }
+
+    .datos-portada td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #d7e5e1;
+    }
+
+    .datos-portada td:first-child {
+      width: 190px;
+      color: #52636d;
+      font-weight: 700;
+    }
+
+    .contenido {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    section {
+      page-break-inside: avoid;
+      margin-bottom: 26px;
+    }
+
+    h2 {
+      margin: 30px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #138a72;
+      color: #102b3c;
+      font-size: 19pt;
+      line-height: 1.2;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      margin: 20px 0 8px;
+      color: #1d4e5f;
+      font-size: 13.5pt;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin: 0 0 10px;
+    }
+
+    ul,
+    ol {
+      margin-top: 6px;
+      padding-left: 22px;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    code {
+      padding: 1px 4px;
+      border-radius: 4px;
+      color: #123c4a;
+      background: #edf5f3;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+
+    pre {
+      margin: 12px 0;
+      padding: 14px 16px;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+      border: 1px solid #d5e2df;
+      border-left: 5px solid #138a72;
+      border-radius: 8px;
+      color: #1b2d35;
+      background: #f7faf9;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9.2pt;
+      line-height: 1.45;
+      page-break-inside: avoid;
+    }
+
+    table {
+      width: 100%;
+      margin: 12px 0 18px;
+      border-collapse: collapse;
+      page-break-inside: avoid;
+    }
+
+    th,
+    td {
+      padding: 9px 10px;
+      border: 1px solid #d9e4e1;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      color: #102b3c;
+      background: #eef6f4;
+      font-weight: 700;
+    }
+
+    .nota {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-left: 5px solid #e0a11b;
+      border-radius: 8px;
+      background: #fff8e8;
+    }
+
+    .ok {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-left: 5px solid #138a72;
+      border-radius: 8px;
+      background: #eef8f5;
+    }
+
+    .salto {
+      page-break-before: always;
+    }
+
+    .faq dt {
+      margin-top: 12px;
+      color: #102b3c;
+      font-weight: 800;
+    }
+
+    .faq dd {
+      margin: 4px 0 10px 0;
+    }
+
+    .pie {
+      margin-top: 36px;
+      padding-top: 10px;
+      border-top: 1px solid #d7e5e1;
+      color: #6b7c85;
+      font-size: 9.5pt;
+    }
+  </style>
+</head>
+<body>
+  <article class="portada">
+    <div class="portada__marca">+</div>
+    <h1>Documentación del Proyecto<br>Farmacia Inclusiva</h1>
+    <p class="subtitulo">
+      Aplicación web administrativa para una farmacia, documentada desde su arquitectura,
+      flujo de datos, backend, dependencias, validaciones, seguridad y estructura de carpetas.
+    </p>
+    <table class="datos-portada">
+      <tr>
+        <td>Tipo de documento</td>
+        <td>Documentación técnica para presentación universitaria</td>
+      </tr>
+      <tr>
+        <td>Stack principal</td>
+        <td>React 19, Vite, Express, PostgreSQL 16, Docker Compose y Recharts</td>
+      </tr>
+      <tr>
+        <td>Proyecto</td>
+        <td>Aplicación frontend y backend en un mismo repositorio con un solo <code>package.json</code></td>
+      </tr>
+      <tr>
+        <td>API base</td>
+        <td><code>http://localhost:3001/api</code></td>
+      </tr>
+    </table>
+  </article>
+
+  <main class="contenido">
+    <section>
+      <h2>1. Resumen General Del Proyecto</h2>
+      <p>
+        <strong>Farmacia Inclusiva</strong> es una aplicación web administrativa diseñada para gestionar
+        operaciones comunes de una farmacia: control de medicamentos, lotes, proveedores, clientes,
+        usuarios y ventas. La aplicación permite consultar información, registrar nuevas operaciones
+        y visualizar datos relevantes desde un panel organizado por módulos.
+      </p>
+      <p>
+        El proyecto está construido como una aplicación full stack en un solo repositorio. El
+        frontend vive en <code>src/</code> y está desarrollado con React 19, Vite y
+        <code>react-router-dom</code>. El backend vive en <code>backend/src/</code> y está desarrollado
+        con Node.js y Express. La base de datos es PostgreSQL 16 y se levanta mediante Docker Compose
+        usando el puerto local <code>5433</code>.
+      </p>
+      <p>
+        La relación entre las tres capas se puede resumir así: React muestra la interfaz y consume
+        servicios en <code>src/services</code>; esos servicios hacen peticiones HTTP a la API Express;
+        Express procesa la solicitud mediante rutas, controladores y modelos; finalmente, los modelos
+        consultan o modifican la base de datos PostgreSQL.
+      </p>
+      <pre>Usuario en navegador
+  -> Componente React
+  -> Servicio frontend en src/services
+  -> API Express en backend/src
+  -> Modelo backend
+  -> PostgreSQL en Docker
+  -> Respuesta JSON
+  -> Estado de React
+  -> Renderizado en pantalla</pre>
+      <table>
+        <thead>
+          <tr>
+            <th>Capa</th>
+            <th>Tecnología</th>
+            <th>Ubicación</th>
+            <th>Responsabilidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Frontend</td>
+            <td>React 19 + Vite</td>
+            <td><code>src/</code></td>
+            <td>Interfaz, rutas, formularios, tablas, filtros, modales y gráficos.</td>
+          </tr>
+          <tr>
+            <td>Backend</td>
+            <td>Node.js + Express</td>
+            <td><code>backend/src/</code></td>
+            <td>API REST, validación de entrada, lógica de negocio y acceso a datos.</td>
+          </tr>
+          <tr>
+            <td>Base de datos</td>
+            <td>PostgreSQL 16</td>
+            <td><code>BaseDeDatos/</code> y Docker</td>
+            <td>Persistencia de usuarios, clientes, medicamentos, lotes, ventas y catálogos.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>2. Ubicación Del Backend</h2>
+      <p>
+        El backend se encuentra dentro de la carpeta <code>backend/src/</code>. No es un proyecto
+        separado con su propio <code>package.json</code>; forma parte del mismo proyecto general y usa
+        las dependencias declaradas en el <code>package.json</code> raíz.
+      </p>
+      <h3>Archivos principales</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Ruta</th>
+            <th>Función</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>backend/src/server.js</code></td>
+            <td>Punto de arranque del backend. Carga variables de entorno, prepara la base de datos y levanta Express en el puerto configurado.</td>
+          </tr>
+          <tr>
+            <td><code>backend/src/app.js</code></td>
+            <td>Configura la aplicación Express: CORS, JSON, logging básico, rutas bajo <code>/api</code> y middleware de errores.</td>
+          </tr>
+          <tr>
+            <td><code>backend/src/routes/index.js</code></td>
+            <td>Agrupa las rutas principales: salud, auth, usuarios, proveedores, medicamentos, lotes, ventas, clientes y qrs.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Subcarpetas del backend</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Carpeta</th>
+            <th>Contenido</th>
+            <th>Ejemplo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>routes/</code></td>
+            <td>Define endpoints HTTP y conecta cada ruta con su controlador.</td>
+            <td><code>ventasRoutes.js</code>, <code>qrsRoutes.js</code>.</td>
+          </tr>
+          <tr>
+            <td><code>controllers/</code></td>
+            <td>Recibe la petición, valida datos, llama al modelo y responde en JSON.</td>
+            <td><code>ventasController.js</code>, <code>qrsController.js</code>.</td>
+          </tr>
+          <tr>
+            <td><code>models/</code></td>
+            <td>Contiene las consultas SQL y operaciones directas contra PostgreSQL.</td>
+            <td><code>ventasModel.js</code>, <code>qrsModel.js</code>.</td>
+          </tr>
+          <tr>
+            <td><code>validators/</code></td>
+            <td>Valida datos recibidos antes de enviarlos al modelo.</td>
+            <td><code>ventasValidator.js</code> valida usuario, método de pago y detalles de venta.</td>
+          </tr>
+          <tr>
+            <td><code>middleware/</code></td>
+            <td>Contiene funciones intermedias de Express.</td>
+            <td><code>errorHandler.js</code> responde errores internos con estado 500.</td>
+          </tr>
+          <tr>
+            <td><code>config/</code></td>
+            <td>Configuración de entorno y base de datos.</td>
+            <td><code>database.js</code> crea el <code>Pool</code> de PostgreSQL.</td>
+          </tr>
+          <tr>
+            <td><code>utils/</code></td>
+            <td>Utilidades reutilizables del backend.</td>
+            <td><code>password.js</code> genera y verifica hashes de contraseña con PBKDF2.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Cómo se levanta</h3>
+      <pre>npm run db:up      # levanta PostgreSQL en Docker
+npm run dev:api   # levanta el backend Express en http://localhost:3001</pre>
+      <p>
+        El servidor usa <code>PORT=3001</code> por defecto y monta las rutas bajo <code>/api</code>.
+        Por ejemplo, el endpoint de salud queda disponible en <code>/api/salud</code>.
+      </p>
+    </section>
+
+    <section class="salto">
+      <h2>3. Cómo Se Muestran Los Datos En Pantalla</h2>
+      <p>
+        Los datos se muestran siguiendo un flujo por capas. El backend obtiene información desde
+        PostgreSQL y la envía como JSON; el frontend consume ese JSON mediante servicios, lo transforma
+        a una estructura cómoda para React y lo renderiza en componentes visuales.
+      </p>
+
+      <h3>Ejemplo: módulo de ventas</h3>
+      <pre>PostgreSQL
+  tabla ventas + usuario + metodo_pago + cliente + detalle_ventas_medicamento
+    ↓
+backend/src/models/ventasModel.js
+  obtenerVentas()
+    ↓
+backend/src/controllers/ventasController.js
+  listarVentas()
+    ↓
+backend/src/routes/ventasRoutes.js
+  GET /api/ventas
+    ↓
+src/services/ventasService.js
+  obtenerVentas()
+    ↓
+src/pages/Ventas.jsx
+  useEffect(), setVentas(), filtros y paginación
+    ↓
+src/components/ventas/VentasTable.jsx
+  tabla visible para el usuario</pre>
+
+      <p>
+        En <code>ventasModel.js</code>, la función <code>obtenerVentas()</code> ejecuta una consulta SQL
+        que une ventas con usuario, método de pago, cliente y detalle de medicamentos. Después, el
+        controlador <code>listarVentas()</code> responde con un objeto JSON:
+      </p>
+      <pre>{
+  "data": [...ventas],
+  "total": 8
+}</pre>
+      <p>
+        En el frontend, <code>src/services/ventasService.js</code> llama a
+        <code>fetch(`${API_URL}/ventas`)</code>, valida que la respuesta sea correcta y normaliza los
+        campos. Por ejemplo, convierte <code>total_venta</code> a número, asigna <code>id</code> y
+        formatea datos de fecha y cliente.
+      </p>
+      <p>
+        Finalmente, <code>src/pages/Ventas.jsx</code> guarda el resultado en estado con
+        <code>setVentas</code>, calcula ventas filtradas y paginadas, y las pasa a
+        <code>VentasTable</code> para mostrarlas en pantalla.
+      </p>
+    </section>
+
+    <section>
+      <h2>4. Dependencias: package.json Y package-lock.json</h2>
+      <p>
+        El proyecto utiliza un solo <code>package.json</code> y un solo <code>package-lock.json</code>
+        en la raíz. Esto significa que frontend y backend comparten la misma instalación de
+        dependencias en <code>node_modules/</code>.
+      </p>
+      <h3>Qué es package.json</h3>
+      <p>
+        <code>package.json</code> describe el proyecto Node.js: nombre, versión, tipo de módulos,
+        scripts disponibles y dependencias requeridas para ejecutar o desarrollar la aplicación.
+        En este proyecto también concentra los comandos de frontend, backend y base de datos.
+      </p>
+      <h3>Qué es package-lock.json</h3>
+      <p>
+        <code>package-lock.json</code> registra las versiones exactas instaladas de cada dependencia y
+        subdependencia. Su objetivo es que otra persona pueda ejecutar <code>npm install</code> y obtener
+        un entorno consistente.
+      </p>
+      <h3>Por qué hay uno solo para todo</h3>
+      <p>
+        Como el frontend y el backend están dentro del mismo repositorio y se ejecutan desde la raíz,
+        basta con un solo manifiesto de Node. Esto simplifica la instalación para un proyecto académico:
+        una sola carpeta, un solo <code>npm install</code>, un solo <code>node_modules</code> y scripts
+        centralizados para levantar cada parte.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Dependencia</th>
+            <th>Parte del proyecto</th>
+            <th>Uso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>react</code>, <code>react-dom</code></td>
+            <td>Frontend</td>
+            <td>Construcción de interfaces y renderizado de componentes.</td>
+          </tr>
+          <tr>
+            <td><code>react-router-dom</code></td>
+            <td>Frontend</td>
+            <td>Rutas internas como <code>/ventas</code>, <code>/clientes</code> y <code>/login</code>.</td>
+          </tr>
+          <tr>
+            <td><code>recharts</code></td>
+            <td>Frontend</td>
+            <td>Gráficas del dashboard y componentes visuales de métricas.</td>
+          </tr>
+          <tr>
+            <td><code>express</code></td>
+            <td>Backend</td>
+            <td>Servidor HTTP y API REST.</td>
+          </tr>
+          <tr>
+            <td><code>cors</code></td>
+            <td>Backend</td>
+            <td>Permite que el frontend Vite consuma la API Express desde otro puerto.</td>
+          </tr>
+          <tr>
+            <td><code>dotenv</code></td>
+            <td>Backend</td>
+            <td>Carga variables desde <code>.env.local</code> o <code>.env.example</code>.</td>
+          </tr>
+          <tr>
+            <td><code>pg</code></td>
+            <td>Backend</td>
+            <td>Conexión y consultas a PostgreSQL mediante un pool.</td>
+          </tr>
+          <tr>
+            <td><code>vite</code>, <code>@vitejs/plugin-react</code></td>
+            <td>Desarrollo frontend</td>
+            <td>Servidor de desarrollo, build y soporte para React.</td>
+          </tr>
+          <tr>
+            <td><code>eslint</code></td>
+            <td>Desarrollo</td>
+            <td>Revisión estática de código.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="salto">
+      <h2>5. Lógica Del Proyecto Y Su Ubicación</h2>
+      <p>
+        La lógica del proyecto está separada por responsabilidad. El backend se encarga de la lógica
+        de negocio y acceso a datos; el frontend se encarga de la presentación, interacción del usuario
+        y consumo de la API.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo de lógica</th>
+            <th>Ubicación</th>
+            <th>Responsabilidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Lógica de negocio</td>
+            <td><code>backend/src/controllers</code></td>
+            <td>Coordina validaciones, llamadas a modelos y respuestas HTTP.</td>
+          </tr>
+          <tr>
+            <td>Acceso a datos</td>
+            <td><code>backend/src/models</code></td>
+            <td>Ejecuta consultas SQL, inserciones, actualizaciones y transacciones.</td>
+          </tr>
+          <tr>
+            <td>Validación backend</td>
+            <td><code>backend/src/validators</code></td>
+            <td>Comprueba que los datos recibidos tengan estructura y valores válidos.</td>
+          </tr>
+          <tr>
+            <td>Servicios frontend</td>
+            <td><code>src/services</code></td>
+            <td>Centraliza llamadas a la API y normaliza respuestas para React.</td>
+          </tr>
+          <tr>
+            <td>Presentación</td>
+            <td><code>src/pages</code> y <code>src/components</code></td>
+            <td>Muestra pantallas, formularios, tablas, filtros, modales y gráficas.</td>
+          </tr>
+          <tr>
+            <td>Permisos de interfaz</td>
+            <td><code>src/utils/permisos.js</code></td>
+            <td>Define módulos visibles y rutas permitidas según rol.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Un ejemplo claro es la venta: <code>VentaForm</code> construye los datos de la venta,
+        <code>ventasService.crearVenta</code> envía la petición, <code>ventasController.crearVenta</code>
+        valida y coordina, y <code>ventasModel.crearVenta</code> registra la venta y descuenta stock
+        dentro de una transacción SQL.
+      </p>
+    </section>
+
+    <section>
+      <h2>6. Validaciones</h2>
+      <p>
+        El proyecto valida datos en dos niveles: frontend y backend. Esta doble validación es
+        importante porque el frontend mejora la experiencia del usuario, pero el backend es la capa que
+        realmente protege la base de datos.
+      </p>
+      <h3>Validaciones en frontend</h3>
+      <p>
+        En <code>src/utils/validaciones.js</code> se concentran funciones reutilizables para limpiar y
+        validar campos. Hay límites de longitud, validación de nombres, teléfonos, correos, direcciones,
+        lotes, stock, precios y contraseñas.
+      </p>
+      <p>
+        En formularios como <code>src/components/ventas/VentaForm.jsx</code>, la validación evita enviar
+        una venta sin método de pago, sin medicamentos, con cantidades no numéricas o superiores al stock
+        disponible del lote.
+      </p>
+      <pre>if (!formulario.id_metPag) {
+  nuevosErrores.id_metPag = 'El metodo de pago es requerido.'
+}
+
+if (formulario.detalles.length === 0) {
+  nuevosErrores.detalles = 'Debe agregar al menos un medicamento.'
+}</pre>
+
+      <h3>Validaciones en backend</h3>
+      <p>
+        En <code>backend/src/validators</code> se validan los datos que llegan a la API. Por ejemplo,
+        <code>ventasValidator.js</code> revisa que el usuario y el método de pago sean numéricos y
+        positivos, que exista al menos un detalle y que cada detalle tenga medicamento, lote, cantidad y
+        precio válidos.
+      </p>
+      <p>
+        La validación de login vive en <code>authValidator.js</code>, donde se comprueba que el usuario
+        no esté vacío, tenga formato permitido y que la contraseña exista y no exceda el máximo definido.
+      </p>
+
+      <h3>Manejo de errores</h3>
+      <p>
+        Los controladores usan <code>try/catch</code> y envían errores a <code>next(error)</code>. Al
+        final, <code>backend/src/middleware/errorHandler.js</code> registra el error en consola y responde
+        con un JSON de error interno.
+      </p>
+      <pre>app.use('/api', apiRoutes)
+app.use(errorHandler)</pre>
+      <p>
+        Cuando el error es una validación conocida, el controlador responde con estado <code>400</code>.
+        Cuando la venta no existe, responde <code>404</code>. Los errores inesperados pasan al middleware
+        general y se responden como <code>500</code>.
+      </p>
+    </section>
+
+    <section class="salto">
+      <h2>7. Seguridad Del Proyecto</h2>
+      <p>
+        La seguridad del proyecto se basa en autenticación, manejo de sesión en frontend, protección de
+        rutas por rol, validaciones y consultas parametrizadas hacia PostgreSQL.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Mecanismo</th>
+            <th>Ubicación</th>
+            <th>Explicación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Login</td>
+            <td><code>backend/src/controllers/authController.js</code></td>
+            <td>Recibe usuario y contraseña, valida formato y busca al usuario en base de datos.</td>
+          </tr>
+          <tr>
+            <td>Hash de contraseña</td>
+            <td><code>backend/src/utils/password.js</code></td>
+            <td>Usa PBKDF2 con salt, 100000 iteraciones, SHA-512 y comparación segura con <code>timingSafeEqual</code>.</td>
+          </tr>
+          <tr>
+            <td>Sesión frontend</td>
+            <td><code>src/services/authService.js</code></td>
+            <td>Guarda la sesión en <code>localStorage</code> con la clave <code>farmacia_inclusiva_usuario</code>.</td>
+          </tr>
+          <tr>
+            <td>Protección de rutas</td>
+            <td><code>src/components/common/ProtectedRoute.jsx</code></td>
+            <td>Si no hay sesión redirige a <code>/login</code>; si el rol no tiene permiso redirige a su ruta inicial.</td>
+          </tr>
+          <tr>
+            <td>Permisos por rol</td>
+            <td><code>src/utils/permisos.js</code></td>
+            <td>Admin accede a todos los módulos principales; cajero accede a Inicio, Medicamentos, Clientes y Ventas.</td>
+          </tr>
+          <tr>
+            <td>Consultas parametrizadas</td>
+            <td><code>backend/src/models</code></td>
+            <td>Las consultas usan parámetros como <code>$1</code>, <code>$2</code>, reduciendo riesgo de inyección SQL.</td>
+          </tr>
+          <tr>
+            <td>CORS</td>
+            <td><code>backend/src/app.js</code></td>
+            <td>Permite que el frontend consuma la API desde el navegador durante desarrollo.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="nota">
+        <strong>Observación técnica:</strong> la protección por rol está implementada principalmente en
+        el frontend. El backend valida datos y contraseñas, pero no se observa un middleware global de
+        autorización por token o sesión para proteger cada endpoint de la API. Para una versión
+        productiva, sería recomendable agregar autenticación de API con tokens o sesiones de servidor y
+        autorización por rol también en Express.
+      </div>
+    </section>
+
+    <section>
+      <h2>8. Mapa De Carpetas Y Archivos</h2>
+      <pre>Proyecto-Programacion-Web/
+├── package.json
+│   Scripts y dependencias compartidas por frontend y backend.
+├── package-lock.json
+│   Versiones exactas instaladas por npm.
+├── vite.config.js
+│   Configuración de Vite para React.
+├── docker-compose.yml
+│   Servicio PostgreSQL 16, puerto local 5433 y carga de scripts SQL.
+├── .env.example
+│   Variables de ejemplo para API y conexión PostgreSQL.
+├── index.html
+│   HTML base donde Vite monta la aplicación React.
+├── public/
+│   Recursos estáticos públicos como favicon e iconos.
+├── src/
+│   Frontend React.
+│   ├── main.jsx
+│   │   Punto de entrada del frontend.
+│   ├── App.jsx
+│   │   Define rutas y protección general.
+│   ├── App.css e index.css
+│   │   Estilos globales de la aplicación.
+│   ├── pages/
+│   │   Pantallas principales: Login, Inicio, Dashboard, Ventas, Clientes, etc.
+│   ├── components/
+│   │   Componentes reutilizables: tablas, formularios, filtros, modales y gráficos.
+│   ├── services/
+│   │   Funciones que consumen la API: ventasService, authService, clientesService, etc.
+│   ├── context/
+│   │   Contexto de autenticación.
+│   ├── hooks/
+│   │   Hooks propios como useAuth.
+│   ├── utils/
+│   │   Validaciones, sanitización y permisos por rol.
+│   └── data/
+│       Datos locales auxiliares o de respaldo.
+├── backend/
+│   └── src/
+│       Backend Express.
+│       ├── server.js
+│       │   Arranque del servidor.
+│       ├── app.js
+│       │   Configuración de Express.
+│       ├── config/
+│       │   Variables de entorno y conexión PostgreSQL.
+│       ├── routes/
+│       │   Endpoints agrupados por módulo.
+│       ├── controllers/
+│       │   Lógica de petición y respuesta.
+│       ├── models/
+│       │   Consultas SQL y transacciones.
+│       ├── validators/
+│       │   Validaciones backend.
+│       ├── middleware/
+│       │   Middleware de errores.
+│       └── utils/
+│           Utilidades como hash de contraseñas.
+├── BaseDeDatos/
+│   ├── farmacia_inclusiva.sql
+│   │   Schema principal de PostgreSQL.
+│   ├── migrations/
+│   │   Cambios incrementales de base de datos.
+│   └── seeds/
+│       Datos iniciales para proveedores y catálogo.
+└── docs/
+    Documentación del proyecto.</pre>
+    </section>
+
+    <section class="salto">
+      <h2>9. Flujo De Una Petición Completa: Registrar Una Venta</h2>
+      <p>
+        Este flujo describe qué ocurre cuando el usuario registra una venta desde la interfaz hasta que
+        los datos quedan guardados en PostgreSQL.
+      </p>
+      <ol>
+        <li>
+          El usuario entra al módulo <code>/ventas</code>. La ruta está protegida por
+          <code>ProtectedRoute</code>, que revisa si existe sesión y si el rol tiene permiso.
+        </li>
+        <li>
+          En <code>Ventas.jsx</code>, el usuario presiona el botón para abrir el modal de registro.
+          El modal muestra <code>VentaForm</code>.
+        </li>
+        <li>
+          <code>VentaForm</code> carga opciones con <code>Promise.all</code>: métodos de pago,
+          clientes y medicamentos disponibles. Estas opciones vienen de
+          <code>ventasService</code> y de endpoints como <code>/ventas/opciones/medicamentos</code>.
+        </li>
+        <li>
+          El usuario selecciona cliente opcional, método de pago, medicamento, lote y cantidad.
+          El formulario valida que el lote exista, que la cantidad sea positiva y que no supere el
+          stock disponible.
+        </li>
+        <li>
+          Al enviar el formulario, <code>VentaForm</code> construye un objeto como este:
+        </li>
+      </ol>
+      <pre>{
+  "id_usuario": 1,
+  "id_metPag": 2,
+  "id_cliente": null,
+  "detalles": [
+    {
+      "id_medicamento": 5,
+      "id_lote": 12,
+      "cantidad": 2,
+      "precio_unitario": 75.50
+    }
+  ]
+}</pre>
+      <ol start="6">
+        <li>
+          <code>Ventas.jsx</code> ejecuta <code>crearVenta(nuevaVenta)</code>, definido en
+          <code>src/services/ventasService.js</code>.
+        </li>
+        <li>
+          El servicio envía una petición <code>POST</code> a <code>/api/ventas</code> con JSON.
+        </li>
+        <li>
+          En el backend, <code>backend/src/routes/ventasRoutes.js</code> dirige la petición hacia
+          <code>ventasController.crearVenta</code>.
+        </li>
+        <li>
+          El controlador llama a <code>validarVenta</code>. Si los datos son incorrectos, responde
+          <code>400</code> con los detalles del error.
+        </li>
+        <li>
+          Si los datos son válidos, el controlador llama a <code>ventasModel.crearVenta</code>.
+        </li>
+        <li>
+          El modelo abre una transacción SQL con <code>BEGIN</code>, inserta la venta, valida el lote
+          disponible con <code>FOR UPDATE</code>, inserta el detalle, descuenta stock y actualiza el
+          total de la venta.
+        </li>
+        <li>
+          Si todo sale bien, ejecuta <code>COMMIT</code>. Si ocurre un error, ejecuta
+          <code>ROLLBACK</code> para no dejar datos incompletos.
+        </li>
+        <li>
+          El backend responde con estado <code>201</code> y un JSON con el ID de la venta y el total.
+        </li>
+        <li>
+          El frontend cierra el modal, muestra el mensaje de éxito y vuelve a llamar
+          <code>obtenerVentas()</code> para refrescar la tabla.
+        </li>
+      </ol>
+      <pre>Click en "Registrar venta"
+  -> VentaForm valida datos
+  -> ventasService.crearVenta()
+  -> POST /api/ventas
+  -> ventasRoutes
+  -> ventasController.crearVenta()
+  -> validarVenta()
+  -> ventasModel.crearVenta()
+  -> BEGIN / INSERT / UPDATE stock / COMMIT
+  -> JSON 201
+  -> setVentas(ventasActualizadas)
+  -> pantalla actualizada</pre>
+    </section>
+
+    <section>
+      <h2>10. Preguntas Y Respuestas Frecuentes Sobre El Proyecto</h2>
+      <dl class="faq">
+        <dt>¿Dónde está el backend?</dt>
+        <dd>
+          El backend está en <code>backend/src/</code>. Ahí se encuentran <code>server.js</code>,
+          <code>app.js</code>, rutas, controladores, modelos, validadores, configuración y middleware.
+          Se levanta con <code>npm run dev:api</code>.
+        </dd>
+
+        <dt>¿Cómo se muestran los datos en pantalla?</dt>
+        <dd>
+          Los datos salen de PostgreSQL, pasan por un modelo backend, un controlador y una ruta Express.
+          Luego un servicio en <code>src/services</code> consume la API y una página React guarda los
+          datos en estado para renderizarlos en tablas, formularios o gráficos.
+        </dd>
+
+        <dt>¿Dónde están las dependencias?</dt>
+        <dd>
+          Están declaradas en el <code>package.json</code> de la raíz del proyecto. Las versiones exactas
+          instaladas se registran en <code>package-lock.json</code>.
+        </dd>
+
+        <dt>¿Por qué hay un solo package.json para todo?</dt>
+        <dd>
+          Porque frontend y backend forman parte del mismo proyecto Node y se administran desde la raíz.
+          Esto permite instalar todo con un solo <code>npm install</code> y ejecutar scripts centralizados
+          como <code>npm run dev</code>, <code>npm run dev:api</code> y <code>npm run build</code>.
+        </dd>
+
+        <dt>¿Dónde está la lógica del proyecto?</dt>
+        <dd>
+          La lógica de negocio está principalmente en <code>backend/src/controllers</code> y
+          <code>backend/src/models</code>. La lógica de presentación está en <code>src/pages</code> y
+          <code>src/components</code>. La conexión entre ambas partes está en <code>src/services</code>.
+        </dd>
+
+        <dt>¿Cómo funcionan las validaciones?</dt>
+        <dd>
+          El frontend valida formularios para evitar errores antes de enviar datos. El backend vuelve a
+          validar en <code>backend/src/validators</code> antes de guardar o consultar información crítica.
+          Los errores controlados se responden con estados HTTP como <code>400</code> o <code>404</code>.
+        </dd>
+
+        <dt>¿Qué seguridad usa el proyecto?</dt>
+        <dd>
+          Usa autenticación por usuario y contraseña, hash de contraseña con PBKDF2, sesión guardada en
+          <code>localStorage</code>, rutas protegidas en React y permisos por rol admin/cajero. Además,
+          los modelos usan consultas parametrizadas hacia PostgreSQL.
+        </dd>
+
+        <dt>¿En qué carpeta está cada archivo importante?</dt>
+        <dd>
+          El frontend está en <code>src/</code>, el backend en <code>backend/src/</code>, la base de datos
+          en <code>BaseDeDatos/</code>, la configuración de Docker en <code>docker-compose.yml</code> y
+          las dependencias en <code>package.json</code>.
+        </dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Anexo: Comandos Principales</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Comando</th>
+            <th>Uso</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>npm run dev</code></td>
+            <td>Inicia el frontend con Vite.</td>
+          </tr>
+          <tr>
+            <td><code>npm run dev:api</code></td>
+            <td>Inicia el backend Express.</td>
+          </tr>
+          <tr>
+            <td><code>npm run db:up</code></td>
+            <td>Levanta PostgreSQL con Docker Compose.</td>
+          </tr>
+          <tr>
+            <td><code>npm run db:down</code></td>
+            <td>Detiene los contenedores.</td>
+          </tr>
+          <tr>
+            <td><code>npm run db:reset</code></td>
+            <td>Reinicia la base de datos eliminando el volumen y cargando scripts iniciales.</td>
+          </tr>
+          <tr>
+            <td><code>npm run build</code></td>
+            <td>Compila el frontend para producción.</td>
+          </tr>
+          <tr>
+            <td><code>npm run lint</code></td>
+            <td>Ejecuta ESLint sobre el proyecto.</td>
+          </tr>
+        </tbody>
+      </table>
+      <section class="salto">
+      <h2>5. Módulo de Reportes y Exportación a PDF</h2>
+      <p>
+        El módulo de reportes, accesible en <code>/reportes</code>, permite generar un resumen de la actividad de la farmacia
+        filtrado por un rango de fechas. Este reporte se puede visualizar en pantalla o exportar como un documento PDF.
+      </p>
+      <h3>Componente principal</h3>
+      <p>
+        La lógica reside en <code>src/pages/Reportes.jsx</code>. Este componente se encarga de:
+      </p>
+      <ul>
+        <li>Obtener datos de ventas, lotes, medicamentos y clientes usando los servicios correspondientes.</li>
+        <li>Permitir al usuario filtrar los datos por un rango de fechas (desde/hasta).</li>
+        <li>Calcular métricas clave como ingresos totales, número de ventas, clientes nuevos, etc.</li>
+        <li>Mostrar gráficos de ventas por día y por método de pago usando <code>Recharts</code>.</li>
+        <li>Generar un PDF con el resumen de los datos filtrados.</li>
+      </ul>
+      <h3>Generación de PDF</h3>
+      <p>
+        La exportación a PDF se realiza mediante la función <code>crearHTMLPDF</code>, que construye un documento HTML
+        con los datos del reporte. Este HTML se convierte a PDF en el lado del cliente usando la funcionalidad de impresión
+        del navegador (<code>window.print()</code>), que permite guardar la vista como un archivo PDF.
+      </p>
+      <pre>
+// Flujo de generación de PDF
+1. El usuario hace clic en "Exportar a PDF".
+2. Se llama a la función `crearHTMLPDF` con los datos filtrados.
+3. Se genera un string HTML con la estructura y estilos del reporte.
+4. Se abre una nueva ventana del navegador (`window.open()`).
+5. Se escribe el HTML en la nueva ventana y se invoca `window.print()`.
+6. El navegador muestra el diálogo de impresión para guardar como PDF.
+      </pre>
+    </section>
+
+    <section>
+      <h2>6. Generación y Lectura de Códigos QR</h2>
+      <p>
+        La aplicación incluye una funcionalidad para generar y leer códigos QR asociados a cada lote de medicamentos.
+        Esto permite un acceso rápido a la información del medicamento y su lote, mejorando la accesibilidad.
+      </p>
+      <h3>Generación de QR</h3>
+      <p>
+        Los códigos QR se generan en el backend. El controlador <code>qrsController.js</code> tiene un endpoint
+        <code>GET /api/qrs/lote/:id</code> que, a través de <code>qrsModel.js</code>, obtiene o crea un token único
+        para un lote específico. Este token se utiliza para construir la URL del QR.
+      </p>
+      <h3>Lectura de QR</h3>
+      <p>
+        La lectura se realiza a través de una página pública en <code>/qr/:token</code>, implementada en el componente
+        <code>src/pages/QRMedicamento.jsx</code>. Esta página:
+      </p>
+      <ul>
+        <li>Extrae el token de la URL.</li>
+        <li>Llama al endpoint <code>GET /api/qrs/detalle/:token</code> para obtener la información del medicamento y lote.</li>
+        <li>El backend, a través de <code>qrsModel.js</code>, registra el escaneo y devuelve los detalles.</li>
+        <li>Muestra la información del medicamento en pantalla.</li>
+        <li>Incluye una función de "lectura en voz alta" que utiliza la API de Síntesis de Voz del navegador
+            (<code>SpeechSynthesis</code>) para narrar los detalles del medicamento, mejorando la accesibilidad.</li>
+      </ul>
+      <pre>
+// Flujo de lectura de QR
+1. El usuario escanea un código QR con su dispositivo.
+2. El QR redirige al navegador a la URL `https://[dominio]/qr/[token]`.
+3. El componente `QRMedicamento.jsx` se monta y obtiene el token.
+4. Se hace una petición a `GET /api/qrs/detalle/:token`.
+5. El backend valida el token, registra el escaneo y devuelve los datos del lote y medicamento.
+6. El frontend muestra los detalles y habilita el botón para reproducir el audio.
+      </pre>
+    </section>
+
+    <section>
+      <h2>7. Tickets de Venta</h2>
+      <p>
+        Aunque no hay un módulo de "tickets" visible como tal, la funcionalidad de "Ventas" permite registrar
+        las operaciones que equivaldrían a un ticket. Cada venta registrada en el sistema contiene:
+      </p>
+      <ul>
+        <li><strong>ID de la venta:</strong> Un identificador único.</li>
+        <li><strong>Fecha y hora:</strong> Cuándo se realizó la venta.</li>
+        <li><strong>Cliente:</strong> Quién realizó la compra (si se especifica).</li>
+        <li><strong>Usuario:</strong> Qué empleado registró la venta.</li>
+        <li><strong>Método de pago:</strong> Efectivo, tarjeta, etc.</li>
+        <li><strong>Total:</strong> El monto total de la venta.</li>
+        <li><strong>Detalle de medicamentos:</strong> Una lista de los medicamentos vendidos, con cantidad y precio unitario.</li>
+      </ul>
+      <p>
+        Esta información se almacena en la base de datos en las tablas <code>ventas</code> y <code>detalle_ventas_medicamento</code>.
+        El módulo de reportes utiliza estos datos para generar los resúmenes de ingresos y actividad.
+      </p>
+    </section>
+  </main>
+
+  <footer class="contenido pie">
+    <p>
+      Documentación generada para el proyecto de Programación Web.
+      <br>
+      Última actualización: 25 de mayo de 2026.
+    </p>
+  </footer>
+</body>
+</html>
+    </section>
+  </main>
+</body>
+</html>

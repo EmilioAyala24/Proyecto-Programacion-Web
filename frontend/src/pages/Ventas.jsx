@@ -19,8 +19,7 @@ function escaparHtml(valor) {
 }
 
 function crearUrlPublicaTicket(idVenta) {
-  const basePublica = import.meta.env.VITE_PUBLIC_URL || window.location.origin
-  return `${basePublica.replace(/\/$/, '')}/ticket/${idVenta}`
+  return `${window.location.origin}/ticket/${idVenta}`
 }
 
 function crearUrlImagenQR(url) {

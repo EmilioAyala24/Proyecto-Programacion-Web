@@ -181,6 +181,32 @@ select {
   padding: 12px 14px;
 }
 
+.campo-con-contador {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.campo-con-contador input,
+.campo-con-contador .campo-password {
+  min-width: 0;
+  width: 100%;
+}
+
+.contador-caracteres {
+  background: #eef6ff;
+  border: 1px solid #cfe2f3;
+  border-radius: 6px;
+  color: #0f3d6e;
+  font-size: 0.74rem;
+  font-weight: 800;
+  min-width: 52px;
+  padding: 5px 7px;
+  text-align: center;
+  white-space: nowrap;
+}
+
 .campo-compuesto {
   display: grid;
   gap: 8px;

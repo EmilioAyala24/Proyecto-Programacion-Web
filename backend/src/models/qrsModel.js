@@ -36,8 +36,7 @@ function crearToken() {
 }
 
 function crearUrlQR(token) {
-  const baseFrontend = process.env.APP_PUBLIC_URL || process.env.FRONTEND_URL || 'http://localhost:5173'
-  return `${baseFrontend.replace(/\/$/, '')}/qr/${token}`
+  return `http://localhost:5173/qr/${token}`
 }
 
 function crearUrlImagenQR(urlQR) {

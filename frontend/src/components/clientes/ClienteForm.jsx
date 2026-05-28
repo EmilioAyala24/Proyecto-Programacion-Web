@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ContadorCaracteres from '../common/ContadorCaracteres'
 import {
   LIMITES,
   normalizarTelefonoCaptura,
@@ -93,69 +94,84 @@ function ClienteForm({ clienteInicial, onCrearCliente, onGuardar }) {
     <form className="cliente-formulario" onSubmit={manejarEnvio} noValidate>
       <div className="campo-formulario">
         <label htmlFor="cliente-nombre">Nombre *</label>
-        <input
-          id="cliente-nombre"
-          name="nombre"
-          placeholder="Juan"
-          value={formulario.nombre}
-          onChange={manejarCambio}
-          maxLength={LIMITES.nombrePersona}
-          required
-        />
+        <div className="campo-con-contador">
+          <input
+            id="cliente-nombre"
+            name="nombre"
+            placeholder="Juan"
+            value={formulario.nombre}
+            onChange={manejarCambio}
+            maxLength={LIMITES.nombrePersona}
+            required
+          />
+          <ContadorCaracteres valor={formulario.nombre} maximo={LIMITES.nombrePersona} />
+        </div>
         {errores.nombre && <span className="mensaje-error">{errores.nombre}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="cliente-ap-pat">Apellido Paterno</label>
-        <input
-          id="cliente-ap-pat"
-          name="apPat"
-          placeholder="Perez"
-          value={formulario.apPat}
-          onChange={manejarCambio}
-          maxLength={LIMITES.apellido}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="cliente-ap-pat"
+            name="apPat"
+            placeholder="Perez"
+            value={formulario.apPat}
+            onChange={manejarCambio}
+            maxLength={LIMITES.apellido}
+          />
+          <ContadorCaracteres valor={formulario.apPat} maximo={LIMITES.apellido} />
+        </div>
         {errores.apPat && <span className="mensaje-error">{errores.apPat}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="cliente-ap-mat">Apellido Materno</label>
-        <input
-          id="cliente-ap-mat"
-          name="apMat"
-          placeholder="Garcia"
-          value={formulario.apMat}
-          onChange={manejarCambio}
-          maxLength={LIMITES.apellido}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="cliente-ap-mat"
+            name="apMat"
+            placeholder="Garcia"
+            value={formulario.apMat}
+            onChange={manejarCambio}
+            maxLength={LIMITES.apellido}
+          />
+          <ContadorCaracteres valor={formulario.apMat} maximo={LIMITES.apellido} />
+        </div>
         {errores.apMat && <span className="mensaje-error">{errores.apMat}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="cliente-telefono">Teléfono</label>
-        <input
-          id="cliente-telefono"
-          name="telefono"
-          type="tel"
-          placeholder="(312)1234567"
-          value={formulario.telefono}
-          onChange={manejarCambio}
-          maxLength={LIMITES.telefono}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="cliente-telefono"
+            name="telefono"
+            type="tel"
+            placeholder="(312)1234567"
+            value={formulario.telefono}
+            onChange={manejarCambio}
+            maxLength={LIMITES.telefono}
+          />
+          <ContadorCaracteres valor={formulario.telefono} maximo={LIMITES.telefono} />
+        </div>
         {errores.telefono && <span className="mensaje-error">{errores.telefono}</span>}
       </div>
 
       <div className="campo-formulario">
         <label htmlFor="cliente-correo">Correo electronico</label>
-        <input
-          id="cliente-correo"
-          name="correo"
-          type="email"
-          placeholder="cliente@correo.com"
-          value={formulario.correo}
-          onChange={manejarCambio}
-          maxLength={LIMITES.correo}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="cliente-correo"
+            name="correo"
+            type="email"
+            placeholder="cliente@correo.com"
+            value={formulario.correo}
+            onChange={manejarCambio}
+            maxLength={LIMITES.correo}
+          />
+          <ContadorCaracteres valor={formulario.correo} maximo={LIMITES.correo} />
+        </div>
         {errores.correo && <span className="mensaje-error">{errores.correo}</span>}
       </div>
 

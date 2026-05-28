@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node backend/src/devServer.js",
+    "dev": "vite",
     "dev:api": "node backend/src/server.js",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",

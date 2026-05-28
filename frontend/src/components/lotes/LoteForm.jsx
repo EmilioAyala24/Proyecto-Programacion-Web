@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ContadorCaracteres from '../common/ContadorCaracteres'
 import {
   LIMITES,
   sanitizarCodigoLote,
@@ -138,14 +139,17 @@ function LoteForm({ loteInicial, medicamentoFijo, medicamentos = [], proveedores
     <form className="lote-formulario" onSubmit={manejarEnvio} noValidate>
       <div className="campo-formulario">
         <label htmlFor="lote-codigo">Número de lote</label>
-        <input
-          id="lote-codigo"
-          name="codigo"
-          placeholder="L-2026-001"
-          value={formulario.codigo}
-          onChange={manejarCambio}
-          maxLength={LIMITES.lote}
-        />
+        <div className="campo-con-contador">
+          <input
+            id="lote-codigo"
+            name="codigo"
+            placeholder="L-2026-001"
+            value={formulario.codigo}
+            onChange={manejarCambio}
+            maxLength={LIMITES.lote}
+          />
+          <ContadorCaracteres valor={formulario.codigo} maximo={LIMITES.lote} />
+        </div>
         {errores.codigo && <span className="mensaje-error">{errores.codigo}</span>}
       </div>
 
