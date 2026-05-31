@@ -16,7 +16,16 @@ function formatearFecha(fecha) {
   }).format(new Date(`${fecha}T00:00:00`))
 }
 
-function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones = true, mostrarOculto = false }) {
+function LotesTable({
+  lotes,
+  onEditar,
+  onEliminar,
+  onRestaurar,
+  onVer,
+  onQR,
+  mostrarAcciones = true,
+  mostrarOculto = false,
+}) {
   return (
     <div className="tabla-contenedor">
       <table className="tabla-datos">
@@ -30,7 +39,7 @@ function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones 
             <th>Caducidad</th>
             <th>Estado</th>
             {mostrarOculto && <th>Motivo</th>}
-            {mostrarAcciones && <th>Acciones</th>}
+            {(mostrarAcciones || onRestaurar) && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
@@ -54,29 +63,42 @@ function LotesTable({ lotes, onEditar, onEliminar, onVer, onQR, mostrarAcciones 
                 </span>
               </td>
               {mostrarOculto && <td>{lote.motivoOculto || '-'}</td>}
-              {mostrarAcciones && (
+              {(mostrarAcciones || onRestaurar) && (
                 <td>
                   <div className="acciones-tabla">
-                    <button className="boton-accion" type="button" onClick={() => onVer(lote)}>
-                      Ver
-                    </button>
-                    <button className="boton-accion" type="button" onClick={() => onEditar(lote)}>
-                      Editar
-                    </button>
-                    <button
-                      className="boton-accion boton-accion--ticket"
-                      type="button"
-                      onClick={() => onQR(lote)}
-                    >
-                      QR
-                    </button>
-                    <button
-                      className="boton-accion boton-accion--eliminar"
-                      type="button"
-                      onClick={() => onEliminar(lote.id)}
-                    >
-                      Ocultar
-                    </button>
+                    {mostrarAcciones && (
+                      <>
+                        <button className="boton-accion" type="button" onClick={() => onVer(lote)}>
+                          Ver
+                        </button>
+                        <button className="boton-accion" type="button" onClick={() => onEditar(lote)}>
+                          Editar
+                        </button>
+                        <button
+                          className="boton-accion boton-accion--ticket"
+                          type="button"
+                          onClick={() => onQR(lote)}
+                        >
+                          QR
+                        </button>
+                        <button
+                          className="boton-accion boton-accion--eliminar"
+                          type="button"
+                          onClick={() => onEliminar(lote)}
+                        >
+                          Ocultar
+                        </button>
+                      </>
+                    )}
+                    {onRestaurar && (
+                      <button
+                        className="boton-accion"
+                        type="button"
+                        onClick={() => onRestaurar(lote)}
+                      >
+                        Restaurar
+                      </button>
+                    )}
                   </div>
                 </td>
               )}

@@ -1,4 +1,4 @@
-function VentasTable({ ventas, cargando, error, onVer, onTicket, onEliminar }) {
+function VentasTable({ ventas, cargando, error, onVer, onTicket, onEliminar, puedeEliminar = true }) {
   const formatoPrecio = (valor) => Number(valor || 0).toFixed(2)
 
   if (cargando) {
@@ -66,13 +66,15 @@ function VentasTable({ ventas, cargando, error, onVer, onTicket, onEliminar }) {
                   >
                     Ticket
                   </button>
-                  <button
-                    className="boton-accion boton-accion--eliminar"
-                    type="button"
-                    onClick={() => onEliminar(venta)}
-                  >
-                    Eliminar
-                  </button>
+                  {puedeEliminar && (
+                    <button
+                      className="boton-accion boton-accion--eliminar"
+                      type="button"
+                      onClick={() => onEliminar(venta)}
+                    >
+                      Eliminar
+                    </button>
+                  )}
                 </div>
               </td>
             </tr>

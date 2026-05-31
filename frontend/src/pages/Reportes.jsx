@@ -17,7 +17,37 @@ import { obtenerLotes } from '../services/lotesService'
 import { obtenerMedicamentos } from '../services/medicamentosService'
 import { obtenerVentas } from '../services/ventasService'
 
-const coloresGrafico = ['#0f3d6e', '#1d7db4', '#38bdf8', '#a16207', '#b91c1c']
+const coloresMetodosPago = {
+  credito: '#1d7db4',
+  efectivo: '#0f766e',
+  debito: '#b91c1c',
+  otro: '#64748b',
+}
+
+function normalizarMetodoPago(nombre = '') {
+  return String(nombre)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+}
+
+function obtenerColorMetodoPago(nombre) {
+  const metodo = normalizarMetodoPago(nombre)
+
+  if (metodo.includes('credito')) {
+    return coloresMetodosPago.credito
+  }
+
+  if (metodo.includes('efectivo')) {
+    return coloresMetodosPago.efectivo
+  }
+
+  if (metodo.includes('debito')) {
+    return coloresMetodosPago.debito
+  }
+
+  return coloresMetodosPago.otro
+}
 
 function IconoAmpliar() {
   return (
@@ -461,12 +491,12 @@ function Reportes() {
                       outerRadius={96}
                       paddingAngle={3}
                     >
-                      {ventasPorMetodo.map((item, index) => (
-                        <Cell key={item.nombre} fill={coloresGrafico[index % coloresGrafico.length]} />
+                      {ventasPorMetodo.map((item) => (
+                        <Cell key={item.nombre} fill={obtenerColorMetodoPago(item.nombre)} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => `$${formatoPrecio(value)}`} />
-                    <Legend />
+                    <Tooltip formatter={(value, _name, item) => [`$${formatoPrecio(value)}`, item.payload.nombre]} />
+                    <Legend formatter={(value, entry) => entry.payload?.nombre ?? value} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

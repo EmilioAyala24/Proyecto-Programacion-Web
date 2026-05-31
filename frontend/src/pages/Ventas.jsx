@@ -8,6 +8,7 @@ import VentaForm from '../components/ventas/VentaForm'
 import VentasTable from '../components/ventas/VentasTable'
 import { useAuth } from '../hooks/useAuth'
 import { crearVenta, eliminarVenta, obtenerDetalleVenta, obtenerVentas } from '../services/ventasService'
+import { normalizarRol } from '../utils/permisos'
 
 function escaparHtml(valor) {
   return String(valor ?? '')
@@ -298,6 +299,7 @@ function crearHtmlTicket(venta, detalles) {
 
 function Ventas() {
   const { usuario } = useAuth()
+  const puedeEliminarVentas = normalizarRol(usuario?.rol) === 'admin'
   const [ventas, setVentas] = useState([])
   const [filtros, setFiltros] = useState({
     id: '',
@@ -411,6 +413,11 @@ function Ventas() {
   }
 
   const abrirEliminarVenta = (venta) => {
+    if (!puedeEliminarVentas) {
+      setError('No tienes permiso para eliminar ventas.')
+      return
+    }
+
     setVentaEliminando(venta)
     setAutorizacionAdmin({
       adminUsuario: usuario?.rol === 'admin' ? usuario.usuario : '',
@@ -434,7 +441,7 @@ function Ventas() {
   const manejarEliminarVenta = async (event) => {
     event.preventDefault()
 
-    if (!ventaEliminando) {
+    if (!ventaEliminando || !puedeEliminarVentas) {
       return
     }
 
@@ -526,6 +533,7 @@ function Ventas() {
           onVer={manejarVerVenta}
           onTicket={manejarGenerarTicket}
           onEliminar={abrirEliminarVenta}
+          puedeEliminar={puedeEliminarVentas}
         />
         <Paginacion
           paginaActual={paginaActual}
@@ -600,7 +608,7 @@ function Ventas() {
       </Modal>
 
       <Modal
-        isOpen={Boolean(ventaEliminando)}
+        isOpen={Boolean(ventaEliminando) && puedeEliminarVentas}
         onClose={cerrarEliminarVenta}
         title="Eliminar venta"
       >

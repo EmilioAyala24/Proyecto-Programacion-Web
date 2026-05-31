@@ -201,14 +201,40 @@ export async function actualizarLote(req, res, next) {
 
 export async function eliminarLote(req, res, next) {
   try {
+    const idLote = Number(req.params.id)
+
+    if (!Number.isInteger(idLote) || idLote <= 0) {
+      return res.status(400).json({ mensaje: 'Identificador de lote invalido.' })
+    }
+
     const motivo = req.body?.motivo || req.body?.motivoOculto || 'Oculto manualmente'
-    const lote = await lotesModel.ocultarLote(Number(req.params.id), motivo)
+    const lote = await lotesModel.ocultarLote(idLote, motivo)
 
     if (!lote) {
       return res.status(404).json({ mensaje: 'Lote no encontrado.' })
     }
 
     return res.json({ mensaje: 'Lote ocultado.' })
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export async function restaurarLote(req, res, next) {
+  try {
+    const idLote = Number(req.params.id)
+
+    if (!Number.isInteger(idLote) || idLote <= 0) {
+      return res.status(400).json({ mensaje: 'Identificador de lote invalido.' })
+    }
+
+    const lote = await lotesModel.restaurarLote(idLote)
+
+    if (!lote) {
+      return res.status(404).json({ mensaje: 'Lote no encontrado.' })
+    }
+
+    return res.json({ mensaje: 'Lote restaurado.' })
   } catch (error) {
     return next(error)
   }

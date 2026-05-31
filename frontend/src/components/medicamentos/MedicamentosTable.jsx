@@ -27,7 +27,7 @@ function obtenerResumenLotes(medicamento) {
   }
 }
 
-function MedicamentosTable({ medicamentos, onEditar, onEliminar, onVer }) {
+function MedicamentosTable({ medicamentos, onEditar, onEliminar, onVer, puedeGestionar = true }) {
   const [lotesAbiertos, setLotesAbiertos] = useState({})
 
   const alternarLotes = (id) => {
@@ -103,16 +103,20 @@ function MedicamentosTable({ medicamentos, onEditar, onEliminar, onVer }) {
                     <button className="boton-accion" type="button" onClick={() => onVer(medicamento)}>
                       Ver
                     </button>
-                    <button className="boton-accion" type="button" onClick={() => onEditar(medicamento)}>
-                      Editar
-                    </button>
-                    <button
-                      className="boton-accion boton-accion--eliminar"
-                      type="button"
-                      onClick={() => onEliminar(medicamento.id)}
-                    >
-                      Eliminar
-                    </button>
+                    {puedeGestionar && (
+                      <>
+                        <button className="boton-accion" type="button" onClick={() => onEditar(medicamento)}>
+                          Editar
+                        </button>
+                        <button
+                          className="boton-accion boton-accion--eliminar"
+                          type="button"
+                          onClick={() => onEliminar(medicamento.id)}
+                        >
+                          Eliminar
+                        </button>
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>

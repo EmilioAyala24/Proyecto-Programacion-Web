@@ -11,6 +11,7 @@ import {
   obtenerLotesOcultos,
   ocultarLote,
   obtenerLotes,
+  restaurarLote,
 } from '../services/lotesService'
 import { obtenerMedicamentos } from '../services/medicamentosService'
 import { obtenerProveedores } from '../services/proveedoresService'
@@ -136,6 +137,18 @@ function Lotes() {
       setLotesOcultos(ocultos)
       setLoteOcultando(null)
       setMotivoOculto('Defectuoso o dañado')
+      setError('')
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const manejarRestaurarLote = async (lote) => {
+    try {
+      await restaurarLote(lote.id)
+      const [visibles, ocultos] = await Promise.all([obtenerLotes(), obtenerLotesOcultos()])
+      setLotes(visibles)
+      setLotesOcultos(ocultos)
       setError('')
     } catch (err) {
       setError(err.message)
@@ -327,6 +340,7 @@ function Lotes() {
             lotes={lotesOcultos}
             onEditar={setLoteEditando}
             onEliminar={setLoteOcultando}
+            onRestaurar={manejarRestaurarLote}
             onVer={setLoteViendo}
             onQR={manejarVerQR}
             mostrarAcciones={false}
