@@ -172,3 +172,20 @@ export async function ocultarLote(id, motivo) {
 
   return true
 }
+
+export async function restaurarLote(id) {
+  if (!API_URL) {
+    return true
+  }
+
+  const respuesta = await fetch(`${API_URL}/lotes/${id}/restaurar`, {
+    method: 'PATCH',
+  })
+
+  if (!respuesta.ok) {
+    const error = await respuesta.json().catch(() => ({}))
+    throw new Error(error.mensaje || 'No fue posible restaurar el lote.')
+  }
+
+  return true
+}

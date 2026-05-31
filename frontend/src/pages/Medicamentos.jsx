@@ -5,14 +5,18 @@ import Paginacion from '../components/common/Paginacion'
 import FiltrosMedicamentos from '../components/filtros/FiltrosMedicamentos'
 import MedicamentoForm from '../components/medicamentos/MedicamentoForm'
 import MedicamentosTable from '../components/medicamentos/MedicamentosTable'
+import { useAuth } from '../hooks/useAuth'
 import {
   actualizarMedicamento,
   crearMedicamento,
   eliminarMedicamento,
   obtenerMedicamentos,
 } from '../services/medicamentosService'
+import { normalizarRol } from '../utils/permisos'
 
 function Medicamentos() {
+  const { usuario } = useAuth()
+  const puedeGestionarMedicamentos = normalizarRol(usuario?.rol) === 'admin'
   const [medicamentos, setMedicamentos] = useState([])
   const [filtros, setFiltros] = useState({
     nombre: '',
@@ -69,6 +73,11 @@ function Medicamentos() {
   )
 
   const manejarCrearMedicamento = async (nuevoMedicamento) => {
+    if (!puedeGestionarMedicamentos) {
+      setError('No tienes permiso para registrar medicamentos.')
+      return
+    }
+
     try {
       const medicamentoCreado = await crearMedicamento(nuevoMedicamento)
       setMedicamentos((actuales) => [medicamentoCreado, ...actuales])
@@ -80,6 +89,11 @@ function Medicamentos() {
   }
 
   const manejarActualizarMedicamento = async (datos) => {
+    if (!puedeGestionarMedicamentos) {
+      setError('No tienes permiso para editar medicamentos.')
+      return
+    }
+
     try {
       const medicamentoActualizado = await actualizarMedicamento(medicamentoEditando.id, datos)
       setMedicamentos((actuales) =>
@@ -95,6 +109,11 @@ function Medicamentos() {
   }
 
   const manejarEliminarMedicamento = async (id) => {
+    if (!puedeGestionarMedicamentos) {
+      setError('No tienes permiso para eliminar medicamentos.')
+      return
+    }
+
     if (!window.confirm('Estas seguro de que deseas eliminar este medicamento?')) {
       return
     }
@@ -144,10 +163,12 @@ function Medicamentos() {
             <h2>Listado de medicamentos</h2>
             <p>Filtra por nombre, presentación, concentración y requisito de receta.</p>
           </div>
-          <AddButton
-            onClick={() => setModalAbierto(true)}
-            title="Agregar nuevo medicamento"
-          />
+          {puedeGestionarMedicamentos && (
+            <AddButton
+              onClick={() => setModalAbierto(true)}
+              title="Agregar nuevo medicamento"
+            />
+          )}
         </div>
 
         <FiltrosMedicamentos
@@ -167,6 +188,7 @@ function Medicamentos() {
             onEditar={setMedicamentoEditando}
             onEliminar={manejarEliminarMedicamento}
             onVer={abrirDetalleMedicamento}
+            puedeGestionar={puedeGestionarMedicamentos}
           />
         )}
         <Paginacion
@@ -178,7 +200,7 @@ function Medicamentos() {
       </div>
 
       <Modal
-        isOpen={modalAbierto}
+        isOpen={modalAbierto && puedeGestionarMedicamentos}
         onClose={() => setModalAbierto(false)}
         title="Agregar nuevo medicamento"
       >
@@ -188,7 +210,7 @@ function Medicamentos() {
       </Modal>
 
       <Modal
-        isOpen={Boolean(medicamentoEditando)}
+        isOpen={Boolean(medicamentoEditando) && puedeGestionarMedicamentos}
         onClose={() => setMedicamentoEditando(null)}
         title="Editar medicamento"
       >

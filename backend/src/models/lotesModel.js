@@ -210,18 +210,79 @@ export async function actualizarLote(id, datos) {
 }
 
 export async function ocultarLote(id, motivo = 'Oculto manualmente') {
-  const resultado = await pool.query(
-    `UPDATE lote
-     SET oculto = TRUE,
-         activo = FALSE,
-         motivo_oculto = $2,
-         fecha_oculto = NOW() AT TIME ZONE 'America/Mexico_City'
-     WHERE id_lote = $1
-     RETURNING id_lote`,
-    [id, motivo || 'Oculto manualmente'],
-  )
+  const client = await pool.connect()
 
-  return resultado.rows[0]
+  try {
+    await client.query('BEGIN')
+
+    const resultado = await client.query(
+      `UPDATE lote
+       SET oculto = TRUE,
+           activo = FALSE,
+           motivo_oculto = $2,
+           fecha_oculto = NOW() AT TIME ZONE 'America/Mexico_City'
+       WHERE id_lote = $1
+       RETURNING id_lote`,
+      [id, motivo || 'Oculto manualmente'],
+    )
+
+    await client.query('COMMIT')
+    return resultado.rows[0]
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
+
+export async function restaurarLote(id) {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const loteResultado = await client.query(
+      `SELECT id_lote,
+              fecha_caducidad,
+              fecha_caducidad < CURRENT_DATE AS caducado
+       FROM lote
+       WHERE id_lote = $1
+       FOR UPDATE`,
+      [id],
+    )
+    const lote = loteResultado.rows[0]
+
+    if (!lote) {
+      await client.query('ROLLBACK')
+      return null
+    }
+
+    if (lote.caducado) {
+      const error = new Error('No se puede restaurar un lote caducado.')
+      error.statusCode = 409
+      throw error
+    }
+
+    const resultado = await client.query(
+      `UPDATE lote
+       SET oculto = FALSE,
+           activo = CASE WHEN stock_actual > 0 THEN TRUE ELSE FALSE END,
+           motivo_oculto = NULL,
+           fecha_oculto = NULL
+       WHERE id_lote = $1
+       RETURNING id_lote`,
+      [id],
+    )
+
+    await client.query('COMMIT')
+    return resultado.rows[0]
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
 }
 
 export async function eliminarLote(id) {
